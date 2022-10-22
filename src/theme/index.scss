@@ -1,13 +1,4 @@
 @import './scssVariables';
-@font-face {
-  font-family: 'Proxima Nova Rg';
-  src: local('Proxima Nova Rg'), url(../assets/fonts/ProximaNova-Regular.otf) format('truetype');
-}
-
-@font-face {
-  font-family: 'Proxima Nova Bold';
-  src: local('Proxima Nova Rg'), url(../assets/fonts/ProximaNovaBold.otf) format('truetype');
-}
 
 body {
   margin: 0;

@@ -1,9 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import 'antd/dist/antd.css'
 import './theme/index.scss'
-import './theme/_antOverride.scss'
+import './theme/_antOverride.less'
 
 import App from './App'
 

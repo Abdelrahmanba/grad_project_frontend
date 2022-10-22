@@ -14,6 +14,7 @@ import Landing from './pages/landing/landing'
 let persistor = persistStore(store)
 
 function App() {
+
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     const el = document.querySelector('.spinner-pre')
