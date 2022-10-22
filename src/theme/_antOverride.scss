@@ -1,0 +1,210 @@
+@import './_scssVariables.scss';
+
+.ant-alert-with-description {
+  width: 100%;
+}
+
+.form-row {
+  margin: 20px 0;
+  display: flex;
+  width: 90%;
+  align-items: center;
+  justify-content: space-between;
+
+  label {
+    margin-right: 20px;
+  }
+  .slider {
+    width: 80%;
+  }
+}
+.ant-modal-confirm-body-wrapper {
+  width: 100%;
+}
+
+.ant-modal-header {
+  .ant-modal-title {
+    color: white;
+    font-size: 18px;
+  }
+  border: none;
+  background-color: $primary;
+}
+.ant-modal-body {
+  display: flex;
+  justify-content: center;
+}
+
+.ant-modal-footer {
+  margin-right: 30px;
+  padding-bottom: 15px;
+  border: none;
+}
+textarea.text-area.ant-input {
+  width: 90%;
+  margin: 0 -1px;
+}
+.ant-btn-primary {
+  color: #fff;
+  border: solid 1px $primary;
+  background: $primary;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  white-space: nowrap;
+  border-radius: 0;
+  span {
+    color: white;
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: $primary-darken;
+    color: white;
+    border-color: $primary;
+    span {
+      color: white;
+    }
+  }
+}
+.ant-btn {
+  height: 40px;
+  &.ant-btn-primary:hover {
+    border: solid 1px $primary;
+    color: $primary;
+  }
+}
+
+.ant-btn-block {
+  width: 90%;
+  margin: 20px;
+}
+.ant-tooltip-placement-bottom {
+  padding-top: 18px;
+  .ant-tooltip-arrow {
+    display: none;
+  }
+}
+
+.ant-tooltip-inner {
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.65);
+}
+.ant-input {
+  border-radius: 0;
+  margin-right: 5px;
+}
+.ant-input {
+  letter-spacing: 1px;
+  font-size: 16px;
+  color: #0275a9;
+
+  &:hover,
+  &:active {
+    border-color: #0275a9;
+  }
+  &:focus-visible,
+  &:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #0275a9;
+  }
+}
+.ant-input-search {
+  height: 40px;
+}
+
+.ant-input-group-wrapper {
+  .ant-input-group {
+    &:focus-visible,
+    &:focus {
+      outline: none;
+    }
+  }
+  &:focus-visible,
+  &:focus {
+    outline: none;
+  }
+}
+.ant-radio-button-wrapper {
+  &:hover {
+    color: #0275a9;
+  }
+}
+.ant-btn-primary[disabled] {
+  background: #dad8d8;
+}
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+  z-index: 1;
+  color: #0275a9;
+  background: #fff;
+  border-color: #0275a9;
+  &:hover,
+  &:active,
+  &:focus,
+  &:focus-visible {
+    border-color: #0275a9;
+    color: #0275a9;
+  }
+  &:focus-visible,
+  &:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #0275a9;
+  }
+}
+.ant-result-info .ant-result-icon > .anticon {
+  color: #0275a9;
+}
+.ant-input-search-with-button {
+  .ant-input-affix-wrapper.ant-input-affix-wrapper-lg {
+    padding: 0px 11px;
+    &:focus-visible,
+    &:focus {
+      outline: none;
+      box-shadow: none;
+      border-color: #0275a9;
+    }
+    &:hover,
+    &:active,
+    &:focus,
+    &:focus-visible {
+      border-color: #0275a9;
+      color: #0275a9;
+    }
+    .ant-input {
+      height: 38px;
+    }
+  }
+  .ant-input {
+    height: 40px;
+    &:hover,
+    &:active,
+    &:focus,
+    &:focus-visible {
+      border-color: #0275a9;
+      color: #0275a9;
+    }
+    &:focus-visible,
+    &:focus {
+      outline: none;
+      box-shadow: none;
+      border-color: #0275a9;
+    }
+  }
+}
+.ant-input.text-area {
+  transition: none;
+  &::placeholder {
+    color: #4e5565;
+    font-size: 14px;
+  }
+
+  &:hover {
+    border: 1px solid #d8d8d8;
+  }
+  &:focus,
+  &:active {
+    border-left: #0275a9 3px solid;
+  }
+}
