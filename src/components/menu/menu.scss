@@ -1,0 +1,24 @@
+@import '../../theme/scssVariables';
+.header {
+  background-color: transparent;
+  border: 0;
+  justify-content: flex-end;
+  z-index: 99;
+  font-size: 16px;
+  padding: 5px;
+  align-items: center;
+  background-color: transparent;
+  & > li:first-child {
+    margin-right: auto;
+    font-size: 32px;
+    color: $primary;
+    font-family: $primary-font;
+    display: flex;
+    align-items: center;
+    border: 0;
+
+    &:after {
+      border-bottom: 0 !important;
+    }
+  }
+}

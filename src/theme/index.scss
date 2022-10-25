@@ -1,11 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Mouse+Memoirs&display=swap');
 @import './scssVariables';
-
+@font-face {
+  font-family: 'Branding SF Narrow';
+  src: local('Branding SF Narrow SemiBold'), local('Branding-SF-Narrow-SemiBold'),
+    url('BrandingSF-NarrowSemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
 body {
   margin: 0;
-  background-color: #f9f9f9;
-  font-family: 'Proxima Nova Rg', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Branding SF Narrow', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -17,6 +22,13 @@ body {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently
 supported by Chrome, Edge, Opera and Firefox */
+}
+h1,
+h2,
+h3,
+h4 {
+  padding: 0;
+  margin: 0;
 }
 
 .body {
@@ -42,5 +54,25 @@ supported by Chrome, Edge, Opera and Firefox */
   }
 }
 
+.content {
+  padding: 60px;
+}
+.layout {
+  background-color: #fff;
+  h1 {
+    color: $primary;
+    font-size: 32px;
+    margin: 20px;
+  }
+  h2 {
+    color: $primary-text;
+    font-size: 26px;
+    margin: 15px;
+  }
+  p {
+    font-size: 14px;
+    margin: 10px;
 
-
+    color: $secondery-text;
+  }
+}

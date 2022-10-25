@@ -57,12 +57,11 @@ footer {
   }
   .footer-wrap {
     position: relative;
-    padding: 86px $padding-space 93px $padding-space;
+    padding: 86px 40px 93px 40px;
   }
   .bottom-bar {
-    border-top: 1px solid $border-color;
     text-align: right;
-    padding: 16px $padding-space;
+    padding: 16px 40px;
     margin: 0;
     line-height: 32px;
     a {

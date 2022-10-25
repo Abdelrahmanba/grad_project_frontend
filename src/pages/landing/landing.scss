@@ -1,22 +1,89 @@
 @import '../../theme/scssVariables';
-.header {
-  background-color: transparent;
-  border: 0;
-  justify-content: flex-end;
-  font-size: 16px;
-  padding: 5px;
-  align-items: center;
-  & > li:first-child {
-    margin-right: auto;
-    font-size: 32px;
-    color: $primary;
-    font-family: $primary-font;
-    display: flex;
-    align-items: center;
-    border: 0;
 
-    &:after {
-      border-bottom: 0 !important;
+
+.page1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+
+  padding: $md-size;
+  padding-top: $lg-size;
+  letter-spacing: 1px;
+  font-family: $primary-font;
+  background-image: linear-gradient(
+    340deg,
+    hsl(354deg 72% 94%) 0%,
+    hsl(354deg 73% 95%) 10%,
+    hsl(354deg 73% 95%) 13%,
+    hsl(354deg 73% 95%) 14%,
+    hsl(354deg 73% 95%) 16%,
+    hsl(354deg 73% 96%) 17%,
+    hsl(354deg 73% 96%) 18%,
+    hsl(354deg 74% 96%) 19%,
+    hsl(354deg 74% 97%) 20%,
+    hsl(355deg 74% 97%) 21%,
+    hsl(355deg 74% 97%) 22%,
+    hsl(355deg 74% 97%) 23%,
+    hsl(355deg 75% 98%) 25%,
+    hsl(355deg 75% 98%) 27%,
+    hsl(355deg 75% 98%) 29%,
+    hsl(355deg 75% 98%) 32%,
+    hsl(355deg 75% 99%) 35%,
+    hsl(355deg 75% 99%) 39%,
+    hsl(355deg 76% 99%) 44%,
+    hsl(355deg 76% 99%) 51%,
+    hsl(355deg 76% 100%) 61%,
+    hsl(0deg 0% 100%) 86%
+  );
+  //   text-align: center;
+  img {
+    justify-content: center;
+  }
+  h1 {
+    font-size: 54px;
+    margin: 0;
+    padding: 0;
+    color: $primary;
+    font-weight: bold;
+  }
+  h2 {
+    font-size: 32px;
+    margin-bottom: -10px;
+  }
+  h3 {
+    margin-top: -10px;
+    font-size: 24px;
+  }
+  h4 {
+    font-size: 18px;
+  }
+  p {
+    margin-top: 20px;
+  }
+  .btn {
+    padding: 10px 35px;
+    min-height: 70px;
+    margin-top: 15px;
+  }
+  .btn-grp {
+    margin-top: 20px;
+  }
+  .prm {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    > span {
+      margin-left: 20px;
     }
+    h4 {
+      color: $bg;
+    }
+  }
+
+  .page1-img {
+    max-width: 90%;
+    position: relative;
+    top: -30px;
   }
 }

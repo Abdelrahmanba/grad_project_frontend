@@ -1,7 +1,8 @@
 @import '../../theme/_scssVariables.scss';
 
 .notfound {
-  background-color: $primary;
+  padding-top: 50px;
+  background-color: #b22727;
   position: relative;
   min-height: 100vh;
   display: flex;
@@ -37,9 +38,8 @@
     display: block;
     margin-top: 30px;
     padding: 20px;
-    background: $primary;
+    background: #b22727;
     color: white;
-    background-color: $primary-darken;
   }
   .warning h2 {
     color: white;
@@ -85,7 +85,6 @@
 
   @media only screen and (max-width: 568px) {
     .warning a {
-      background: $primary-darken;
     }
     h2 {
       color: #fff;

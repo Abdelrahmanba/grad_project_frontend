@@ -1,18 +1,22 @@
-// import { Switch, BrowserRouter, Route } from 'react-router-dom'
-// import NotFound from '../pages/NotFound/notFound'
-// import landing from '../pages/landing/landing'
+import { Switch, BrowserRouter, Route } from 'react-router-dom'
+import NotFound from '../pages/NotFound/notFound'
+import Landing from '../pages/landing/landing'
+import MenuBar from '../components/menu/menu'
+import RegisterK from '../pages/registerK/registerK'
+import Footer from '../components/footer/Footer'
 
+const Router = () => {
+  return (
+    <BrowserRouter>
+      <MenuBar />
+      <Switch>
+        <Route path='/' exact component={Landing} />
+        <Route path='/register-kindergarten' exact component={RegisterK} />
+        <Route path='*' component={NotFound} />
+      </Switch>
+      <Footer />
+    </BrowserRouter>
+  )
+}
 
-// const Router = () => {
-//   return (
-//     <BrowserRouter>
-//       <HeaderRouting />
-//       <Switch>
-//         <Route path='/' exact component={landing} />
-//         <Route path='*' component={NotFound} />
-//       </Switch>
-//     </BrowserRouter>
-//   )
-// }
-
-// export default Router
+export default Router
