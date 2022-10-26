@@ -9,12 +9,13 @@ import { persistStore } from 'redux-persist'
 import { useEffect, useState } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import 'leaflet/dist/leaflet.css'
+
 import Landing from './pages/landing/landing'
 
 let persistor = persistStore(store)
 
 function App() {
-
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     const el = document.querySelector('.spinner-pre')

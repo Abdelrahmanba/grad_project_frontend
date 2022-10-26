@@ -10,7 +10,7 @@ import {
   Row,
   Select,
 } from 'antd'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Map from '../../components/map/map'
 
 const { Option } = Select
@@ -41,6 +41,19 @@ const tailFormItemLayout = {
     },
     sm: {
       span: 20,
+      offset: 4,
+    },
+  },
+}
+
+const mapLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
       offset: 4,
     },
   },
@@ -198,9 +211,10 @@ const Step1 = () => {
       >
         <Input.TextArea showCount maxLength={500} />
       </Form.Item>
-      <Form.Item {...tailFormItemLayout}>
+      <Form.Item name='address' label='Address'>
         <Map />
       </Form.Item>
+      <Form.Item {...mapLayout}></Form.Item>
       <Form.Item {...tailFormItemLayout}>
         <Button type='primary' htmlType='submit'>
           Register
