@@ -8,7 +8,7 @@ function Footer() {
         <Row>
           <Col lg={6} sm={24} xs={24}>
             <div className='footer-center'>
-              <h2>Kiddey School </h2>
+              <h2>Kiddy School </h2>
               <div>
                 <a target='_blank ' href='https://github.com/ant-design/ant-design'>
                   GitHub

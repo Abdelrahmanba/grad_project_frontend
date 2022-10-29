@@ -11,7 +11,6 @@ import AOS from 'aos'
 import 'aos/dist/aos.css'
 import 'leaflet/dist/leaflet.css'
 
-import Landing from './pages/landing/landing'
 
 let persistor = persistStore(store)
 

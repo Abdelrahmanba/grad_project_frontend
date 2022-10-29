@@ -55,24 +55,42 @@ h4 {
 }
 
 .content {
-  padding: 60px;
+  padding: 20px 60px 60px;
+}
+@media screen and (max-width: 700px) {
+  .content {
+    padding: 20px;
+  }
 }
 .layout {
   background-color: #fff;
   h1 {
     color: $primary;
     font-size: 32px;
-    margin: 20px;
+    margin: 25px;
   }
   h2 {
     color: $primary-text;
     font-size: 26px;
-    margin: 15px;
+    margin: 20px;
+  }
+  h3 {
+    font-size: 18px;
+    margin: 20px;
   }
   p {
     font-size: 14px;
-    margin: 10px;
+    margin: 20px;
 
     color: $secondery-text;
+  }
+}
+.text-center {
+  text-align: center;
+}
+
+.layout {
+  .divider {
+    color: $primary-text;
   }
 }

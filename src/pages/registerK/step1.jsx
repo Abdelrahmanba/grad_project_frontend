@@ -58,10 +58,11 @@ const mapLayout = {
     },
   },
 }
-const Step1 = () => {
+const Step1 = (props) => {
   const [form] = Form.useForm()
   const onFinish = (values) => {
     console.log('Received values of form: ', values)
+    props.onFinish()
   }
 
   const [autoCompleteResult, setAutoCompleteResult] = useState([])

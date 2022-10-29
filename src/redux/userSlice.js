@@ -1,12 +1,13 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from '@reduxjs/toolkit'
 
 const initState = {
   user: {},
-  token: "",
+  token: '',
+  authStatus: 0,
 }
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState: initState,
   reducers: {
     signIn: (state, action) => (state = action.payload),
