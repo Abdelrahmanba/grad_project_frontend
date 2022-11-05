@@ -9,37 +9,13 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={(props) => {
-        if (user.token) {
-          if (
-            (user.user.activeEmail === false && props.location.pathname !== '/CompleteProfile') ||
-            (user.user.activeCommttiee === false && props.location.pathname !== '/CompleteProfile')
-          ) {
-            return (
-              <Redirect
-                to={{
-                  pathname: '/CompleteProfile',
-                  state: {
-                    from: props.location,
-                    redirected: true,
-                  },
-                }}
-              />
-            )
-          } else {
-            if (props.location.pathname.includes('Admin')) {
-              if (user.user.role === 'committee' || user.user.role === 'admin') {
-                return <Component {...rest} {...props} />
-              } else {
-                return <NotFound />
-              }
-            }
-            return <Component {...rest} {...props} />
-          }
+        if (user.authStatus !== 0) {
+          return <Component {...rest} {...props} />
         } else {
           return (
             <Redirect
               to={{
-                pathname: '/signIn',
+                pathname: '/sign-in',
                 state: {
                   from: props.location,
                   redirected: true,

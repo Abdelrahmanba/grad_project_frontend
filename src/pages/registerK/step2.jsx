@@ -1,10 +1,6 @@
-import { Button, DatePicker, Form, Input, message, Select } from 'antd'
+import { AutoComplete, Button, Form, Input } from 'antd'
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { signIn } from '../../redux/userSlice'
-import { post } from '../../utils/apiCall'
-import countries from '../../utils/countries'
-
+import Map from '../../components/map/map'
 
 const formItemLayout = {
   labelCol: {
@@ -37,24 +33,37 @@ const tailFormItemLayout = {
   },
 }
 
-
+const mapLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 4,
+    },
+  },
+}
 const Step1 = (props) => {
   const [form] = Form.useForm()
-  const dispatch = useDispatch()
-  const [loading, setLoading] = useState(false)
-  const onFinish = async (values) => {
-    setLoading(true)
-    const res = await post('/users', undefined, { ...values, isKindergartenOwner: true })
-    const resJson = await res.json(res)
-    if (res.ok) {
-      dispatch(signIn({ resJson, authStatus: resJson.user.roleId }))
-      props.onFinish()
-    } else {
-      message.error(resJson.errors[0].message)
-    }
-    setLoading(false)
+  const onFinish = (values) => {
+    console.log('Received values of form: ', values)
+    props.onFinish()
   }
 
+  const [autoCompleteResult, setAutoCompleteResult] = useState([])
+  const onWebsiteChange = (value) => {
+    if (!value) {
+      setAutoCompleteResult([])
+    } else {
+      setAutoCompleteResult(['.com', '.org', '.net', '.edu'].map((domain) => `${value}${domain}`))
+    }
+  }
+  const websiteOptions = autoCompleteResult.map((website) => ({
+    label: website,
+    value: website,
+  }))
   return (
     <Form
       {...formItemLayout}
@@ -64,24 +73,13 @@ const Step1 = (props) => {
       scrollToFirstError
     >
       <Form.Item
-        name='firstName'
-        label='First Name'
+        name='kname'
+        label='Kindergarten Name'
+        tooltip='Your official kindergarent name'
         rules={[
           {
             required: true,
-            message: 'Please input your First Name',
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name='lastName'
-        label='Last Name'
-        rules={[
-          {
-            required: true,
-            message: 'Please input your Last Name',
+            message: 'Please input your kindergarent name',
           },
         ]}
       >
@@ -117,6 +115,7 @@ const Step1 = (props) => {
       >
         <Input.Password />
       </Form.Item>
+
       <Form.Item
         name='confirm'
         label='Confirm Password'
@@ -139,17 +138,20 @@ const Step1 = (props) => {
       >
         <Input.Password />
       </Form.Item>
+
       <Form.Item
-        label='Date of birth'
-        name='dateOfBirth'
+        name='owner name'
+        label='Owner Name'
+        tooltip='Your personal name'
         rules={[
           {
             required: true,
-            message: 'Please input your Birth Date!',
+            message: 'Please input your name!',
+            whitespace: true,
           },
         ]}
       >
-        <DatePicker />
+        <Input />
       </Form.Item>
 
       <Form.Item
@@ -170,38 +172,40 @@ const Step1 = (props) => {
       </Form.Item>
 
       <Form.Item
-        name='country'
-        label='Country'
-        initialValue={countries[167].value}
+        name='website'
+        label='Website'
         rules={[
           {
             required: true,
-            message: 'Please input your country!',
+            message: 'Please input website!',
           },
         ]}
       >
-        <Select options={countries} />
-      </Form.Item>
-      <Form.Item
-        name='city'
-        label='City'
-        rules={[
-          {
-            required: true,
-            message: 'Please input your City!',
-          },
-        ]}
-      >
-        <Input
-          style={{
-            width: '100%',
-          }}
-        />
+        <AutoComplete options={websiteOptions} onChange={onWebsiteChange} placeholder='website'>
+          <Input />
+        </AutoComplete>
       </Form.Item>
 
+      <Form.Item
+        name='about'
+        label='About'
+        tooltip='Please tell us more about your kindergarten'
+        rules={[
+          {
+            required: true,
+            message: 'Please input this field',
+          },
+        ]}
+      >
+        <Input.TextArea showCount maxLength={500} />
+      </Form.Item>
+      <Form.Item name='address' label='Address'>
+        <Map />
+      </Form.Item>
+      <Form.Item {...mapLayout}></Form.Item>
       <Form.Item {...tailFormItemLayout}>
-        <Button type='primary' htmlType='submit' style={{ width: 90 }} loading={loading}>
-          Next
+        <Button type='primary' htmlType='submit'>
+          Register
         </Button>
       </Form.Item>
     </Form>

@@ -1,17 +1,30 @@
-import { Button, Checkbox, Col, Form, Input, Layout, Row } from 'antd'
+import { Button, Checkbox, Col, Form, Input, Layout, message, Row } from 'antd'
 import React from 'react'
+import { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { signIn } from '../../redux/userSlice'
+import { post } from '../../utils/apiCall'
 
 export default function SignIn() {
   const dispatch = useDispatch()
-  const onFinish = (values) => {
-    console.log('Success:', values)
-    dispatch(signIn({ authStatus: 1 }))
+  const history = useHistory()
+  const [loading, setLoading] = useState(false)
+  const onFinish = async (values) => {
+    setLoading(true)
+    const res = await post('/users/login', undefined, values)
+    const resJson = await res.json()
+    if (res.ok) {
+      dispatch(signIn(resJson))
+      history.push('/dashboard')
+    } else {
+      message.error(resJson.msg)
+    }
+    setLoading(false)
   }
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo)
+    message.error(errorInfo)
   }
 
   return (
@@ -66,7 +79,12 @@ export default function SignIn() {
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
-              <Button type='primary' htmlType='submit' style={{ width: 90, height: 40 }}>
+              <Button
+                type='primary'
+                htmlType='submit'
+                style={{ width: 90, height: 40 }}
+                loading={loading}
+              >
                 Sign In
               </Button>
             </Form.Item>

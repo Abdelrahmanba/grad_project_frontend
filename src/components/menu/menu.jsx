@@ -12,32 +12,33 @@ export default function MenuBar() {
   const history = useHistory()
   const logo = <Avatar src={Logo} size='64' style={{ minWidth: 80, minHeight: 80 }} />
 
-  const authState = useSelector((state) => state.user.authStatus)
+  const user = useSelector((state) => state.user)
+
+  const name = user.authStatus === 0 ? '' : user.user.firstName
+  const { authStatus } = user
   const dispatch = useDispatch()
   const [items, setItems] = useState()
-
-  const name = 'Abdelrahman'
 
   const avatar = (
     <span>
       {name}{' '}
       <Avatar size={30} style={{ backgroundColor: '#d2001a' }}>
-        {name[0] + name[1]}
+        {name[0]}
       </Avatar>
     </span>
   )
 
   useEffect(() => {
-    if (authState === 0) {
+    if (authStatus === 0) {
       setItems([
         { label: 'Kiddy', key: 'Kiddy', icon: logo },
         { label: 'About Us', key: 'AboutUs' },
         { label: 'Contact Us', key: 'ContactUs' },
         { label: 'Sign In', key: 'SignIn' }, // which is required
       ])
-    } else if (authState === 1) {
+    } else if (authStatus === 2 || authStatus === 1) {
       setItems([
-        { label: 'Kiddy', key: 'kiddy', icon: logo },
+        { label: 'Kiddy', key: 'Kiddy', icon: logo },
         { label: 'Dashboard', key: 'dashboard' },
         { label: 'Messages', key: 'messages' },
         {
@@ -51,25 +52,29 @@ export default function MenuBar() {
         }, // which is required
       ])
     }
-  }, [authState])
+  }, [authStatus])
 
   function onClick(e) {
     switch (e.key) {
-      case 'kiddy':
-        history.push('/')
+      case 'Kiddy':
+        if (authStatus === 0) {
+          history.push('/')
+        } else {
+          history.push('/dashboard')
+        }
         break
       case 'SignIn':
         history.push('/sign-in')
         break
-      case 'SignIn':
+      case 'signOut':
         dispatch(signOut())
         history.push('/')
         break
       case 'dashboard':
-        history.push('/parent-dashboard')
+        history.push('/dashboard')
         break
       case 'messages':
-        history.push('/parent-messeges')
+        history.push('/messeges')
         break
       default:
         break
