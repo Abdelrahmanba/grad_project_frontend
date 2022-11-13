@@ -5,7 +5,6 @@ import { signIn } from '../../redux/userSlice'
 import { post } from '../../utils/apiCall'
 import countries from '../../utils/countries'
 
-
 const formItemLayout = {
   labelCol: {
     xs: {
@@ -37,17 +36,19 @@ const tailFormItemLayout = {
   },
 }
 
-
 const Step1 = (props) => {
   const [form] = Form.useForm()
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
   const onFinish = async (values) => {
     setLoading(true)
-    const res = await post('/users', undefined, { ...values, isKindergartenOwner: true })
+    const res = await post('/users', undefined, {
+      ...values,
+      isKindergartenOwner: props.isKindergartenOwner,
+    })
     const resJson = await res.json(res)
     if (res.ok) {
-      dispatch(signIn({ resJson, authStatus: resJson.user.roleId }))
+      dispatch(signIn({ ...resJson, authStatus: resJson.user.roleId }))
       props.onFinish()
     } else {
       message.error(resJson.errors[0].message)
@@ -59,13 +60,13 @@ const Step1 = (props) => {
     <Form
       {...formItemLayout}
       form={form}
-      name='register-kindergaren'
+      name="register-kindergaren"
       onFinish={onFinish}
       scrollToFirstError
     >
       <Form.Item
-        name='firstName'
-        label='First Name'
+        name="firstName"
+        label="First Name"
         rules={[
           {
             required: true,
@@ -76,8 +77,8 @@ const Step1 = (props) => {
         <Input />
       </Form.Item>
       <Form.Item
-        name='lastName'
-        label='Last Name'
+        name="lastName"
+        label="Last Name"
         rules={[
           {
             required: true,
@@ -88,8 +89,8 @@ const Step1 = (props) => {
         <Input />
       </Form.Item>
       <Form.Item
-        name='email'
-        label='Contact E-mail'
+        name="email"
+        label="Contact E-mail"
         rules={[
           {
             type: 'email',
@@ -105,8 +106,8 @@ const Step1 = (props) => {
       </Form.Item>
 
       <Form.Item
-        name='password'
-        label='Password'
+        name="password"
+        label="Password"
         rules={[
           {
             required: true,
@@ -118,8 +119,8 @@ const Step1 = (props) => {
         <Input.Password />
       </Form.Item>
       <Form.Item
-        name='confirm'
-        label='Confirm Password'
+        name="confirm"
+        label="Confirm Password"
         dependencies={['password']}
         hasFeedback
         rules={[
@@ -132,7 +133,9 @@ const Step1 = (props) => {
               if (!value || getFieldValue('password') === value) {
                 return Promise.resolve()
               }
-              return Promise.reject(new Error('The two passwords that you entered do not match!'))
+              return Promise.reject(
+                new Error('The two passwords that you entered do not match!')
+              )
             },
           }),
         ]}
@@ -140,8 +143,8 @@ const Step1 = (props) => {
         <Input.Password />
       </Form.Item>
       <Form.Item
-        label='Date of birth'
-        name='dateOfBirth'
+        label="Date of birth"
+        name="dateOfBirth"
         rules={[
           {
             required: true,
@@ -153,8 +156,8 @@ const Step1 = (props) => {
       </Form.Item>
 
       <Form.Item
-        name='phone'
-        label='Phone Number'
+        name="phone"
+        label="Phone Number"
         rules={[
           {
             required: true,
@@ -170,8 +173,8 @@ const Step1 = (props) => {
       </Form.Item>
 
       <Form.Item
-        name='country'
-        label='Country'
+        name="country"
+        label="Country"
         initialValue={countries[167].value}
         rules={[
           {
@@ -183,8 +186,8 @@ const Step1 = (props) => {
         <Select options={countries} />
       </Form.Item>
       <Form.Item
-        name='city'
-        label='City'
+        name="city"
+        label="City"
         rules={[
           {
             required: true,
@@ -200,7 +203,12 @@ const Step1 = (props) => {
       </Form.Item>
 
       <Form.Item {...tailFormItemLayout}>
-        <Button type='primary' htmlType='submit' style={{ width: 90 }} loading={loading}>
+        <Button
+          type="primary"
+          htmlType="submit"
+          style={{ width: 90 }}
+          loading={loading}
+        >
           Next
         </Button>
       </Form.Item>

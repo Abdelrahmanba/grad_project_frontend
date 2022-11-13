@@ -5,29 +5,49 @@ import opencage from 'opencage-api-client'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 
-export default function Map() {
+export default function Map({ onChange }) {
   const [label, setLabel] = useState('Please Select On The Map')
   const [address, setLocAddress] = useState('')
   const [options, setOptions] = useState([])
   const [position, setPosition] = useState([49.1951, 16.6068])
+  const result = {
+    latitude: '0',
+    longitude: '0',
+    locationFormatted: '',
+    country: '',
+    city: '',
+  }
 
   const geocode = async (address) => {
     try {
-      const res = await opencage.geocode({ key: 'dfbc15eb0c4f47238c36aa6ae7072741', q: address })
-      setOptions(res.results.map((result, i) => ({ value: result.formatted, ...result, key: i })))
+      const res = await opencage.geocode({
+        key: 'dfbc15eb0c4f47238c36aa6ae7072741',
+        q: address,
+      })
+      setOptions(
+        res.results.map((result, i) => ({
+          value: result.formatted,
+          key: i,
+        }))
+      )
+      result.locationFormatted = res.results[0].formatted
+      result.city = res.results[0].components.city
+      result.country = res.results[0].components.country
+
+      onChange(result)
       setLabel(res.results[0].formatted)
-      console.log(res)
     } catch (er) {
       console.log(er)
     }
   }
 
-  useEffect(() => {
-    if (address.length < 4) {
-      return
-    }
-    geocode(address)
-  }, [address])
+  // useEffect(() => {
+  //   if (address.length < 4) {
+  //     return
+  //   } else {
+  //
+  //   }
+  // }, [address])
 
   function DraggableMarker() {
     const markerRef = useRef(null)
@@ -36,10 +56,14 @@ export default function Map() {
     useEffect(() => {
       map.locate().on('locationfound', function (e) {
         setPosition(e.latlng)
+        result.latitude = e.latlng.lat
+        result.longitude = e.latlng.lng
+        onChange(result)
         map.setView(e.latlng, map.getZoom())
         const radius = e.accuracy
       })
     }, [map])
+
     const eventHandlers = useMemo(
       () => ({
         dragend() {
@@ -47,6 +71,10 @@ export default function Map() {
 
           if (marker != null) {
             setPosition(marker.getLatLng())
+            result.latitude = marker.getLatLng().lat
+            result.longitude = marker.getLatLng().lng
+            onChange(result)
+
             geocode(marker.getLatLng().lat + '%2C' + marker.getLatLng().lng)
           }
         },
@@ -69,28 +97,37 @@ export default function Map() {
           iconAnchor: [10, 41],
           popupAnchor: [2, -40],
           iconUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-icon.png',
-          shadowUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png',
+          shadowUrl:
+            'https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png',
         })}
       />
     )
   }
   return (
     <>
-      <h3 style={{ marginBottom: 20,marginTop:5 }}>{label}</h3>
+      <h3 style={{ marginBottom: 20, marginTop: 5 }}>{label}</h3>
       <AutoComplete
-        onChange={(e) => setLocAddress(e)}
+        onChange={(e) => {
+          setLocAddress(e)
+          if (e.length > 4) geocode(e)
+        }}
         options={options}
         style={{ zIndex: 99 }}
         onSelect={(data, o) => {
           setPosition([o.geometry.lat, o.geometry.lng])
         }}
       >
-        <Input.Search size='large' placeholder='City, State or Country ' />
+        <Input.Search size="large" placeholder="City, State or Country " />
       </AutoComplete>
-      <MapContainer center={position} zoom={20} scrollWheelZoom={true} style={{ height: 400 }}>
+      <MapContainer
+        center={position}
+        zoom={20}
+        scrollWheelZoom={true}
+        style={{ height: 400 }}
+      >
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <DraggableMarker />
       </MapContainer>

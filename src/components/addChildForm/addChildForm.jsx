@@ -11,9 +11,9 @@ const AddChildForm = ({ open, onCancel, onCreate }) => {
   return (
     <Modal
       open={open}
-      title='Register A New Child'
-      okText='Add Child'
-      cancelText='Cancel'
+      title="Register A New Child"
+      okText="Add Child"
+      cancelText="Cancel"
       onCancel={onCancel}
       confirmLoading={loading}
       onOk={async () => {
@@ -34,15 +34,15 @@ const AddChildForm = ({ open, onCancel, onCreate }) => {
     >
       <Form
         form={form}
-        layout='vertical'
-        name='form_in_modal'
+        layout="vertical"
+        name="form_in_modal"
         initialValues={{
           modifier: 'public',
         }}
       >
         <Form.Item
-          name='firstName'
-          label='First Name'
+          name="firstName"
+          label="First Name"
           rules={[
             {
               required: true,
@@ -53,8 +53,8 @@ const AddChildForm = ({ open, onCancel, onCreate }) => {
           <Input />
         </Form.Item>
         <Form.Item
-          name='middleName'
-          label='Middle Name'
+          name="middleName"
+          label="Middle Name"
           rules={[
             {
               required: true,
@@ -65,8 +65,8 @@ const AddChildForm = ({ open, onCancel, onCreate }) => {
           <Input />
         </Form.Item>
         <Form.Item
-          name='lastName'
-          label='Last Name'
+          name="lastName"
+          label="Last Name"
           rules={[
             {
               required: true,
@@ -77,8 +77,8 @@ const AddChildForm = ({ open, onCancel, onCreate }) => {
           <Input />
         </Form.Item>
         <Form.Item
-          label='Date of birth'
-          name='dateOfBirth'
+          label="Date of birth"
+          name="dateOfBirth"
           rules={[
             {
               required: true,
@@ -89,7 +89,7 @@ const AddChildForm = ({ open, onCancel, onCreate }) => {
           <DatePicker />
         </Form.Item>
         <Form.Item
-          name='gender'
+          name="gender"
           label={'Gender'}
           rules={[
             {
@@ -99,11 +99,11 @@ const AddChildForm = ({ open, onCancel, onCreate }) => {
           ]}
         >
           <Radio.Group>
-            <Radio value='male'>Male</Radio>
-            <Radio value='female'>Female</Radio>
+            <Radio value="male">Male</Radio>
+            <Radio value="female">Female</Radio>
           </Radio.Group>
         </Form.Item>
-      </Form>
+      </Form>{' '}
     </Modal>
   )
 }

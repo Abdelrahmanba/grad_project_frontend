@@ -1,6 +1,8 @@
 import { AutoComplete, Button, Form, Input } from 'antd'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import Map from '../../components/map/map'
+import { post } from '../../utils/apiCall'
 
 const formItemLayout = {
   labelCol: {
@@ -45,10 +47,13 @@ const mapLayout = {
     },
   },
 }
-const Step1 = (props) => {
+const Step2 = (props) => {
   const [form] = Form.useForm()
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values)
+  const token = useSelector((state) => state.user.token)
+
+  const [position, setposition] = useState({})
+  const onFinish = async (values) => {
+     await post('/kindergartens', token, { ...values, ...position })
     props.onFinish()
   }
 
@@ -57,8 +62,14 @@ const Step1 = (props) => {
     if (!value) {
       setAutoCompleteResult([])
     } else {
-      setAutoCompleteResult(['.com', '.org', '.net', '.edu'].map((domain) => `${value}${domain}`))
+      setAutoCompleteResult(
+        ['.com', '.org', '.net', '.edu'].map((domain) => `${value}${domain}`)
+      )
     }
+  }
+
+  const onChange = (val) => {
+    setposition(val)
   }
   const websiteOptions = autoCompleteResult.map((website) => ({
     label: website,
@@ -68,14 +79,14 @@ const Step1 = (props) => {
     <Form
       {...formItemLayout}
       form={form}
-      name='register-kindergaren'
+      name="register-kindergaren"
       onFinish={onFinish}
       scrollToFirstError
     >
       <Form.Item
-        name='kname'
-        label='Kindergarten Name'
-        tooltip='Your official kindergarent name'
+        name="name"
+        label="Kindergarten Name"
+        tooltip="Your official kindergarent name"
         rules={[
           {
             required: true,
@@ -86,8 +97,8 @@ const Step1 = (props) => {
         <Input />
       </Form.Item>
       <Form.Item
-        name='email'
-        label='Contact E-mail'
+        name="email"
+        label="Contact E-mail"
         rules={[
           {
             type: 'email',
@@ -103,60 +114,8 @@ const Step1 = (props) => {
       </Form.Item>
 
       <Form.Item
-        name='password'
-        label='Password'
-        rules={[
-          {
-            required: true,
-            message: 'Please input your password!',
-          },
-        ]}
-        hasFeedback
-      >
-        <Input.Password />
-      </Form.Item>
-
-      <Form.Item
-        name='confirm'
-        label='Confirm Password'
-        dependencies={['password']}
-        hasFeedback
-        rules={[
-          {
-            required: true,
-            message: 'Please confirm your password!',
-          },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
-              if (!value || getFieldValue('password') === value) {
-                return Promise.resolve()
-              }
-              return Promise.reject(new Error('The two passwords that you entered do not match!'))
-            },
-          }),
-        ]}
-      >
-        <Input.Password />
-      </Form.Item>
-
-      <Form.Item
-        name='owner name'
-        label='Owner Name'
-        tooltip='Your personal name'
-        rules={[
-          {
-            required: true,
-            message: 'Please input your name!',
-            whitespace: true,
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name='phone'
-        label='Phone Number'
+        name="phone"
+        label="Phone Number"
         rules={[
           {
             required: true,
@@ -172,8 +131,8 @@ const Step1 = (props) => {
       </Form.Item>
 
       <Form.Item
-        name='website'
-        label='Website'
+        name="website"
+        label="Website"
         rules={[
           {
             required: true,
@@ -181,15 +140,19 @@ const Step1 = (props) => {
           },
         ]}
       >
-        <AutoComplete options={websiteOptions} onChange={onWebsiteChange} placeholder='website'>
+        <AutoComplete
+          options={websiteOptions}
+          onChange={onWebsiteChange}
+          placeholder="website"
+        >
           <Input />
         </AutoComplete>
       </Form.Item>
 
       <Form.Item
-        name='about'
-        label='About'
-        tooltip='Please tell us more about your kindergarten'
+        name="about"
+        label="About"
+        tooltip="Please tell us more about your kindergarten"
         rules={[
           {
             required: true,
@@ -199,16 +162,16 @@ const Step1 = (props) => {
       >
         <Input.TextArea showCount maxLength={500} />
       </Form.Item>
-      <Form.Item name='address' label='Address'>
-        <Map />
+      <Form.Item name="address" label="Address">
+        <Map onChange={onChange} />
       </Form.Item>
       <Form.Item {...mapLayout}></Form.Item>
       <Form.Item {...tailFormItemLayout}>
-        <Button type='primary' htmlType='submit'>
+        <Button type="primary" htmlType="submit">
           Register
         </Button>
       </Form.Item>
     </Form>
   )
 }
-export default Step1
+export default Step2

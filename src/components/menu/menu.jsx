@@ -10,7 +10,9 @@ import { signOut } from '../../redux/userSlice'
 
 export default function MenuBar() {
   const history = useHistory()
-  const logo = <Avatar src={Logo} size='64' style={{ minWidth: 80, minHeight: 80 }} />
+  const logo = (
+    <Avatar src={Logo} size="64" style={{ minWidth: 80, minHeight: 80 }} />
+  )
 
   const user = useSelector((state) => state.user)
 
@@ -19,16 +21,15 @@ export default function MenuBar() {
   const dispatch = useDispatch()
   const [items, setItems] = useState()
 
-  const avatar = (
-    <span>
-      {name}{' '}
-      <Avatar size={30} style={{ backgroundColor: '#d2001a' }}>
-        {name[0]}
-      </Avatar>
-    </span>
-  )
-
   useEffect(() => {
+    const avatar = (
+      <span>
+        {name}{' '}
+        <Avatar size={30} style={{ backgroundColor: '#d2001a' }}>
+          {name[0]}
+        </Avatar>
+      </span>
+    )
     if (authStatus === 0) {
       setItems([
         { label: 'Kiddy', key: 'Kiddy', icon: logo },
@@ -66,6 +67,9 @@ export default function MenuBar() {
       case 'SignIn':
         history.push('/sign-in')
         break
+      case 'settings':
+        history.push('/settings')
+        break
       case 'signOut':
         dispatch(signOut())
         history.push('/')
@@ -84,7 +88,7 @@ export default function MenuBar() {
     <Menu
       items={items}
       mode={'horizontal'}
-      className='header'
+      className="header"
       selectable={true}
       onClick={onClick}
       triggerSubMenuAction={'click'}

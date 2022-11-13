@@ -10,9 +10,6 @@ export const get = async (url, token = undefined) => {
         Accept: 'application/json',
       }),
     })
-    if (res.status === 401) {
-      store.dispatch(signOut())
-    }
     return res
   } catch (e) {
     return message.error('Something Wrong')
@@ -29,9 +26,21 @@ export const post = async (url, token = undefined, body) => {
       }),
       body: JSON.stringify(body),
     })
-    if (res.status === 401) {
-      store.dispatch(signOut())
-    }
+    return res
+  } catch (e) {
+    return message.error('Something Wrong')
+  }
+}
+
+export const deleteCall = async (url, token = undefined) => {
+  try {
+    const res = await fetch(process.env.REACT_APP_API_URL + url, {
+      method: 'DELETE',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: 'Bearer ' + token }),
+      }),
+    })
     return res
   } catch (e) {
     return message.error('Something Wrong')

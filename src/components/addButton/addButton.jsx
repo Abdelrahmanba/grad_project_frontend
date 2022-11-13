@@ -4,6 +4,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import './addButton.scss'
 import AddChildForm from '../addChildForm/addChildForm'
 import { useState } from 'react'
+import AddKindergartenForm from '../addKindergartenForm/addKindergartenForm'
 
 export default function AddButton({ title, type, onFinish }) {
   const [open, setOpen] = useState(false)
@@ -17,9 +18,9 @@ export default function AddButton({ title, type, onFinish }) {
         hoverable
         style={{ width: 300, minHeight: '200px' }}
         onClick={() => setOpen(true)}
-        className='add-button'
+        className="add-button"
       >
-        <PlusOutlined className='add-button-icon' />
+        <PlusOutlined className="add-button-icon" />
         <Card.Meta description={title} />
       </Card>
       {type === 'child' ? (
@@ -31,7 +32,13 @@ export default function AddButton({ title, type, onFinish }) {
           }}
         />
       ) : (
-        ''
+        <AddKindergartenForm
+          open={open}
+          onCreate={onCreate}
+          onCancel={() => {
+            setOpen(false)
+          }}
+        />
       )}
     </>
   )
