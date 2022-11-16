@@ -16,7 +16,7 @@ export default function MenuBar() {
 
   const user = useSelector((state) => state.user)
 
-  const name = user.authStatus === 0 ? '' : user.user.firstName
+  const name = user.authStatus === 0 ? '' :user.user.firstName 
   const { authStatus } = user
   const dispatch = useDispatch()
   const [items, setItems] = useState()
@@ -53,7 +53,7 @@ export default function MenuBar() {
         }, // which is required
       ])
     }
-  }, [authStatus])
+  }, [authStatus,name])
 
   function onClick(e) {
     switch (e.key) {

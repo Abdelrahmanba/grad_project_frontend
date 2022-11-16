@@ -16,7 +16,7 @@ export default function AddButton({ title, type, onFinish }) {
     <>
       <Card
         hoverable
-        style={{ width: 300, minHeight: '200px' }}
+        style={{ width: 300 }}
         onClick={() => setOpen(true)}
         className="add-button"
       >
@@ -26,6 +26,7 @@ export default function AddButton({ title, type, onFinish }) {
       {type === 'child' ? (
         <AddChildForm
           open={open}
+          type="add"
           onCreate={onCreate}
           onCancel={() => {
             setOpen(false)
@@ -34,6 +35,7 @@ export default function AddButton({ title, type, onFinish }) {
       ) : (
         <AddKindergartenForm
           open={open}
+          type="add"
           onCreate={onCreate}
           onCancel={() => {
             setOpen(false)

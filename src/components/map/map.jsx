@@ -26,6 +26,7 @@ export default function Map({ onChange }) {
       })
       setOptions(
         res.results.map((result, i) => ({
+          ...result,
           value: result.formatted,
           key: i,
         }))
@@ -114,6 +115,7 @@ export default function Map({ onChange }) {
         options={options}
         style={{ zIndex: 99 }}
         onSelect={(data, o) => {
+          console.log(o)
           setPosition([o.geometry.lat, o.geometry.lng])
         }}
       >

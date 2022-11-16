@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
-  SettingOutlined,
-  EditOutlined,
+  SmileOutlined,
   DeleteOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
@@ -10,19 +9,18 @@ import { useSelector } from 'react-redux'
 import { deleteCall, get } from '../../utils/apiCall'
 const { confirm } = Modal
 
-export default function KinderGartenCards({ newKindergarten }) {
+export default function KinderGartenCards({ newKindergarten, children }) {
   const token = useSelector((state) => state.user.token)
+  const [values, setValues] = useState({})
+  const [open, setOpen] = useState(false)
 
   const fetchKindergartens = async () => {
     setLoading(true)
-    const res = await get(
-      '/kindergartens?pageNumber=1&includeImages=true',
-      token
-    )
+    const res = await get('/kindergartens/me?includeImages=true', token)
 
     if (res.ok) {
       const resJson = await res.json()
-      setKindergartens(resJson.rows)
+      setKindergartens(resJson.kindergartens)
     }
     setLoading(false)
   }
@@ -37,25 +35,6 @@ export default function KinderGartenCards({ newKindergarten }) {
     setKindergartens((kindergartens) => [...kindergartens, newKindergarten])
   }, [newKindergarten])
 
-  const showConfirm = async (e) => {
-    const id =
-      e.currentTarget.parentElement.parentElement.parentElement.parentElement.getAttribute(
-        'value'
-      )
-    confirm({
-      title: 'Are you sure delete this kindergarten?',
-      icon: <ExclamationCircleOutlined />,
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      async onOk() {
-        setLoading(true)
-        await deleteCall('/kindergartens/' + id, token)
-        await fetchKindergartens()
-        setLoading(false)
-      },
-    })
-  }
   const [kindergartens, setKindergartens] = useState([])
   const [loading, setLoading] = useState(true)
   if (loading) {
@@ -71,15 +50,25 @@ export default function KinderGartenCards({ newKindergarten }) {
       <Space size={'large'} wrap>
         {kindergartens.map((kindergarten, index) => (
           <Card
-            actions={[
-              <SettingOutlined key="setting" />,
-              <EditOutlined key="edit" />,
-              <DeleteOutlined key="DeleteOutlined" onClick={showConfirm} />,
-            ]}
+            className="card"
             style={{ width: 300, marginTop: 16 }}
             hoverable
             key={index}
-            value={kindergarten.id}
+            cover={
+              kindergarten.imgs[0] ? (
+                <div
+                  alt="example"
+                  className="cover"
+                  style={{
+                    backgroundImage: `url(
+                      ${process.env.REACT_APP_API_URL + kindergarten.imgs[0]}
+                    )`,
+                  }}
+                />
+              ) : (
+                <SmileOutlined style={{ fontSize: 120, margin: '30px 0' }} />
+              )
+            }
           >
             <Skeleton loading={loading} avatar active>
               <Card.Meta
@@ -89,6 +78,7 @@ export default function KinderGartenCards({ newKindergarten }) {
             </Skeleton>
           </Card>
         ))}
+        {children}
       </Space>
     )
   }

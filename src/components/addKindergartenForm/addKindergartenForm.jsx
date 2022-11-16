@@ -1,10 +1,11 @@
-import { AutoComplete, Button, Form, Input, message, Modal } from 'antd'
+import { AutoComplete, Button, Form, Input, message, Modal, Upload } from 'antd'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { post } from '../../utils/apiCall'
+import { post, postFile } from '../../utils/apiCall'
 import Map from '../../components/map/map'
+import { UploadOutlined } from '@ant-design/icons'
 
-const AddKindergartenForm = ({ open, onCancel, onCreate }) => {
+const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
   const token = useSelector((state) => state.user.token)
@@ -12,7 +13,16 @@ const AddKindergartenForm = ({ open, onCancel, onCreate }) => {
   const onChange = (val) => {
     setposition(val)
   }
+  const [images, setImage] = useState([])
+
   const [autoCompleteResult, setAutoCompleteResult] = useState([])
+  const dummyReq = ({ data, file, onSuccess }) => {
+    const formData = new FormData()
+    formData.set('image', file)
+    setImage((images) => [formData, ...images])
+
+    setTimeout(() => onSuccess('ok'), 0)
+  }
 
   const onWebsiteChange = (value) => {
     if (!value) {
@@ -49,6 +59,7 @@ const AddKindergartenForm = ({ open, onCancel, onCreate }) => {
       onCancel={onCancel}
       confirmLoading={loading}
       onOk={async () => {
+        let imgURLs = []
         setLoading(true)
         const values = await form.validateFields()
         const res = await post('/kindergartens', token, {
@@ -58,7 +69,20 @@ const AddKindergartenForm = ({ open, onCancel, onCreate }) => {
         if (res.ok) {
           message.success('Added Successfully')
           const resJson = await res.json()
-          onCreate(resJson)
+          images.forEach(async (image) => {
+            const resImage = await postFile(
+              '/files/image/kindergarten/' + resJson.id,
+              token,
+              image
+            )
+            if (resImage.ok) {
+              const imgURL = await resImage.json()
+              imgURLs = [...imgURLs, imgURL.imgs]
+              console.log(imgURLs)
+              onCreate({ ...resJson, imgs: imgURLs })
+            }
+          })
+
           form.resetFields()
         } else {
           message.error('Something Went Wrong')
@@ -67,14 +91,7 @@ const AddKindergartenForm = ({ open, onCancel, onCreate }) => {
         setLoading(false)
       }}
     >
-      <Form
-        form={form}
-        layout="vertical"
-        name="form_in_modal"
-        initialValues={{
-          modifier: 'public',
-        }}
-      >
+      <Form form={form} layout="vertical" name="form_in_modal">
         <Form.Item
           name="name"
           label="Kindergarten Name"
@@ -140,7 +157,19 @@ const AddKindergartenForm = ({ open, onCancel, onCreate }) => {
             <Input />
           </AutoComplete>
         </Form.Item>
-
+        <Form.Item
+          label="Photos"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your lindergarten photos!',
+            },
+          ]}
+        >
+          <Upload maxCount={5} accept="image/*" customRequest={dummyReq}>
+            <Button icon={<UploadOutlined />}>Click to Upload</Button>
+          </Upload>
+        </Form.Item>
         <Form.Item
           name="about"
           label="About"
@@ -154,7 +183,7 @@ const AddKindergartenForm = ({ open, onCancel, onCreate }) => {
         >
           <Input.TextArea showCount maxLength={500} />
         </Form.Item>
-        <Form.Item name="address" label="Address">
+        <Form.Item name="Kaddress" label="Address">
           <Map onChange={onChange} />
         </Form.Item>
         <Form.Item {...mapLayout}></Form.Item>

@@ -14,12 +14,13 @@ export default function ParentDashboard() {
   return (
     <>
       <Section title={'Current Children'}>
-        <ChildrenCards newChild={newChild} />
-        <AddButton
-          title={'Add A New Child'}
-          type={'child'}
-          onFinish={onFinish}
-        />
+        <ChildrenCards newChild={newChild}>
+          <AddButton
+            title={'Add A New Child'}
+            type={'child'}
+            onFinish={onFinish}
+          />
+        </ChildrenCards>
       </Section>
     </>
   )

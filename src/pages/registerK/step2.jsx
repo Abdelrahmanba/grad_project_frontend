@@ -1,8 +1,9 @@
-import { AutoComplete, Button, Form, Input } from 'antd'
+import { AutoComplete, Button, Form, Input, message, Upload } from 'antd'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import Map from '../../components/map/map'
-import { post } from '../../utils/apiCall'
+import { post, postFile } from '../../utils/apiCall'
+import { UploadOutlined } from '@ant-design/icons'
 
 const formItemLayout = {
   labelCol: {
@@ -50,11 +51,35 @@ const mapLayout = {
 const Step2 = (props) => {
   const [form] = Form.useForm()
   const token = useSelector((state) => state.user.token)
+  const [images, setImage] = useState([])
 
   const [position, setposition] = useState({})
   const onFinish = async (values) => {
-     await post('/kindergartens', token, { ...values, ...position })
+    const res = await post('/kindergartens', token, { ...values, ...position })
+    if (res.ok) {
+      let imgURLs = []
+      message.success('Added Successfully')
+      const resJson = await res.json()
+      images.forEach(async (image) => {
+        const resImage = await postFile(
+          '/files/image/kindergarten/' + resJson.id,
+          token,
+          image
+        )
+        if (resImage.ok) {
+          const imgURL = await resImage.json()
+          imgURLs = [...imgURLs, imgURL.imgs]
+        }
+      })
+    }
     props.onFinish()
+  }
+  const dummyReq = ({ data, file, onSuccess }) => {
+    const formData = new FormData()
+    formData.set('image', file)
+    setImage((images) => [formData, ...images])
+
+    setTimeout(() => onSuccess('ok'), 0)
   }
 
   const [autoCompleteResult, setAutoCompleteResult] = useState([])
@@ -75,6 +100,7 @@ const Step2 = (props) => {
     label: website,
     value: website,
   }))
+
   return (
     <Form
       {...formItemLayout}
@@ -148,7 +174,19 @@ const Step2 = (props) => {
           <Input />
         </AutoComplete>
       </Form.Item>
-
+      <Form.Item
+        label="Photos"
+        rules={[
+          {
+            required: true,
+            message: 'Please input your lindergarten photos!',
+          },
+        ]}
+      >
+        <Upload maxCount={5} accept="image/*" customRequest={dummyReq}>
+          <Button icon={<UploadOutlined />}>Click to Upload</Button>
+        </Upload>
+      </Form.Item>
       <Form.Item
         name="about"
         label="About"

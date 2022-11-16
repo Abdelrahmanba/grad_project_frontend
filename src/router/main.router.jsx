@@ -26,7 +26,7 @@ const Router = () => {
         <ProtectedRoute path="/messeges" exact component={Messages} />
         <ProtectedRoute path="/settings" exact component={Settings} />
 
-        <Route path="/child-home/" component={ChildHome} />
+        <Route path="/child/:id" component={ChildHome} />
 
         <Route path="*" component={NotFound} />
       </Switch>

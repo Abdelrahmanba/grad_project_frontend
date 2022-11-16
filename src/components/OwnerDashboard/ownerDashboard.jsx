@@ -11,15 +11,14 @@ export default function OwnerDashboard() {
   }
 
   return (
-    <>
-      <Section title={'Registered Kindergarten'}>
-        <KinderGartenCards newChild={newKindergarten} />
+    <Section title={'Registered Kindergarten'}>
+      <KinderGartenCards newKindergarten={newKindergarten}>
         <AddButton
           title={'Add A New Kindergarten'}
           type={'kindergarten'}
           onFinish={onFinish}
         />
-      </Section>
-    </>
+      </KinderGartenCards>
+    </Section>
   )
 }

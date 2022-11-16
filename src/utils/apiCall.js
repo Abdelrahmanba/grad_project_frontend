@@ -32,6 +32,20 @@ export const post = async (url, token = undefined, body) => {
   }
 }
 
+export const postFile = async (url, token = undefined, body) => {
+  try {
+    const res = await fetch(process.env.REACT_APP_API_URL + url, {
+      method: 'POST',
+      headers: new Headers({
+        ...(token && { Authorization: 'Bearer ' + token }),
+      }),
+      body: body,
+    })
+    return res
+  } catch (e) {
+    return message.error('Something Wrong')
+  }
+}
 export const deleteCall = async (url, token = undefined) => {
   try {
     const res = await fetch(process.env.REACT_APP_API_URL + url, {
@@ -40,6 +54,22 @@ export const deleteCall = async (url, token = undefined) => {
         'Content-Type': 'application/json',
         ...(token && { Authorization: 'Bearer ' + token }),
       }),
+    })
+    return res
+  } catch (e) {
+    return message.error('Something Wrong')
+  }
+}
+
+export const patchCall = async (url, token = undefined, body) => {
+  try {
+    const res = await fetch(process.env.REACT_APP_API_URL + url, {
+      method: 'PATCH',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: 'Bearer ' + token }),
+      }),
+      body: JSON.stringify(body),
     })
     return res
   } catch (e) {
