@@ -4,23 +4,28 @@ import {
   DeleteOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
-import { Card, Modal, Skeleton, Space } from 'antd'
+import { Button, Card, Modal, Skeleton, Space } from 'antd'
 import { useSelector } from 'react-redux'
 import { deleteCall, get } from '../../utils/apiCall'
 const { confirm } = Modal
 
-export default function KinderGartenCards({ newKindergarten, children }) {
+export default function KinderGartenCards({
+  newKindergarten,
+  children,
+  appliable,
+  url,
+}) {
   const token = useSelector((state) => state.user.token)
   const [values, setValues] = useState({})
   const [open, setOpen] = useState(false)
 
   const fetchKindergartens = async () => {
     setLoading(true)
-    const res = await get('/kindergartens/me?includeImages=true', token)
+    const res = await get(url, token)
 
     if (res.ok) {
       const resJson = await res.json()
-      setKindergartens(resJson.kindergartens)
+      setKindergartens(resJson.rows)
     }
     setLoading(false)
   }
@@ -54,6 +59,15 @@ export default function KinderGartenCards({ newKindergarten, children }) {
             style={{ width: 300, marginTop: 16 }}
             hoverable
             key={index}
+            actions={
+              appliable
+                ? [
+                    <Button type="primary" block style={{ height: '50px' }}>
+                      Apply
+                    </Button>,
+                  ]
+                : ''
+            }
             cover={
               kindergarten.imgs[0] ? (
                 <div

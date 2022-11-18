@@ -12,7 +12,10 @@ export default function OwnerDashboard() {
 
   return (
     <Section title={'Registered Kindergarten'}>
-      <KinderGartenCards newKindergarten={newKindergarten}>
+      <KinderGartenCards
+        newKindergarten={newKindergarten}
+        url="/kindergartens/me?includeImages=true"
+      >
         <AddButton
           title={'Add A New Kindergarten'}
           type={'kindergarten'}
