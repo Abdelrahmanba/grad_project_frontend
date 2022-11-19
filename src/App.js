@@ -26,11 +26,12 @@ function App() {
   }, [])
 
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        {!loading && <Router />}
-      </PersistGate>
-    </Provider>
+
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          {!loading && <Router />}
+        </PersistGate>
+      </Provider>
   )
 }
 

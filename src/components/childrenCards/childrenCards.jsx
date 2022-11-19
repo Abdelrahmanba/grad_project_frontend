@@ -28,6 +28,7 @@ export default function ChildrenCards(props) {
     if (res.ok) {
       const resJson = await res.json()
       setChildren(resJson)
+      
     }
     setLoading(false)
   }
@@ -45,14 +46,7 @@ export default function ChildrenCards(props) {
   const showEdit = (e) => {
     const index = e.currentTarget.getAttribute('value')
 
-    const defaults = (({
-      firstName,
-      middleName,
-      lastName,
-      gender,
-      id,
-      dateOfBirth,
-    }) => ({
+    const defaults = (({ firstName, middleName, lastName, gender, id, dateOfBirth }) => ({
       firstName,
       middleName,
       lastName,
@@ -94,7 +88,7 @@ export default function ChildrenCards(props) {
     return (
       <Card style={{ width: 300, marginTop: 16, minHeight: 340 }}>
         <Skeleton loading={loading} active>
-          <Card.Meta title="Card title" description="This is the description" />
+          <Card.Meta title='Card title' description='This is the description' />
         </Skeleton>
       </Card>
     )
@@ -104,10 +98,16 @@ export default function ChildrenCards(props) {
         {children.map((child, index) => (
           <Card
             actions={[
-              <EditOutlined key="edit" value={index} onClick={showEdit} />,
+              <EditOutlined
+                style={{ margin: ' 15px 0' }}
+                key='edit'
+                value={index}
+                onClick={showEdit}
+              />,
               <DeleteOutlined
+                style={{ margin: '15px 0' }}
                 value={child.id}
-                key="DeleteOutlined"
+                key='DeleteOutlined'
                 onClick={showConfirm}
               />,
             ]}
@@ -119,8 +119,8 @@ export default function ChildrenCards(props) {
               child.imgs[0] ? (
                 <div
                   onClick={() => history.push('/child/' + child.id)}
-                  alt="example"
-                  className="cover"
+                  alt='example'
+                  className='cover'
                   style={{
                     backgroundImage: `url(
                       ${process.env.REACT_APP_API_URL + child.imgs[0]}
@@ -148,7 +148,7 @@ export default function ChildrenCards(props) {
           open={open}
           defaultValues={values}
           onCreate={onCreate}
-          type="update"
+          type='update'
           onCancel={() => {
             setOpen(false)
           }}

@@ -1,5 +1,4 @@
 import { Breadcrumb, Col, Layout, Row, Spin, Typography } from 'antd'
-import { Content } from 'antd/lib/layout/layout'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
@@ -7,6 +6,7 @@ import { setUser } from '../../redux/userSlice'
 import { HomeOutlined, UserOutlined } from '@ant-design/icons'
 import { patchCall } from '../../utils/apiCall'
 import { useState } from 'react'
+const { Content } = Layout
 
 export default function Settings() {
   const user = useSelector((state) => state.user)
@@ -28,8 +28,8 @@ export default function Settings() {
   )
 
   return (
-    <Layout className="layout">
-      <Content className="content">
+    <Layout className='layout'>
+      <Content className='content'>
         <Breadcrumb>
           <Breadcrumb.Item>
             <HomeOutlined />

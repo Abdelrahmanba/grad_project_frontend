@@ -1,12 +1,12 @@
 import { Breadcrumb, Layout } from 'antd'
-import { Content } from 'antd/lib/layout/layout'
 import React from 'react'
 import { HomeOutlined, UserOutlined } from '@ant-design/icons'
+const { Content } = Layout
 
 export default function Messages() {
   return (
-    <Layout className="layout">
-      <Content className="content">
+    <Layout className='layout'>
+      <Content className='content'>
         <Breadcrumb>
           <Breadcrumb.Item>
             <HomeOutlined />

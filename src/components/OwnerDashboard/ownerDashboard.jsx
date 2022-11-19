@@ -14,13 +14,9 @@ export default function OwnerDashboard() {
     <Section title={'Registered Kindergarten'}>
       <KinderGartenCards
         newKindergarten={newKindergarten}
-        url="/kindergartens/me?includeImages=true"
+        url='/kindergartens/me?includeImages=true'
       >
-        <AddButton
-          title={'Add A New Kindergarten'}
-          type={'kindergarten'}
-          onFinish={onFinish}
-        />
+        <AddButton title={'Add A New Kindergarten'} type={'kindergarten'} onFinish={onFinish} />
       </KinderGartenCards>
     </Section>
   )

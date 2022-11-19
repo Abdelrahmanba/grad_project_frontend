@@ -10,13 +10,11 @@ import { signOut } from '../../redux/userSlice'
 
 export default function MenuBar() {
   const history = useHistory()
-  const logo = (
-    <Avatar src={Logo} size="64" style={{ minWidth: 80, minHeight: 80 }} />
-  )
+  const logo = <Avatar src={Logo} size='64' style={{ minWidth: 80, minHeight: 80 }} />
 
   const user = useSelector((state) => state.user)
 
-  const name = user.authStatus === 0 ? '' :user.user.firstName 
+  const name = user.authStatus === 0 ? '' : user.user.firstName
   const { authStatus } = user
   const dispatch = useDispatch()
   const [items, setItems] = useState()
@@ -52,8 +50,14 @@ export default function MenuBar() {
           ],
         }, // which is required
       ])
+    } else if (authStatus === 3) {
+      setItems([
+        { label: 'Kiddy', key: 'Kiddy', icon: logo },
+        { label: 'Manager Dashboard', key: 'dashboard' },
+        { label: 'Sign Out', key: 'signOut' },
+      ])
     }
-  }, [authStatus,name])
+  }, [authStatus, name])
 
   function onClick(e) {
     switch (e.key) {
@@ -88,7 +92,7 @@ export default function MenuBar() {
     <Menu
       items={items}
       mode={'horizontal'}
-      className="header"
+      className='header'
       selectable={true}
       onClick={onClick}
       triggerSubMenuAction={'click'}

@@ -1,0 +1,16 @@
+.kgp-card {
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+  text-transform: capitalize;
+  .ant-card-cover {
+    margin: 0;
+  }
+  .ant-card-meta {
+    margin-right: auto;
+  }
+}
+.kbg {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  min-height: 500px;
+}

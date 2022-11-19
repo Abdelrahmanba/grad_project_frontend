@@ -123,6 +123,7 @@ const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type }) => {
         onOk={async () => {
           setLoading(true)
           const values = await form.validateFields()
+          
           const res = await post('/children', token, values)
           if (res.ok) {
             message.success('New Child Added Successfully')
