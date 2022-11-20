@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, Comment, Layout, Rate, Statistic } from 'antd'
+import { Avatar, Button, Card, Comment, Image, Layout, Rate, Statistic } from 'antd'
 import { Content } from 'antd/lib/layout/layout'
 import React, { useEffect, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
@@ -127,6 +127,19 @@ export default function KindergartenHome() {
             <Statistic title='Financetial Aid' value={'Available'} />
           </Card.Grid>
         </Card>
+
+        <Card
+          className='kgp-card'
+          hoverable={false}
+          style={{ width: '100%', marginTop: 40 }}
+          title={<h2 style={{ margin: 0 }}>Gallery</h2>}
+        >
+          <Image.PreviewGroup>
+            {kindergarten.imgs.map((e) => (
+              <Image width={300} src={`${process.env.REACT_APP_API_URL + e}`} />
+            ))}
+          </Image.PreviewGroup>
+        </Card>
         <Card
           title={<h2 style={{ margin: 0 }}>Reviews</h2>}
           className='kgp-card'
@@ -134,14 +147,45 @@ export default function KindergartenHome() {
           style={{ width: '100%', marginTop: 40 }}
         >
           <Comment
-            author={"Han Solo"}
+            author={'Han Solo'}
             avatar={<Avatar src='https://joeschmoe.io/api/v1/random' alt='Han Solo' />}
             content={
-              <p>
-                We supply a series of design principles, practical patterns and high quality design
-                resources (Sketch and Axure), to help people create their product prototypes
-                beautifully and efficiently.
-              </p>
+              <>
+                <Rate disabled defaultValue={2} />
+                <p>
+                  We supply a series of design principles, practical patterns and high quality
+                  design resources (Sketch and Axure), to help people create their product
+                  prototypes beautifully and efficiently.
+                </p>
+              </>
+            }
+          />
+          <Comment
+            author={'Han Solo'}
+            avatar={<Avatar src='https://joeschmoe.io/api/v1/random' alt='Han Solo' />}
+            content={
+              <>
+                <Rate disabled defaultValue={2} />
+                <p>
+                  We supply a series of design principles, practical patterns and high quality
+                  design resources (Sketch and Axure), to help people create their product
+                  prototypes beautifully and efficiently.
+                </p>
+              </>
+            }
+          />
+          <Comment
+            author={'Han Solo'}
+            avatar={<Avatar src='https://joeschmoe.io/api/v1/random' alt='Han Solo' />}
+            content={
+              <>
+                <Rate disabled defaultValue={2} />
+                <p>
+                  We supply a series of design principles, practical patterns and high quality
+                  design resources (Sketch and Axure), to help people create their product
+                  prototypes beautifully and efficiently.
+                </p>
+              </>
             }
           />
         </Card>

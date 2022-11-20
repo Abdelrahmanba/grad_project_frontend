@@ -29,6 +29,7 @@ export default function Allusers() {
   }
   return (
     <div>
+      <h2>All Users</h2>
       <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
     </div>
   )

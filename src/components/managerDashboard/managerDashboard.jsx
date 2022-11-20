@@ -44,7 +44,7 @@ export default function ManagerDashboard() {
   ]
   return (
     <>
-      <Sider width={200}>
+      <Sider width={200} theme='light'>
         <Menu
           mode='inline'
           defaultOpenKeys={['users', 'kindergartens', 'statistics']}
@@ -52,6 +52,7 @@ export default function ManagerDashboard() {
           items={items}
           selectedKeys={[current]}
           onSelect={(e) => setCurrent(e.key)}
+          theme='light'
         />
       </Sider>
       <Layout className='layout'>

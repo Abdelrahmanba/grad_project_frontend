@@ -4,6 +4,8 @@
   justify-content: flex-end;
   .cover {
     background-position: center top;
+    background-size: cover;
+    background-repeat: repeat;
     min-height: 180px;
   }
 }

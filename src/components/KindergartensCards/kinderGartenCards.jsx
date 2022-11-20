@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { SmileOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
-import { Button, Card, Modal, Skeleton, Space } from 'antd'
+import { Button, Card, Modal, Pagination, Skeleton, Space } from 'antd'
 import { useSelector } from 'react-redux'
 import { deleteCall, get } from '../../utils/apiCall'
 import ApplicationForm from '../applicationForm/applicationForm'
@@ -18,15 +18,30 @@ export default function KinderGartenCards({
 }) {
   const token = useSelector((state) => state.user.token)
   const [values, setValues] = useState({})
+  const [count, setCount] = useState(0)
   const [open, setOpen] = useState(false)
   const history = useHistory()
-  const fetchKindergartens = async () => {
+  const [page, setPage] = useState(1)
+  const onPageChange = async (page) => {
     setLoading(true)
-    const res = await get(url, token)
-
+    setPage(page)
+    const res = await get(
+      `/kindergartens?pageNumber=${page}&pageSize=200&includeImages=true`,
+      token
+    )
     if (res.ok) {
       const resJson = await res.json()
       setKindergartens(resJson.rows)
+    }
+    setLoading(false)
+  }
+  const fetchKindergartens = async () => {
+    setLoading(true)
+    const res = await get(url, token)
+    if (res.ok) {
+      const resJson = await res.json()
+      setKindergartens(resJson.rows)
+      setCount(resJson.count)
     }
     setLoading(false)
   }
@@ -74,83 +89,98 @@ export default function KinderGartenCards({
     )
   } else {
     return (
-      <Space size={'large'} wrap>
-        {kindergartens.map((kindergarten, index) => {
-          const i = appliedK.map((e) => e.kindergartenId).indexOf(kindergarten.id)
-          return (
-            <Card
-              className='card'
-              style={{ width: 300, marginTop: 16, minHeight: 365 }}
-              hoverable
-              key={index}
-              actions={
-                appliable
-                  ? [
-                      i !== -1 ? (
-                        <Button
-                          value={appliedK[i].id}
-                          type='primary'
-                          onClick={showConfirm}
-                          block
-                          style={{ height: '50px', backgroundColor: '#4e5565', border: 0 }}
-                        >
-                          withdraw
-                        </Button>
-                      ) : (
-                        <Button
-                          value={kindergarten.id}
-                          type='primary'
-                          onClick={showApply}
-                          block
-                          style={{ height: '50px', border: '0' }}
-                        >
-                          Apply
-                        </Button>
-                      ),
-                    ]
-                  : ''
-              }
-              cover={
-                kindergarten.imgs[0] ? (
-                  <div
-                    onClick={() =>
-                      history.push('/child/' + childId + '/kindergarten/' + kindergarten.id)
-                    }
-                    alt='example'
-                    className='cover'
-                    style={{
-                      backgroundImage: `url(
+      <>
+        <Space size={'large'} wrap>
+          {kindergartens.map((kindergarten, index) => {
+            const i = appliedK.map((e) => e.kindergartenId).indexOf(kindergarten.id)
+            return (
+              <Card
+                className='card'
+                style={{ width: 300, marginTop: 16, minHeight: 365 }}
+                hoverable
+                key={index}
+                actions={
+                  appliable
+                    ? [
+                        i !== -1 ? (
+                          <Button
+                            value={appliedK[i].id}
+                            type='primary'
+                            onClick={showConfirm}
+                            block
+                            style={{ height: '50px', backgroundColor: '#4e5565', border: 0 }}
+                          >
+                            withdraw
+                          </Button>
+                        ) : (
+                          <Button
+                            value={kindergarten.id}
+                            type='primary'
+                            onClick={showApply}
+                            block
+                            style={{ height: '50px', border: '0' }}
+                          >
+                            Apply
+                          </Button>
+                        ),
+                      ]
+                    : ''
+                }
+                cover={
+                  kindergarten.imgs[0] ? (
+                    <div
+                      onClick={() =>
+                        history.push('/child/' + childId + '/kindergarten/' + kindergarten.id)
+                      }
+                      alt='example'
+                      className='cover'
+                      style={{
+                        backgroundImage: `url(
                       ${process.env.REACT_APP_API_URL + kindergarten.imgs[0]}
                     )`,
-                    }}
+                      }}
+                    />
+                  ) : (
+                    <SmileOutlined
+                      onClick={() =>
+                        history.push('/child/' + childId + '/kindergarten/' + kindergarten.id)
+                      }
+                      style={{ fontSize: 120, margin: '30px 0' }}
+                    />
+                  )
+                }
+              >
+                <Skeleton loading={loading} avatar active>
+                  <Card.Meta
+                    title={kindergarten.name}
+                    description={kindergarten.locationFormatted}
                   />
-                ) : (
-                  <SmileOutlined
-                    onClick={() => history.push('/kindergarten/' + kindergarten.id)}
-                    style={{ fontSize: 120, margin: '30px 0' }}
-                  />
-                )
-              }
-            >
-              <Skeleton loading={loading} avatar active>
-                <Card.Meta title={kindergarten.name} description={kindergarten.locationFormatted} />
-              </Skeleton>
-            </Card>
-          )
-        })}
-        {children}
-        <ApplicationForm
-          appValues={values}
-          open={open}
-          onCancel={() => {
-            setOpen(false)
-          }}
-          onUpdate={() => {
-            setOpen(false)
-            onUpdate()
-          }}
+                </Skeleton>
+              </Card>
+            )
+          })}
+
+          {children}
+          <ApplicationForm
+            appValues={values}
+            open={open}
+            onCancel={() => {
+              setOpen(false)
+            }}
+            onUpdate={() => {
+              setOpen(false)
+              onUpdate()
+            }}
+          />
+        </Space>
+        <Pagination
+          onChange={onPageChange}
+          defaultCurrent={1}
+          total={count}
+          current={page}
+          style={{ marginTop: '30px' }}
         />
-      </Space>
+      </>
     )
   }
 }

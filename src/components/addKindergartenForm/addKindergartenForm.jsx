@@ -28,9 +28,7 @@ const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
     if (!value) {
       setAutoCompleteResult([])
     } else {
-      setAutoCompleteResult(
-        ['.com', '.org', '.net', '.edu'].map((domain) => `${value}${domain}`)
-      )
+      setAutoCompleteResult(['.com', '.org', '.net', '.edu'].map((domain) => `${value}${domain}`))
     }
   }
 
@@ -53,9 +51,9 @@ const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
   return (
     <Modal
       open={open}
-      title="Register A New Kindergarten"
-      okText="Add Kindergarten"
-      cancelText="Cancel"
+      title='Register A New Kindergarten'
+      okText='Add Kindergarten'
+      cancelText='Cancel'
       onCancel={onCancel}
       confirmLoading={loading}
       onOk={async () => {
@@ -65,23 +63,19 @@ const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
         const res = await post('/kindergartens', token, {
           ...values,
           ...position,
+          city: position.city === undefined ? 'tulkarem' : position.city,
         })
         if (res.ok) {
-          message.success('Added Successfully')
           const resJson = await res.json()
           images.forEach(async (image) => {
-            const resImage = await postFile(
-              '/files/image/kindergarten/' + resJson.id,
-              token,
-              image
-            )
+            const resImage = await postFile('/files/image/kindergarten/' + resJson.id, token, image)
             if (resImage.ok) {
               const imgURL = await resImage.json()
               imgURLs = [...imgURLs, imgURL.imgs]
               console.log(imgURLs)
-              onCreate({ ...resJson, imgs: imgURLs })
             }
           })
+          onCreate({ ...resJson, imgs: imgURLs })
 
           form.resetFields()
         } else {
@@ -91,11 +85,11 @@ const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
         setLoading(false)
       }}
     >
-      <Form form={form} layout="vertical" name="form_in_modal">
+      <Form form={form} layout='vertical' name='form_in_modal'>
         <Form.Item
-          name="name"
-          label="Kindergarten Name"
-          tooltip="Your official kindergarent name"
+          name='name'
+          label='Kindergarten Name'
+          tooltip='Your official kindergarent name'
           rules={[
             {
               required: true,
@@ -106,8 +100,8 @@ const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
           <Input />
         </Form.Item>
         <Form.Item
-          name="email"
-          label="Contact E-mail"
+          name='email'
+          label='Contact E-mail'
           rules={[
             {
               type: 'email',
@@ -123,8 +117,8 @@ const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
         </Form.Item>
 
         <Form.Item
-          name="phone"
-          label="Phone Number"
+          name='phone'
+          label='Phone Number'
           rules={[
             {
               required: true,
@@ -140,8 +134,8 @@ const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
         </Form.Item>
 
         <Form.Item
-          name="website"
-          label="Website"
+          name='website'
+          label='Website'
           rules={[
             {
               required: true,
@@ -149,16 +143,12 @@ const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
             },
           ]}
         >
-          <AutoComplete
-            options={websiteOptions}
-            onChange={onWebsiteChange}
-            placeholder="website"
-          >
+          <AutoComplete options={websiteOptions} onChange={onWebsiteChange} placeholder='website'>
             <Input />
           </AutoComplete>
         </Form.Item>
         <Form.Item
-          label="Photos"
+          label='Photos'
           rules={[
             {
               required: true,
@@ -166,14 +156,14 @@ const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
             },
           ]}
         >
-          <Upload maxCount={5} accept="image/*" customRequest={dummyReq}>
+          <Upload maxCount={5} accept='image/*' customRequest={dummyReq}>
             <Button icon={<UploadOutlined />}>Click to Upload</Button>
           </Upload>
         </Form.Item>
         <Form.Item
-          name="about"
-          label="About"
-          tooltip="Please tell us more about your kindergarten"
+          name='about'
+          label='About'
+          tooltip='Please tell us more about your kindergarten'
           rules={[
             {
               required: true,
@@ -183,7 +173,7 @@ const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
         >
           <Input.TextArea showCount maxLength={500} />
         </Form.Item>
-        <Form.Item name="Kaddress" label="Address">
+        <Form.Item name='Kaddress' label='Address'>
           <Map onChange={onChange} />
         </Form.Item>
         <Form.Item {...mapLayout}></Form.Item>
