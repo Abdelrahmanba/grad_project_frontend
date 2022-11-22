@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, Comment, Image, Layout, Rate, Statistic } from 'antd'
+import { Avatar, Button, Card, Carousel, Comment, Image, Layout, Rate, Statistic } from 'antd'
 import { Content } from 'antd/lib/layout/layout'
 import React, { useEffect, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
@@ -134,11 +134,11 @@ export default function KindergartenHome() {
           style={{ width: '100%', marginTop: 40 }}
           title={<h2 style={{ margin: 0 }}>Gallery</h2>}
         >
-          <Image.PreviewGroup>
+          <Carousel effect='fade' autoplay>
             {kindergarten.imgs.map((e) => (
-              <Image width={300} src={`${process.env.REACT_APP_API_URL + e}`} />
+              <img src={`${process.env.REACT_APP_API_URL + e}`} />
             ))}
-          </Image.PreviewGroup>
+          </Carousel>
         </Card>
         <Card
           title={<h2 style={{ margin: 0 }}>Reviews</h2>}

@@ -21,13 +21,13 @@ export default function AllChildren() {
     )
     if (res.ok) {
       const resJson = await res.json()
-      const parsed = resJson.map((e) => ({
+      const parsed = resJson.rows.map((e) => ({
         ...e,
         key: e.id,
         parent: e.user.firstName + ' ' + e.user.lastName,
       }))
       setChildren(parsed)
-      setCount(resJson.length)
+      setCount(resJson.count)
     }
     setLoading(false)
   }

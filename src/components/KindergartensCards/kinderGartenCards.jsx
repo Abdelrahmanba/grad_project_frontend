@@ -14,7 +14,7 @@ export default function KinderGartenCards({
   url,
   childId,
   appliedK = [],
-  onUpdate,
+  onUpdate = () => {},
 }) {
   const token = useSelector((state) => state.user.token)
   const [values, setValues] = useState({})

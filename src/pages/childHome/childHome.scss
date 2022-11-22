@@ -1,0 +1,29 @@
+.child-card {
+  margin: 0 20px 20px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+  text-transform: capitalize;
+  .cbody {
+    padding: 20px;
+    width: 100%;
+    color: #0078aa;
+  }
+  .ant-card-body {
+    .child-bg {
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+      min-height: 500px;
+      min-width: 300px;
+    }
+    padding: 0;
+  }
+  .ant-card-meta {
+    margin-right: auto;
+  }
+}
+.child-bg {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  min-height: 500px;
+}

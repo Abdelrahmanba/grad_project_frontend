@@ -16,11 +16,10 @@ import { useHistory } from 'react-router-dom'
 
 const { confirm } = Modal
 
-export default function ChildrenCards(props) {
+export default function ChildrenCards({ newChild, children: childrenProps }) {
   const user = useSelector((state) => state.user)
   const { token } = user
   const history = useHistory()
-  const { newChild } = props
   const status = { 1: 'Looking for Kindergarten', 2: 'Enrolled' }
   const fetchChildren = async () => {
     setLoading(true)
@@ -28,7 +27,6 @@ export default function ChildrenCards(props) {
     if (res.ok) {
       const resJson = await res.json()
       setChildren(resJson)
-      
     }
     setLoading(false)
   }
@@ -38,10 +36,6 @@ export default function ChildrenCards(props) {
     }
     funCall()
   }, [])
-
-  useEffect(() => {
-    setChildren((children) => [...children, newChild])
-  }, [newChild])
 
   const showEdit = (e) => {
     const index = e.currentTarget.getAttribute('value')
@@ -74,11 +68,15 @@ export default function ChildrenCards(props) {
     })
   }
 
-  const onCreate = async (values) => {
+  const onUpdate = async (values) => {
     const index = children.findIndex((e) => e.id === values.id)
-    children[index] = { ...values, imgs: children[index].imgs }
+    children[index] = { ...values, imgs: values.imgs }
     setOpen(false)
   }
+  useEffect(() => {
+    setChildren((children) => [...children, newChild])
+  }, [newChild])
+
   const [children, setChildren] = useState([])
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = useState(false)
@@ -143,12 +141,12 @@ export default function ChildrenCards(props) {
             </Skeleton>
           </Card>
         ))}
-        {props.children}
+        {childrenProps}
         <AddChildForm
           open={open}
           defaultValues={values}
-          onCreate={onCreate}
           type='update'
+          onUpdate={onUpdate}
           onCancel={() => {
             setOpen(false)
           }}
