@@ -6,6 +6,7 @@ import {
   DeleteOutlined,
   ExclamationCircleOutlined,
   UserOutlined,
+  MessageOutlined,
 } from '@ant-design/icons'
 import { Card, Modal, Skeleton, Space } from 'antd'
 import { useSelector } from 'react-redux'
@@ -96,6 +97,11 @@ export default function ChildrenCards({ newChild, children: childrenProps }) {
         {children.map((child, index) => (
           <Card
             actions={[
+              <MessageOutlined
+                style={{ margin: ' 15px 0' }}
+                key='message'
+                onClick={() => history.push('/messages/' + child.id)}
+              />,
               <EditOutlined
                 style={{ margin: ' 15px 0' }}
                 key='edit'

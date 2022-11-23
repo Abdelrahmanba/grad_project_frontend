@@ -4,6 +4,7 @@ import { Layout, Menu } from 'antd'
 import { DashboardOutlined, MailOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons'
 import Allusers from '../manager/allusers'
 import AllChildren from '../manager/allchildren'
+import AllKindergartens from '../manager/allKindergartens'
 const { Sider, Header, Content, Footer } = Layout
 
 export default function ManagerDashboard() {
@@ -23,7 +24,7 @@ export default function ManagerDashboard() {
     {
       label: 'Kindergartens',
       key: 'kindergartens',
-      children: [{ label: 'Overview', key: 'overview' }],
+      children: [{ label: 'Overview', key: 'koverview' }],
     },
     {
       label: 'Children',
@@ -59,6 +60,7 @@ export default function ManagerDashboard() {
         <Content className='content'>
           {current === 'allUsers' && <Allusers />}
           {current === 'children' && <AllChildren />}
+          {current === 'koverview' && <AllKindergartens />}
         </Content>
       </Layout>
     </>

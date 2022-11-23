@@ -14,6 +14,8 @@ import RegisterP from '../pages/registerP/registerP'
 import KindergartenHome from '../pages/kindergartenHome/kindergartenHome'
 import KinderGartenCards from '../components/KindergartensCards/kinderGartenCards'
 import KindergartensList from '../pages/kindergartensList/kindergartensList'
+import KindergartenControl from '../pages/kindergartenControl/kindergartenControl'
+import ChatBox from '../components/chatBox/chatBox'
 
 const Router = () => {
   return (
@@ -26,11 +28,13 @@ const Router = () => {
         <Route path='/register-child' exact component={RegisterP} />
 
         <ProtectedRoute path='/dashboard' exact component={Dashboard} />
-        <ProtectedRoute path='/messeges' exact component={Messages} />
+        <ProtectedRoute path={['/messages/:cid']} exact component={Messages} />
+        <ProtectedRoute path={'/messages/:cid/:kid/'} component={ChatBox} />
+
         <ProtectedRoute path='/settings' exact component={Settings} />
 
         <Route path='/child/:id' exact component={ChildHome} />
-        <Route path='/kindergarten/:kid' component={KindergartenHome} />
+        <Route path='/kindergarten/:kid' component={KindergartenControl} />
         <Route path='/all-kindergartens' component={KindergartensList} />
 
         <Route path='/child/:cid/kindergarten/:kid' exact component={KindergartenHome} />

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { post, postFile } from '../../utils/apiCall'
 import Map from '../../components/map/map'
 import { UploadOutlined } from '@ant-design/icons'
+import { doc, setDoc, getFirestore } from 'firebase/firestore'
 
 const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
   const [form] = Form.useForm()
@@ -13,6 +14,8 @@ const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
   const onChange = (val) => {
     setposition(val)
   }
+  const db = getFirestore()
+
   const [images, setImage] = useState([])
 
   const [autoCompleteResult, setAutoCompleteResult] = useState([])
@@ -69,10 +72,10 @@ const AddKindergartenForm = ({ open, onCancel, onCreate, type }) => {
           const resJson = await res.json()
           images.forEach(async (image) => {
             const resImage = await postFile('/files/image/kindergarten/' + resJson.id, token, image)
+            await setDoc(doc(db, 'kindergartens', resJson.id.toString()), { children: [] })
             if (resImage.ok) {
               const imgURL = await resImage.json()
               imgURLs = [...imgURLs, imgURL.imgs]
-              console.log(imgURLs)
             }
           })
           onCreate({ ...resJson, imgs: imgURLs })

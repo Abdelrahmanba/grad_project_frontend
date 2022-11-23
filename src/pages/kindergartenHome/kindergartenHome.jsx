@@ -1,31 +1,84 @@
-import { Avatar, Button, Card, Carousel, Comment, Image, Layout, Rate, Statistic } from 'antd'
+import {
+  Avatar,
+  Button,
+  Card,
+  Carousel,
+  Comment,
+  Form,
+  Image,
+  Layout,
+  Rate,
+  Space,
+  Statistic,
+} from 'antd'
 import { Content } from 'antd/lib/layout/layout'
 import React, { useEffect, useState } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
-import { get } from '../../utils/apiCall'
+import { get, post } from '../../utils/apiCall'
 import L from 'leaflet'
 
 import './kindergartenHome.scss'
+import TextArea from 'antd/lib/input/TextArea'
+import ButtonGroup from 'antd/lib/button/button-group'
+
 export default function KindergartenHome() {
   let { cid, kid } = useParams()
   const history = useHistory()
   const [kindergarten, setKindergarten] = useState({ imgs: [] })
+  const [reviews, setReviews] = useState([])
+  const [submitting, setSubmitting] = useState(false)
+  const [value, setValue] = useState('')
+  const [rating, setRating] = useState(0)
+  const [rate, setRate] = useState(0)
+
   const token = useSelector((state) => state.user.token)
   const fetchK = async () => {
     const res = await get(`/kindergartens/${kid}`, token)
     if (res.ok) {
       const resJson = await res.json()
       setKindergarten(resJson)
-      console.log(resJson)
     } else {
       history.push('/NotFound')
     }
   }
+  const fetchR = async () => {
+    const res = await get(
+      `/reviews/kindergartens/${kid}?pageNumber=1&pageSize=5&includeParent=true`,
+      token
+    )
+    if (res.ok) {
+      const resJson = await res.json()
+      setReviews(resJson.rows)
+      setRate({ rate: resJson.avgRating, no: resJson.numberOfRaters })
+    } else {
+      history.push('/NotFound')
+    }
+  }
+
+  const handleSubmit = async () => {
+    if (!value) return
+
+    setSubmitting(true)
+    const res = await post('/reviews', token, {
+      comment: value,
+      rating: rating,
+      kindergartenId: kid,
+    })
+    if (res.ok) {
+      const resJson = await res.json()
+      setSubmitting(false)
+      setValue('')
+      setRating(0)
+      setReviews([...reviews, { ...resJson, user: { firstName: 'Me', lastName: '' } }])
+    }
+  }
+
   useEffect(() => {
     fetchK()
+    fetchR()
   }, [])
   return (
     <Layout className='layout' style={{ backgroundColor: '#efefef', alignItems: 'center' }}>
@@ -54,15 +107,29 @@ export default function KindergartenHome() {
             title={<h2 style={{ margin: 0 }}>{kindergarten.name}</h2>}
             description={
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <Rate disabled defaultValue={2} />
+                <span>
+                  <Rate disabled value={rate.rate} />
+                  {rate.no + ' Reviews'}
+                </span>
                 {kindergarten.locationFormatted}
               </div>
             }
           />
           <span>
-            <Button type='primary' style={{ width: 180, height: 50 }}>
-              Apply
-            </Button>
+            {cid && (
+              <Space size={'small'} direction='vertical'>
+                <Button type='primary' style={{ width: 180, height: 40 }}>
+                  Apply
+                </Button>
+                <Button
+                  type='default'
+                  onClick={() => history.push('/messages/' + kid + '/' + cid)}
+                  style={{ width: 180, height: 40 }}
+                >
+                  Contact
+                </Button>
+              </Space>
+            )}
           </span>
         </Card>
         <Card
@@ -146,45 +213,30 @@ export default function KindergartenHome() {
           hoverable={false}
           style={{ width: '100%', marginTop: 40 }}
         >
+          {reviews.map((i) => (
+            <Comment
+              author={i.user.firstName + ' ' + i.user.lastName}
+              datetime={new Date(i.createdAt).toUTCString()}
+              avatar={<Avatar src='https://joeschmoe.io/api/v1/random' alt='Han Solo' />}
+              content={
+                <>
+                  <Rate disabled defaultValue={i.rating} />
+                  <p>{i.comment}</p>
+                </>
+              }
+            />
+          ))}
           <Comment
-            author={'Han Solo'}
             avatar={<Avatar src='https://joeschmoe.io/api/v1/random' alt='Han Solo' />}
             content={
               <>
-                <Rate disabled defaultValue={2} />
-                <p>
-                  We supply a series of design principles, practical patterns and high quality
-                  design resources (Sketch and Axure), to help people create their product
-                  prototypes beautifully and efficiently.
-                </p>
-              </>
-            }
-          />
-          <Comment
-            author={'Han Solo'}
-            avatar={<Avatar src='https://joeschmoe.io/api/v1/random' alt='Han Solo' />}
-            content={
-              <>
-                <Rate disabled defaultValue={2} />
-                <p>
-                  We supply a series of design principles, practical patterns and high quality
-                  design resources (Sketch and Axure), to help people create their product
-                  prototypes beautifully and efficiently.
-                </p>
-              </>
-            }
-          />
-          <Comment
-            author={'Han Solo'}
-            avatar={<Avatar src='https://joeschmoe.io/api/v1/random' alt='Han Solo' />}
-            content={
-              <>
-                <Rate disabled defaultValue={2} />
-                <p>
-                  We supply a series of design principles, practical patterns and high quality
-                  design resources (Sketch and Axure), to help people create their product
-                  prototypes beautifully and efficiently.
-                </p>
+                <Rate onChange={(e) => setRating(e)} value={rating} />
+                <Editor
+                  onChange={(e) => setValue(e.target.value)}
+                  onSubmit={handleSubmit}
+                  submitting={submitting}
+                  value={value}
+                />
               </>
             }
           />
@@ -193,3 +245,15 @@ export default function KindergartenHome() {
     </Layout>
   )
 }
+const Editor = ({ onChange, onSubmit, submitting, value }) => (
+  <>
+    <Form.Item>
+      <TextArea rows={4} onChange={onChange} value={value} />
+    </Form.Item>
+    <Form.Item>
+      <Button htmlType='submit' loading={submitting} onClick={onSubmit} type='primary'>
+        Add Review
+      </Button>
+    </Form.Item>
+  </>
+)

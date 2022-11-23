@@ -82,7 +82,7 @@ export default function MenuBar() {
         history.push('/dashboard')
         break
       case 'messages':
-        history.push('/messeges')
+        history.push('/messages')
         break
       default:
         break

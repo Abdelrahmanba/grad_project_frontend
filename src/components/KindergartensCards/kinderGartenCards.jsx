@@ -130,7 +130,9 @@ export default function KinderGartenCards({
                   kindergarten.imgs[0] ? (
                     <div
                       onClick={() =>
-                        history.push('/child/' + childId + '/kindergarten/' + kindergarten.id)
+                        appliable
+                          ? history.push('/child/' + childId + '/kindergarten/' + kindergarten.id)
+                          : history.push('/kindergarten/' + kindergarten.id)
                       }
                       alt='example'
                       className='cover'
@@ -143,7 +145,9 @@ export default function KinderGartenCards({
                   ) : (
                     <SmileOutlined
                       onClick={() =>
-                        history.push('/child/' + childId + '/kindergarten/' + kindergarten.id)
+                        appliable
+                          ? history.push('/child/' + childId + '/kindergarten/' + kindergarten.id)
+                          : history.push('/kindergarten/' + kindergarten.id)
                       }
                       style={{ fontSize: 120, margin: '30px 0' }}
                     />

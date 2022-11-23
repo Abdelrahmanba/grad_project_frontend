@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import Map from '../../components/map/map'
 import { post, postFile } from '../../utils/apiCall'
 import { UploadOutlined } from '@ant-design/icons'
+import { doc, setDoc, getFirestore } from 'firebase/firestore'
 
 const formItemLayout = {
   labelCol: {
@@ -52,6 +53,7 @@ const Step2 = (props) => {
   const [form] = Form.useForm()
   const token = useSelector((state) => state.user.token)
   const [images, setImage] = useState([])
+  const db = getFirestore()
 
   const [position, setposition] = useState({})
   const onFinish = async (values) => {
@@ -60,12 +62,10 @@ const Step2 = (props) => {
       let imgURLs = []
       message.success('Added Successfully')
       const resJson = await res.json()
+      await setDoc(doc(db, 'kindergartens', resJson.id.toString()), { children: [] })
+
       images.forEach(async (image) => {
-        const resImage = await postFile(
-          '/files/image/kindergarten/' + resJson.id,
-          token,
-          image
-        )
+        const resImage = await postFile('/files/image/kindergarten/' + resJson.id, token, image)
         if (resImage.ok) {
           const imgURL = await resImage.json()
           imgURLs = [...imgURLs, imgURL.imgs]
@@ -87,9 +87,7 @@ const Step2 = (props) => {
     if (!value) {
       setAutoCompleteResult([])
     } else {
-      setAutoCompleteResult(
-        ['.com', '.org', '.net', '.edu'].map((domain) => `${value}${domain}`)
-      )
+      setAutoCompleteResult(['.com', '.org', '.net', '.edu'].map((domain) => `${value}${domain}`))
     }
   }
 
@@ -105,14 +103,14 @@ const Step2 = (props) => {
     <Form
       {...formItemLayout}
       form={form}
-      name="register-kindergaren"
+      name='register-kindergaren'
       onFinish={onFinish}
       scrollToFirstError
     >
       <Form.Item
-        name="name"
-        label="Kindergarten Name"
-        tooltip="Your official kindergarent name"
+        name='name'
+        label='Kindergarten Name'
+        tooltip='Your official kindergarent name'
         rules={[
           {
             required: true,
@@ -123,8 +121,8 @@ const Step2 = (props) => {
         <Input />
       </Form.Item>
       <Form.Item
-        name="email"
-        label="Contact E-mail"
+        name='email'
+        label='Contact E-mail'
         rules={[
           {
             type: 'email',
@@ -140,8 +138,8 @@ const Step2 = (props) => {
       </Form.Item>
 
       <Form.Item
-        name="phone"
-        label="Phone Number"
+        name='phone'
+        label='Phone Number'
         rules={[
           {
             required: true,
@@ -157,8 +155,8 @@ const Step2 = (props) => {
       </Form.Item>
 
       <Form.Item
-        name="website"
-        label="Website"
+        name='website'
+        label='Website'
         rules={[
           {
             required: true,
@@ -166,16 +164,12 @@ const Step2 = (props) => {
           },
         ]}
       >
-        <AutoComplete
-          options={websiteOptions}
-          onChange={onWebsiteChange}
-          placeholder="website"
-        >
+        <AutoComplete options={websiteOptions} onChange={onWebsiteChange} placeholder='website'>
           <Input />
         </AutoComplete>
       </Form.Item>
       <Form.Item
-        label="Photos"
+        label='Photos'
         rules={[
           {
             required: true,
@@ -183,14 +177,14 @@ const Step2 = (props) => {
           },
         ]}
       >
-        <Upload maxCount={5} accept="image/*" customRequest={dummyReq}>
+        <Upload maxCount={5} accept='image/*' customRequest={dummyReq}>
           <Button icon={<UploadOutlined />}>Click to Upload</Button>
         </Upload>
       </Form.Item>
       <Form.Item
-        name="about"
-        label="About"
-        tooltip="Please tell us more about your kindergarten"
+        name='about'
+        label='About'
+        tooltip='Please tell us more about your kindergarten'
         rules={[
           {
             required: true,
@@ -200,12 +194,12 @@ const Step2 = (props) => {
       >
         <Input.TextArea showCount maxLength={500} />
       </Form.Item>
-      <Form.Item name="address" label="Address">
+      <Form.Item name='address' label='Address'>
         <Map onChange={onChange} />
       </Form.Item>
       <Form.Item {...mapLayout}></Form.Item>
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button type='primary' htmlType='submit'>
           Register
         </Button>
       </Form.Item>

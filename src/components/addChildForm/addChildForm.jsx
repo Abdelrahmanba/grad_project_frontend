@@ -4,10 +4,12 @@ import { UploadOutlined } from '@ant-design/icons'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { patchCall, post, postFile } from '../../utils/apiCall'
+import { doc, setDoc, getFirestore } from 'firebase/firestore'
 
 const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type, onUpdate }) => {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
+
   const token = useSelector((state) => state.user.token)
   const [image, setImage] = useState(null)
   const dummyReq = ({ data, file, onSuccess }) => {
@@ -115,6 +117,12 @@ const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type, onUpdate 
             message.success('New Child Added Successfully')
             const resJson = await res.json()
             const resImage = await postFile('/files/image/child/' + resJson.id, token, image)
+            const db = getFirestore()
+            try {
+              await setDoc(doc(db, 'children', resJson.id.toString()), { kindergartens: [] })
+            } catch (e) {
+              console.log(e)
+            }
             if (resImage.ok) {
               const imgURL = await resImage.json()
               onCreate({ ...resJson, imgs: [imgURL.imgs] })

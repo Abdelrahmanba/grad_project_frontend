@@ -1,33 +1,32 @@
 import { Avatar, Breadcrumb, Layout, List } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, onSnapshot, query, collection } from 'firebase/firestore'
 
 import { HomeOutlined, UserOutlined } from '@ant-design/icons'
 import { useParams } from 'react-router'
 import { get } from '../../utils/apiCall'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { db } from '../../utils/firebase'
 const { Content } = Layout
 
-export default function Messages() {
+export default function ChatBox() {
   const { kid, cid } = useParams()
-  const db = getFirestore()
   const [child, setChild] = useState({ imgs: [], user: {} })
-  const [kindergartens, setkindergartens] = useState([])
-
-  const [kindergartensNames, setkindergartensNames] = useState([])
+  const [kindergarten, setkindergarten] = useState({})
+  const [messages, setmessages] = useState([])
   const [loading, setLoading] = useState(false)
-
   const token = useSelector((state) => state.user.token)
   const docRef = doc(db, 'children', cid.toString())
+
   const getDocs = async () => {
     setLoading(true)
     const docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
-      setkindergartens(docSnap.data().kindergartens)
+      setkindergarten(docSnap.data().kindergartens)
     } else {
       await setDoc(docRef, { kindergartens: [] })
-      setkindergartens([])
+      setkindergarten([])
     }
     await fetchK(docSnap.data().kindergartens)
     setLoading(false)
@@ -35,7 +34,6 @@ export default function Messages() {
 
   const fetchChild = async () => {
     setLoading(true)
-
     const res = await get(`/children/${cid}`, token)
     if (res.ok) {
       const resJson = await res.json()
@@ -45,25 +43,35 @@ export default function Messages() {
   }
   const fetchK = async (kindergartens) => {
     setLoading(true)
-    for (const k of kindergartens) {
-      const res = await get(`/kindergartens/${k}`, token)
-      if (res.ok) {
-        const resJson = await res.json()
-        console.log(resJson.name)
-        setkindergartensNames([...kindergartensNames, resJson])
-      }
+    const res = await get(`/kindergartens/${kid}`, token)
+    if (res.ok) {
+      const resJson = await res.json()
+      setkindergarten(resJson)
     }
+
     setLoading(false)
   }
+
+  useEffect(() => {
+    const colRef = collection(db, (cid + '-' + kid).toString())
+    const q = query(colRef)
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.docChanges().forEach((change) => {
+        console.log(change.doc.data())
+        setmessages((msgs) => [...msgs, change.doc.data()])
+      })
+      console.log(messages)
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
   useEffect(() => {
     getDocs()
     fetchChild()
   }, [])
-  // useEffect(() => {
-  //   for (const k of kindergartens) {
-  //     const querySnapshot = await getDocs(collection(db, cid + '-' + k));
-  //   }
-  // }, [kindergartens])
+
   return (
     <Layout className='layout'>
       <Content className='content'>
@@ -76,17 +84,9 @@ export default function Messages() {
             padding: '0 16px',
           }}
         >
-          <List loading={loading}>
-            {kindergartensNames.map((k, i) => (
-              <List.Item key={i}>
-                <List.Item.Meta
-                  avatar={<Avatar src={`${process.env.REACT_APP_API_URL + k.imgs[0]}`} />}
-                  title={<Link to={'/messages/' + cid + '/' + kindergartens[i]}>{k.name}</Link>}
-                  description={k.locationFormatted}
-                />
-              </List.Item>
-            ))}
-          </List>
+          {messages.map((m, i) => (
+            <h1 key={i}>{m.body}</h1>
+          ))}
         </div>
       </Content>
     </Layout>
