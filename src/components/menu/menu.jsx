@@ -39,7 +39,6 @@ export default function MenuBar() {
       setItems([
         { label: 'Kiddy', key: 'Kiddy', icon: logo },
         { label: 'Dashboard', key: 'dashboard' },
-        { label: 'Messages', key: 'messages' },
         {
           label: avatar,
           key: 'name',
@@ -81,9 +80,7 @@ export default function MenuBar() {
       case 'dashboard':
         history.push('/dashboard')
         break
-      case 'messages':
-        history.push('/messages')
-        break
+  
       default:
         break
     }

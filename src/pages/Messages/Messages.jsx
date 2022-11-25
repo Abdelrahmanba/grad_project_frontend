@@ -1,9 +1,9 @@
-import { Avatar, Breadcrumb, Layout, List } from 'antd'
+import { Avatar, Breadcrumb, Empty, Layout, List, PageHeader } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
 
 import { HomeOutlined, UserOutlined } from '@ant-design/icons'
-import { useParams } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import { get } from '../../utils/apiCall'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -12,6 +12,7 @@ const { Content } = Layout
 export default function Messages() {
   const { kid, cid } = useParams()
   const db = getFirestore()
+  const history = useHistory()
   const [child, setChild] = useState({ imgs: [], user: {} })
   const [kindergartens, setkindergartens] = useState([])
 
@@ -49,8 +50,7 @@ export default function Messages() {
       const res = await get(`/kindergartens/${k}`, token)
       if (res.ok) {
         const resJson = await res.json()
-        console.log(resJson.name)
-        setkindergartensNames([...kindergartensNames, resJson])
+        setkindergartensNames((kindergartensNames) => [...kindergartensNames, resJson])
       }
     }
     setLoading(false)
@@ -59,15 +59,15 @@ export default function Messages() {
     getDocs()
     fetchChild()
   }, [])
-  // useEffect(() => {
-  //   for (const k of kindergartens) {
-  //     const querySnapshot = await getDocs(collection(db, cid + '-' + k));
-  //   }
-  // }, [kindergartens])
+
   return (
     <Layout className='layout'>
       <Content className='content'>
-        <h1>Messages Center - {child.firstName}</h1>
+        <PageHeader
+          className='site-page-header'
+          onBack={() => history.push('/dashboard/')}
+          title={'Messages Center -' + child.firstName}
+        />
         <div
           style={{
             border: '1px solid #eee',
@@ -77,6 +77,7 @@ export default function Messages() {
           }}
         >
           <List loading={loading}>
+            {kindergartensNames.length === 0 && <Empty />}
             {kindergartensNames.map((k, i) => (
               <List.Item key={i}>
                 <List.Item.Meta

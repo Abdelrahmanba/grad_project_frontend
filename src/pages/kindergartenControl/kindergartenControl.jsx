@@ -35,7 +35,7 @@ export default function KindergartenControl() {
       key: 'children',
     },
     {
-      label: 'Support Tickets',
+      label: 'Children Support',
       icon: <MailOutlined />,
       key: 'support',
     },

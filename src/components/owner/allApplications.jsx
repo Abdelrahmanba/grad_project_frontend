@@ -27,7 +27,7 @@ export default function AllApplications() {
       const resJson = await res.json()
       return resJson.documents
     } else {
-      return undefined
+      return []
     }
   }
 
@@ -53,6 +53,7 @@ export default function AllApplications() {
       for (const app of resJson.rows) {
         const parent = await fetchParent(app.childId)
         const docs = await fetchDocuments(app.id)
+
         parsed.push({ ...app, key: app.id, parent, docs })
       }
 

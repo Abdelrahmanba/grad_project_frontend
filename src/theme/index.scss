@@ -2,17 +2,15 @@
 @import './scssVariables';
 @font-face {
   font-family: 'Branding SF Narrow';
-  src: local('Branding SF Narrow SemiBold'),
-    local('Branding-SF-Narrow-SemiBold'),
+  src: local('Branding SF Narrow SemiBold'), local('Branding-SF-Narrow-SemiBold'),
     url('BrandingSF-NarrowSemiBold.ttf') format('truetype');
   font-weight: 600;
   font-style: normal;
 }
 body {
   margin: 0;
-  font-family: 'Branding SF Narrow', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-    'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Branding SF Narrow', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -99,5 +97,19 @@ h4 {
     li {
       margin: 0;
     }
+  }
+}
+
+.layout {
+  ::-webkit-scrollbar-track {
+    background-color: white;
+  }
+  ::-webkit-scrollbar {
+    width: 15px;
+    background-color: #f5f5f5;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #d62929;
+    border-left: 10px white solid;
   }
 }
