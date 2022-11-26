@@ -43,7 +43,6 @@ export default function MenuBar() {
           label: avatar,
           key: 'name',
           children: [
-            { label: 'My Profile', key: 'myProfile' },
             { label: 'Settings', key: 'settings' },
             { label: 'Sign Out', key: 'signOut' },
           ],

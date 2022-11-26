@@ -31,11 +31,7 @@ export default function ManagerDashboard() {
       icon: <TeamOutlined />,
       key: 'children',
     },
-    {
-      label: 'Support Tickets',
-      icon: <MailOutlined />,
-      key: 'support',
-    },
+
     {
       label: 'Statistics',
       key: 'statistics',

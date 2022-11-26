@@ -1,4 +1,4 @@
-import { Avatar, Breadcrumb, Button, Form, Input, Layout, List, PageHeader } from 'antd'
+import { Avatar, Breadcrumb, Button, Empty, Form, Input, Layout, List, PageHeader } from 'antd'
 import React, { useEffect, useState } from 'react'
 import {
   doc,
@@ -104,7 +104,7 @@ export default function ChatBoxCh(type) {
     await addDoc(collection(db, col), {
       message: value,
       id: 'c',
-      senderName: child.firstName,
+      senderName: child.firstName ? 'child.firstName' : '',
     })
     setValue('')
   }
@@ -131,6 +131,7 @@ export default function ChatBoxCh(type) {
               src: process.env.REACT_APP_API_URL + kindergarten.imgs[0],
             }}
           ></PageHeader>
+          {messages.length === 0 && <Empty />}
           <ChatFeed
             messages={messages} // Array: list of message objects
             showSenderName={true} // show the name of the user who sent the message

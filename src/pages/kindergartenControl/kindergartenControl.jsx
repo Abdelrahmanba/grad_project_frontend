@@ -27,7 +27,10 @@ export default function KindergartenControl() {
     {
       label: 'Services',
       key: 'services',
-      children: [{ label: 'All Services', key: 'allServices' }],
+      children: [
+        { label: 'All Services', key: 'allServices' },
+        { label: 'Active Subscribtions', key: 'subs' },
+      ],
     },
     {
       label: 'Children',

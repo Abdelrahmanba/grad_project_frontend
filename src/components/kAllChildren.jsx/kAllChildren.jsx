@@ -1,6 +1,7 @@
 import { Descriptions, Table, Tag } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useParams } from 'react-router'
 import { get } from '../../utils/apiCall'
 
 export default function KAllChildren() {
@@ -10,21 +11,22 @@ export default function KAllChildren() {
   const [children, setChildren] = useState([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
+  const { kid } = useParams()
 
   const fetchAllChildren = async (page = 1) => {
     setLoading(true)
     setPage(page)
 
     const res = await get(
-      `/children/all?pageNumber=${page}&pageSize=10&includeParent=true&includeChildStatus=true&includeKindergarten=true`,
+      `/kindergartens/${kid}/children?pageNumber=${page}&pageSize=10&includeChildStatus=true`,
       token
     )
+
     if (res.ok) {
       const resJson = await res.json()
       const parsed = resJson.rows.map((e) => ({
         ...e,
         key: e.id,
-        parent: e.user.firstName + ' ' + e.user.lastName,
       }))
       setChildren(parsed)
       setCount(resJson.count)
@@ -32,7 +34,7 @@ export default function KAllChildren() {
     setLoading(false)
   }
   useEffect(() => {
-    fetchAllChildren()
+    fetchAllChildren(1)
   }, [])
 
   const columns = [
@@ -46,11 +48,15 @@ export default function KAllChildren() {
       dataIndex: 'lastName',
       key: 'lastName',
     },
-    Table.EXPAND_COLUMN,
     {
-      title: 'Parent',
-      dataIndex: 'parent',
-      key: 'parent',
+      title: 'Gender',
+      dataIndex: 'gender',
+      key: 'gender',
+    },
+    {
+      title: 'Date Of Birth',
+      dataIndex: 'dateOfBirth',
+      key: 'dof',
     },
     {
       title: 'Status',
@@ -80,18 +86,6 @@ export default function KAllChildren() {
     },
 
     {
-      title: 'Kindergarten',
-      dataIndex: 'kindergarten',
-      key: 'kindergarten',
-      render: (k) => {
-        if (k === null) {
-          return 'N/A'
-        } else {
-          return k.name
-        }
-      },
-    },
-    {
       title: 'Actions',
       key: 'operation',
       fixed: 'right',
@@ -100,7 +94,6 @@ export default function KAllChildren() {
     },
   ]
   const onSelectChange = (newSelectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', newSelectedRowKeys)
     setSelectedRowKeys(newSelectedRowKeys)
   }
   const rowSelection = {
@@ -109,21 +102,10 @@ export default function KAllChildren() {
   }
   return (
     <div>
-      <h2 style={{ marginTop: 0 }}>All Registered Children on the platform</h2>
+      <h2 style={{ marginTop: 0 }}>All Enrolled Children</h2>
       <Table
         bordered
         size='large'
-        expandable={{
-          expandedRowRender: (record) => (
-            <Descriptions title='Parent Info'>
-              <Descriptions.Item label='Name'>
-                {record.user.firstName + ' ' + record.user.lastName}
-              </Descriptions.Item>
-              <Descriptions.Item label='Telephone'> {record.user.phone}</Descriptions.Item>
-              <Descriptions.Item label='Live'>{record.user.country}</Descriptions.Item>
-            </Descriptions>
-          ),
-        }}
         pagination={{
           onChange: (page) => fetchAllChildren(page),
           defaultCurrent: 1,

@@ -2,9 +2,10 @@ import { Button, Card, Layout } from 'antd'
 import { Content } from 'antd/lib/layout/layout'
 import React from 'react'
 import { useHistory, useParams } from 'react-router'
-
+import { LockOutlined } from '@ant-design/icons'
 export default function AllServices() {
   const history = useHistory()
+
   const { kid } = useParams()
   return (
     <>
@@ -27,8 +28,12 @@ export default function AllServices() {
         }
       >
         <Card.Meta title={<h3>HR Managament</h3>} />
-        <Button block type='primary' onClick={() => history.push('/hr/' + kid)}>
-          Learn More
+        <Button
+          block
+          type='primary'
+          onClick={() => history.push('/kindergarten/' + kid + '/plans/hr')}
+        >
+          <LockOutlined /> Learn More
         </Button>
       </Card>
     </>

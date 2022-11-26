@@ -123,7 +123,7 @@ export default function KindergartenHome() {
                 </Button>
                 <Button
                   type='default'
-                  onClick={() => history.push('/messages/' + kid + '/' + cid)}
+                  onClick={() => history.push('/messages/' + cid + '/' + kid)}
                   style={{ width: 180, height: 40 }}
                 >
                   Contact
