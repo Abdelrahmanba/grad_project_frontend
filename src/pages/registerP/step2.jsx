@@ -4,10 +4,13 @@ import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 import { post } from '../../utils/apiCall'
+import { doc, setDoc, getFirestore } from 'firebase/firestore'
 
 export default function Step2(props) {
   const [loading, setLoading] = useState(false)
   const token = useSelector((state) => state.user.token)
+  const db = getFirestore()
+
   const history = useHistory()
   const onFinish = async (values) => {
     setLoading(true)
@@ -15,6 +18,8 @@ export default function Step2(props) {
     const resJson = await res.json()
     if (res.ok) {
       message.success('New Child Added Successfully')
+      const resJson = await res.json()
+      await setDoc(doc(db, 'children', resJson.id.toString()), { kindergartens: [] })
       history.push('/dashboard')
     } else {
       message.error(resJson.errors[0].message)
@@ -52,15 +57,10 @@ export default function Step2(props) {
     },
   }
   return (
-    <Form
-      {...formItemLayout}
-      name="form_in_modal"
-      onFinish={onFinish}
-      scrollToFirstError
-    >
+    <Form {...formItemLayout} name='form_in_modal' onFinish={onFinish} scrollToFirstError>
       <Form.Item
-        name="firstName"
-        label="First Name"
+        name='firstName'
+        label='First Name'
         rules={[
           {
             required: true,
@@ -71,8 +71,8 @@ export default function Step2(props) {
         <Input />
       </Form.Item>
       <Form.Item
-        name="middleName"
-        label="Middle Name"
+        name='middleName'
+        label='Middle Name'
         rules={[
           {
             required: true,
@@ -83,8 +83,8 @@ export default function Step2(props) {
         <Input />
       </Form.Item>
       <Form.Item
-        name="lastName"
-        label="Last Name"
+        name='lastName'
+        label='Last Name'
         rules={[
           {
             required: true,
@@ -95,8 +95,8 @@ export default function Step2(props) {
         <Input />
       </Form.Item>
       <Form.Item
-        label="Date of birth"
-        name="dateOfBirth"
+        label='Date of birth'
+        name='dateOfBirth'
         rules={[
           {
             required: true,
@@ -107,7 +107,7 @@ export default function Step2(props) {
         <DatePicker />
       </Form.Item>
       <Form.Item
-        name="gender"
+        name='gender'
         label={'Gender'}
         rules={[
           {
@@ -117,17 +117,12 @@ export default function Step2(props) {
         ]}
       >
         <Radio.Group>
-          <Radio value="male">Male</Radio>
-          <Radio value="female">Female</Radio>
+          <Radio value='male'>Male</Radio>
+          <Radio value='female'>Female</Radio>
         </Radio.Group>
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
-        <Button
-          type="primary"
-          htmlType="submit"
-          style={{ width: 90 }}
-          loading={loading}
-        >
+        <Button type='primary' htmlType='submit' style={{ width: 90 }} loading={loading}>
           Next
         </Button>
       </Form.Item>

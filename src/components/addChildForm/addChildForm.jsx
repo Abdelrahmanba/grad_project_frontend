@@ -1,22 +1,15 @@
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  message,
-  Modal,
-  Radio,
-  Upload,
-} from 'antd'
+import { Button, DatePicker, Form, Input, message, Modal, Radio, Upload } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { patchCall, post, postFile } from '../../utils/apiCall'
+import { doc, setDoc, getFirestore } from 'firebase/firestore'
 
-const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type }) => {
+const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type, onUpdate }) => {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
+
   const token = useSelector((state) => state.user.token)
   const [image, setImage] = useState(null)
   const dummyReq = ({ data, file, onSuccess }) => {
@@ -27,15 +20,10 @@ const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type }) => {
   }
 
   const formComponent = (
-    <Form
-      form={form}
-      layout="vertical"
-      name="form_in_modal"
-      initialValues={defaultValues}
-    >
+    <Form form={form} layout='vertical' name='form_in_modal' initialValues={defaultValues}>
       <Form.Item
-        name="firstName"
-        label="First Name"
+        name='firstName'
+        label='First Name'
         rules={[
           {
             required: true,
@@ -46,8 +34,8 @@ const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type }) => {
         <Input />
       </Form.Item>
       <Form.Item
-        name="middleName"
-        label="Middle Name"
+        name='middleName'
+        label='Middle Name'
         rules={[
           {
             required: true,
@@ -58,8 +46,8 @@ const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type }) => {
         <Input />
       </Form.Item>
       <Form.Item
-        name="lastName"
-        label="Last Name"
+        name='lastName'
+        label='Last Name'
         rules={[
           {
             required: true,
@@ -70,8 +58,8 @@ const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type }) => {
         <Input />
       </Form.Item>
       <Form.Item
-        label="Date of birth"
-        name="dateOfBirth"
+        label='Date of birth'
+        name='dateOfBirth'
         rules={[
           {
             required: true,
@@ -82,7 +70,7 @@ const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type }) => {
         <DatePicker />
       </Form.Item>
       <Form.Item
-        label="Photo"
+        label='Photo'
         rules={[
           {
             required: true,
@@ -90,12 +78,12 @@ const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type }) => {
           },
         ]}
       >
-        <Upload maxCount={1} accept="image/*" customRequest={dummyReq}>
+        <Upload maxCount={1} accept='image/*' customRequest={dummyReq}>
           <Button icon={<UploadOutlined />}>Click to Upload</Button>
         </Upload>
       </Form.Item>
       <Form.Item
-        name="gender"
+        name='gender'
         label={'Gender'}
         rules={[
           {
@@ -105,8 +93,8 @@ const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type }) => {
         ]}
       >
         <Radio.Group>
-          <Radio value="male">Male</Radio>
-          <Radio value="female">Female</Radio>
+          <Radio value='male'>Male</Radio>
+          <Radio value='female'>Female</Radio>
         </Radio.Group>
       </Form.Item>
     </Form>
@@ -115,24 +103,26 @@ const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type }) => {
     return (
       <Modal
         open={open}
-        title="Register A New Child"
-        okText="Add Child"
-        cancelText="Cancel"
+        title='Register A New Child'
+        okText='Add Child'
+        cancelText='Cancel'
         onCancel={onCancel}
         confirmLoading={loading}
         onOk={async () => {
           setLoading(true)
           const values = await form.validateFields()
-          
+
           const res = await post('/children', token, values)
           if (res.ok) {
             message.success('New Child Added Successfully')
             const resJson = await res.json()
-            const resImage = await postFile(
-              '/files/image/child/' + resJson.id,
-              token,
-              image
-            )
+            const resImage = await postFile('/files/image/child/' + resJson.id, token, image)
+            const db = getFirestore()
+            try {
+              await setDoc(doc(db, 'children', resJson.id.toString()), { kindergartens: [] })
+            } catch (e) {
+              console.log(e)
+            }
             if (resImage.ok) {
               const imgURL = await resImage.json()
               onCreate({ ...resJson, imgs: [imgURL.imgs] })
@@ -142,7 +132,6 @@ const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type }) => {
           } else {
             message.error('Something Went Wrong')
           }
-
           setLoading(false)
         }}
       >
@@ -153,30 +142,23 @@ const AddChildForm = ({ open, onCancel, onCreate, defaultValues, type }) => {
     return (
       <Modal
         open={open}
-        title="Update Child Info"
-        okText="Update Child"
-        cancelText="Cancel"
+        title='Update Child Info'
+        okText='Update Child'
+        cancelText='Cancel'
         onCancel={onCancel}
         confirmLoading={loading}
         onOk={async () => {
           setLoading(true)
           const values = await form.validateFields()
-          const res = await patchCall(
-            '/children/' + defaultValues.id,
-            token,
-            values
-          )
+          const res = await patchCall('/children/' + defaultValues.id, token, values)
           if (res.ok) {
             message.success('Data Updated Successfully')
             const resJson = await res.json()
             if (image !== null) {
-              const resImage = await postFile(
-                '/files/image/child/' + resJson.id,
-                token,
-                image
-              )
+              const resImage = await postFile('/files/image/child/' + resJson.id, token, image)
               if (resImage.ok) {
                 const imgURL = await resImage.json()
+                onUpdate({ ...resJson, imgs: [imgURL.imgs] })
               }
             } else {
               onCreate({ ...resJson })

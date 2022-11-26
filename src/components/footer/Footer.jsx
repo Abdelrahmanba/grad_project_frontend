@@ -10,9 +10,7 @@ function Footer() {
             <div className='footer-center'>
               <h2>Kiddy School </h2>
               <div>
-                <a target='_blank ' href='https://github.com/ant-design/ant-design'>
-                  GitHub
-                </a>
+                
               </div>
             </div>
           </Col>

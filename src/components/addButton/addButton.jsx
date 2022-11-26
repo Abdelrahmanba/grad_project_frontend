@@ -8,6 +8,7 @@ import AddKindergartenForm from '../addKindergartenForm/addKindergartenForm'
 
 export default function AddButton({ title, type, onFinish }) {
   const [open, setOpen] = useState(false)
+
   const onCreate = async (values) => {
     onFinish(values)
     setOpen(false)

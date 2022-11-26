@@ -21,13 +21,13 @@ export default function AllChildren() {
     )
     if (res.ok) {
       const resJson = await res.json()
-      const parsed = resJson.map((e) => ({
+      const parsed = resJson.rows.map((e) => ({
         ...e,
         key: e.id,
         parent: e.user.firstName + ' ' + e.user.lastName,
       }))
       setChildren(parsed)
-      setCount(resJson.length)
+      setCount(resJson.count)
     }
     setLoading(false)
   }
@@ -116,13 +116,11 @@ export default function AllChildren() {
         expandable={{
           expandedRowRender: (record) => (
             <Descriptions title='Parent Info'>
-              <Descriptions.Item label='First Name'>{record.user.firstName}</Descriptions.Item>
-              <Descriptions.Item label='Telephone'>1810000000</Descriptions.Item>
-              <Descriptions.Item label='Live'>Hangzhou, Zhejiang</Descriptions.Item>
-              <Descriptions.Item label='Remark'>empty</Descriptions.Item>
-              <Descriptions.Item label='Address'>
-                No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China
+              <Descriptions.Item label='Name'>
+                {record.user.firstName + ' ' + record.user.lastName}
               </Descriptions.Item>
+              <Descriptions.Item label='Telephone'> {record.user.phone}</Descriptions.Item>
+              <Descriptions.Item label='Live'>{record.user.country}</Descriptions.Item>
             </Descriptions>
           ),
         }}

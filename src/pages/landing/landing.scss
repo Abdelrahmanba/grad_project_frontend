@@ -90,3 +90,101 @@
     }
   }
 }
+.page2 {
+  background-image: linear-gradient(
+    20deg,
+    hsl(354deg 72% 94%) 0%,
+    hsl(354deg 73% 95%) 10%,
+    hsl(354deg 73% 95%) 13%,
+    hsl(354deg 73% 95%) 14%,
+    hsl(354deg 73% 95%) 16%,
+    hsl(354deg 73% 96%) 17%,
+    hsl(354deg 73% 96%) 18%,
+    hsl(354deg 74% 96%) 19%,
+    hsl(354deg 74% 97%) 20%,
+    hsl(355deg 74% 97%) 21%,
+    hsl(355deg 74% 97%) 22%,
+    hsl(355deg 74% 97%) 23%,
+    hsl(355deg 75% 98%) 25%,
+    hsl(355deg 75% 98%) 27%,
+    hsl(355deg 75% 98%) 29%,
+    hsl(355deg 75% 98%) 32%,
+    hsl(355deg 75% 99%) 35%,
+    hsl(355deg 75% 99%) 39%,
+    hsl(355deg 76% 99%) 44%,
+    hsl(355deg 76% 99%) 51%,
+    hsl(355deg 76% 100%) 61%,
+    hsl(0deg 0% 100%) 86%
+  );
+  .slide {
+    display: flex;
+    margin: 0 auto;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column-reverse;
+
+    .testimonial {
+      padding: 32px 51px;
+      background-size: 60px;
+      background-position: top;
+      background-repeat: no-repeat;
+      background-image: url(https://alcs-slider.netlify.app/images/pattern-quotes.svg);
+
+      blockquote {
+        margin: 0 auto;
+        font-size: 18px;
+        line-height: 24px;
+        margin-bottom: 36px;
+        max-width: 500px;
+      }
+
+      .author {
+        font-size: 15px;
+
+        span {
+          display: block;
+          color: $primary;
+        }
+      }
+    }
+
+    .slider-img {
+      width: 100%;
+      padding: 30px;
+      display: flex;
+      margin-bottom: 40px;
+      align-items: center;
+      justify-content: center;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-image: url('../../assets/pattern-bg.svg');
+
+      img {
+        width: 240px;
+        display: block;
+        border-radius: 10px;
+        box-shadow: 0px 16px 40px 0px rgba(210, 0, 26, 0.4);
+      }
+    }
+
+    .active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      transition-delay: 0.4s;
+    }
+  }
+  ul.slick-dots {
+    li {
+      background-color: $primary;
+      margin: 15px;
+    }
+    .slick-active {
+      button {
+        background-color: $primary;
+        height: 3px;
+      }
+    }
+  }
+}
