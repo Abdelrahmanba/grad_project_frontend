@@ -29,15 +29,15 @@ export default function SignIn() {
 
   return (
     <Layout className='layout'>
-      <Row>
+      <Row style={{ height: '85vh', alignItems: 'center' }}>
         <Col
           xs={{
             span: 22,
             offset: 1,
           }}
           md={{
-            span: 12,
-            offset: 6,
+            span: 8,
+            offset: 8,
           }}
         >
           <h1 className='text-center'>Sign In</h1>

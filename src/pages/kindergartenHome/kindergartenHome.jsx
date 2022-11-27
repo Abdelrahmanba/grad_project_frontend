@@ -202,8 +202,8 @@ export default function KindergartenHome() {
           title={<h2 style={{ margin: 0 }}>Gallery</h2>}
         >
           <Carousel effect='fade' autoplay>
-            {kindergarten.imgs.map((e) => (
-              <img src={`${process.env.REACT_APP_API_URL + e}`} />
+            {kindergarten.imgs.map((e, i) => (
+              <img key={i} src={`${process.env.REACT_APP_API_URL + e}`} />
             ))}
           </Carousel>
         </Card>
