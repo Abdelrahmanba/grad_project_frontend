@@ -1,47 +1,49 @@
 import {
-  Breadcrumb,
   List,
   Button,
   Card,
   Descriptions,
   Empty,
   Layout,
-  PageHeader,
   Tabs,
   Tag,
-  Skeleton,
   Avatar,
   Spin,
   Menu,
 } from 'antd'
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, UserOutlined, MessageOutlined } from '@ant-design/icons'
 
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import { get } from '../../utils/apiCall'
 import './childHome.scss'
+import ChatBoxCh from '../../components/chatBox/chatBoxCh'
+import Messages from '../Messages/Messages'
+import FindKindergarten from '../../components/findKindergarten/findKindergarten'
 const { Content } = Layout
 
 export default function ChildHome() {
   const [loading, setloading] = useState(true)
   const history = useHistory()
+  const [current, setCurrent] = useState('profile')
+
   let { id } = useParams()
   const menu = [
     {
       label: 'Profile',
-      key: 'mail',
-      icon: <MailOutlined style={{ fontSize: 24 }} />,
+      key: 'profile',
+      icon: <UserOutlined style={{ fontSize: 24 }} />,
     },
     {
       label: 'Find Kindergarten',
-      key: 'app',
+      key: 'kinders',
       icon: <AppstoreOutlined style={{ fontSize: 24 }} />,
     },
     {
       label: 'Chat Center',
-      key: 'SubMenu',
-      icon: <SettingOutlined style={{ fontSize: 24 }} />,
+      key: 'chat',
+      icon: <MessageOutlined style={{ fontSize: 24 }} />,
     },
   ]
   const stat = {
@@ -74,7 +76,7 @@ export default function ChildHome() {
           ))}
         </List>
       ),
-    }, // remember to pass the key prop
+    },
     {
       label: 'Application History',
       key: 'History',
@@ -143,119 +145,132 @@ export default function ChildHome() {
     return <Spin style={{ margin: '200px', display: 'flex', justifyContent: 'center' }} />
   } else
     return (
-      <Layout className='layout' style={{ backgroundColor: '#efefef', alignItems: 'center' }}>
+      <Layout
+        className='layout'
+        style={{ backgroundColor: '#efefef', alignItems: 'center', width: '100%' }}
+      >
         <section className='menu-child'>
-          <Menu theme='dark' mode='horizontal' items={menu} />
+          <Menu
+            theme='dark'
+            onSelect={(e) => setCurrent(e.key)}
+            mode='horizontal'
+            items={menu}
+            selectedKeys={[current]}
+          />
         </section>
-        <Content
-          className='content'
-          style={{ backgroundColor: '#efefef', paddingTop: 0, width: '80vw', maxWidth: 1600 }}
-        >
-          <Card
-            bodyStyle={{
-              display: 'flex',
-              flexDirection: 'row',
-            }}
-            className='child-card'
-            hoverable={false}
-            style={{ width: '100%' }}
+        {current === 'kinders' && <FindKindergarten />}
+        {current === 'chat' && <Messages />}
+        {current === 'profile' && (
+          <Content
+            className='content'
+            style={{ backgroundColor: '#efefef', paddingTop: 0, width: '80vw', maxWidth: 1600 }}
           >
-            <div
-              className='child-bg'
-              style={{
-                backgroundImage: `url(${process.env.REACT_APP_API_URL + child.imgs[0]})`,
+            <Card
+              bodyStyle={{
+                display: 'flex',
+                flexDirection: 'row',
               }}
-            />
-            <section className='cbody'>
-              <Descriptions
-                title={<h1 style={{ margin: 0 }}>{child.firstName + ' ' + child.lastName}</h1>}
-                layout='horizontal'
-                bordered
-                column={1}
-              >
-                <Descriptions.Item label='Date of birth'>{child.dateOfBirth}</Descriptions.Item>
-                <Descriptions.Item label='Gender'>{child.gender}</Descriptions.Item>
-                <Descriptions.Item label='Current Kindergarten'>
-                  {child.kindergarten ? child.kindergarten.name : 'Not Enrolled'}
-                </Descriptions.Item>
-
-                <Descriptions.Item label='Status'>
-                  <Tag color={color} key={child.childStatusId}>
-                    {child.childStatusId === 1 && 'Looking For Kindergarten'}
-                    {child.childStatusId === 2 && 'Enrolled'}
-                    {child.childStatusId === 3 && 'Graduated'}
-                  </Tag>
-                </Descriptions.Item>
-              </Descriptions>
-              <Descriptions
-                style={{ marginTop: 20 }}
-                title={'Parent Info'}
-                layout='horizontal'
-                column={1}
-                bordered
-              >
-                <Descriptions.Item label='Name'>
-                  {child.user.firstName + ' ' + child.user.lastName}
-                </Descriptions.Item>
-                <Descriptions.Item label='Email'>{child.user.email}</Descriptions.Item>
-                <Descriptions.Item label='Phone'>{child.user.phone}</Descriptions.Item>
-              </Descriptions>
-            </section>
-          </Card>
-          <Card
-            className='child-card'
-            hoverable={false}
-            style={{ width: '100%', marginTop: 40 }}
-            title={<h2 style={{ margin: 0 }}>Applications</h2>}
-          >
-            <Tabs className='cbody' style={{ paddingTop: 0 }} items={items} />
-            <Button
-              type='dashed'
-              onClick={() => history.push('/all-kindergartens?child=' + child.id)}
-              block
-              style={{ height: 50, fontSize: 16 }}
+              className='child-card'
+              hoverable={false}
+              style={{ width: '100%' }}
             >
-              Browser All Kindergartens
-            </Button>
-          </Card>
-          <Card
-            className='child-card'
-            hoverable={false}
-            style={{ width: '100%', marginTop: 40 }}
-            title={<h2 style={{ margin: 0 }}>Kindergarten</h2>}
-          >
-            {child.kindergarten ? (
-              <Descriptions
-                title={<h1 style={{ margin: 0 }}>{child.firstName + ' ' + child.lastName}</h1>}
-                layout='horizontal'
-                bordered
-                column={1}
-              >
-                <Descriptions.Item label='Date of birth'>{child.dateOfBirth}</Descriptions.Item>
-                <Descriptions.Item label='Gender'>{child.gender}</Descriptions.Item>
-                <Descriptions.Item label='Current Kindergarten'>
-                  {child.kindergarten ? child.kindergarten.name : 'Not Enrolled'}
-                </Descriptions.Item>
+              <div
+                className='child-bg'
+                style={{
+                  backgroundImage: `url(${process.env.REACT_APP_API_URL + child.imgs[0]})`,
+                }}
+              />
+              <section className='cbody'>
+                <Descriptions
+                  title={<h1 style={{ margin: 0 }}>{child.firstName + ' ' + child.lastName}</h1>}
+                  layout='horizontal'
+                  bordered
+                  column={1}
+                >
+                  <Descriptions.Item label='Date of birth'>{child.dateOfBirth}</Descriptions.Item>
+                  <Descriptions.Item label='Gender'>{child.gender}</Descriptions.Item>
+                  <Descriptions.Item label='Current Kindergarten'>
+                    {child.kindergarten ? child.kindergarten.name : 'Not Enrolled'}
+                  </Descriptions.Item>
 
-                <Descriptions.Item label='Status'>
-                  <Tag color={color} key={child.childStatusId}>
-                    {child.childStatusId === 1 && 'Looking For Kindergarten'}
-                    {child.childStatusId === 2 && 'Enrolled'}
-                    {child.childStatusId === 3 && 'Graduated'}
-                  </Tag>
-                </Descriptions.Item>
-              </Descriptions>
-            ) : (
-              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-            )}
-          </Card>
-          <Card
-            className='child-card'
-            hoverable={false}
-            style={{ width: '100%', marginTop: 40 }}
-            title={<h2 style={{ margin: 0 }}>Child History</h2>}
-          ></Card>
-        </Content>
+                  <Descriptions.Item label='Status'>
+                    <Tag color={color} key={child.childStatusId}>
+                      {child.childStatusId === 1 && 'Looking For Kindergarten'}
+                      {child.childStatusId === 2 && 'Enrolled'}
+                      {child.childStatusId === 3 && 'Graduated'}
+                    </Tag>
+                  </Descriptions.Item>
+                </Descriptions>
+                <Descriptions
+                  style={{ marginTop: 20 }}
+                  title={'Parent Info'}
+                  layout='horizontal'
+                  column={1}
+                  bordered
+                >
+                  <Descriptions.Item label='Name'>
+                    {child.user.firstName + ' ' + child.user.lastName}
+                  </Descriptions.Item>
+                  <Descriptions.Item label='Email'>{child.user.email}</Descriptions.Item>
+                  <Descriptions.Item label='Phone'>{child.user.phone}</Descriptions.Item>
+                </Descriptions>
+              </section>
+            </Card>
+            <Card
+              className='child-card'
+              hoverable={false}
+              style={{ width: '100%', marginTop: 40 }}
+              title={<h2 style={{ margin: 0 }}>Applications</h2>}
+            >
+              <Tabs className='cbody' style={{ paddingTop: 0 }} items={items} />
+              <Button
+                type='dashed'
+                onClick={() => history.push('/all-kindergartens?child=' + child.id)}
+                block
+                style={{ height: 50, fontSize: 16 }}
+              >
+                Browser All Kindergartens
+              </Button>
+            </Card>
+            <Card
+              className='child-card'
+              hoverable={false}
+              style={{ width: '100%', marginTop: 40 }}
+              title={<h2 style={{ margin: 0 }}>Kindergarten</h2>}
+            >
+              {child.kindergarten ? (
+                <Descriptions
+                  title={<h1 style={{ margin: 0 }}>{child.firstName + ' ' + child.lastName}</h1>}
+                  layout='horizontal'
+                  bordered
+                  column={1}
+                >
+                  <Descriptions.Item label='Date of birth'>{child.dateOfBirth}</Descriptions.Item>
+                  <Descriptions.Item label='Gender'>{child.gender}</Descriptions.Item>
+                  <Descriptions.Item label='Current Kindergarten'>
+                    {child.kindergarten ? child.kindergarten.name : 'Not Enrolled'}
+                  </Descriptions.Item>
+
+                  <Descriptions.Item label='Status'>
+                    <Tag color={color} key={child.childStatusId}>
+                      {child.childStatusId === 1 && 'Looking For Kindergarten'}
+                      {child.childStatusId === 2 && 'Enrolled'}
+                      {child.childStatusId === 3 && 'Graduated'}
+                    </Tag>
+                  </Descriptions.Item>
+                </Descriptions>
+              ) : (
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              )}
+            </Card>
+            <Card
+              className='child-card'
+              hoverable={false}
+              style={{ width: '100%', marginTop: 40 }}
+              title={<h2 style={{ margin: 0 }}>Child History</h2>}
+            ></Card>
+          </Content>
+        )}
       </Layout>
     )
 }

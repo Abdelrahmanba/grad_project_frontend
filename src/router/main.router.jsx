@@ -29,7 +29,7 @@ const Router = () => {
         <Route path='/register-child' exact component={RegisterP} />
 
         <ProtectedRoute path='/dashboard' exact component={Dashboard} />
-        <ProtectedRoute path={['/messages/:cid']} exact component={Messages} />
+        <ProtectedRoute path={['/messages/:id']} exact component={Messages} />
         <ProtectedRoute path={'/messages/:cid/:kid/'} component={ChatBoxCh} />
         <ProtectedRoute path={'/kinder/messages/:cid/:kid/'} component={ChatBoxK} />
 
