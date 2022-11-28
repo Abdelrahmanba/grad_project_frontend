@@ -7,6 +7,7 @@ import { get } from '../../../utils/apiCall'
 export default function CityStat() {
   const [data, setData] = useState([])
   const [diagram, setDiagram] = useState('Rose Diagram')
+  const [loading, setLaoding] = useState(true)
 
   const token = useSelector((state) => state.user.token)
 
@@ -17,6 +18,7 @@ export default function CityStat() {
       const data = resJson.map(({ city, count }) => ({ value: count, type: city }))
       setData(data)
     }
+    setLaoding(false)
   }
   useEffect(() => {
     fetchState()
@@ -26,6 +28,7 @@ export default function CityStat() {
     data,
     xField: 'type',
     yField: 'value',
+    loading: loading,
 
     legend: true,
     xAxis: {
@@ -37,6 +40,7 @@ export default function CityStat() {
   }
   const config = {
     data,
+    loading: loading,
     xField: 'type',
     yField: 'value',
     seriesField: 'type',
@@ -59,7 +63,7 @@ export default function CityStat() {
         style={{ marginBottom: '70px' }}
       />
       {diagram == 'Rose Diagram' && <Rose {...config} />}
-      {diagram == 'Bar Diagram' && <Column {...config} />}
+      {diagram == 'Bar Diagram' && <Column {...barConfig} />}
     </>
   )
 }

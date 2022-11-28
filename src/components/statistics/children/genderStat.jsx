@@ -6,6 +6,7 @@ import { get } from '../../../utils/apiCall'
 export default function GenderStat() {
   const [data, setData] = useState([])
   const token = useSelector((state) => state.user.token)
+  const [loading, setLaoding] = useState(true)
 
   const fetchState = async () => {
     const res = await get('/stats/children/grouping/gender', token)
@@ -13,6 +14,7 @@ export default function GenderStat() {
       const resJson = await res.json()
       setData(resJson)
     }
+    setLaoding(false)
   }
   useEffect(() => {
     fetchState()
@@ -37,5 +39,5 @@ export default function GenderStat() {
       },
     ],
   }
-  return <Pie {...config} />
+  return <Pie loading={loading} {...config} />
 }

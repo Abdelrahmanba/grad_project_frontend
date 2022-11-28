@@ -7,7 +7,7 @@ import moment from 'moment'
 
 export default function NewJoinersMonth() {
   const [data, setData] = useState([])
-  const [year, setYear] = useState('2022')
+  const [year, setYear] = useState([2022, 10])
   const [loading, setLaoding] = useState(true)
 
   const token = useSelector((state) => state.user.token)

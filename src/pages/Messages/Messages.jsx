@@ -1,8 +1,7 @@
-import { Avatar, Breadcrumb, Empty, Layout, List, PageHeader } from 'antd'
+import { Avatar, Empty, Layout, List, PageHeader } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
 
-import { HomeOutlined, UserOutlined } from '@ant-design/icons'
 import { useHistory, useParams } from 'react-router'
 import { get } from '../../utils/apiCall'
 import { useSelector } from 'react-redux'

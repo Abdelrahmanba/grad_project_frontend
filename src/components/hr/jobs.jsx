@@ -1,46 +1,43 @@
 import { Descriptions, Table, Tag } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom/cjs/react-router-dom'
 import { get } from '../../utils/apiCall'
 
-export default function AllChildren() {
+export default function Jobs() {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const token = useSelector((state) => state.user.token)
   const [count, setCount] = useState(0)
-  const [children, setChildren] = useState([])
+  const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
+  const { kid } = useParams()
 
-  const fetchAllChildren = async (page = 1) => {
+  const fetchAllJobs = async (page = 1) => {
     setLoading(true)
     setPage(page)
 
-    const res = await get(
-      `/children/all?pageNumber=${page}&pageSize=10&includeParent=true&includeChildStatus=true&includeKindergarten=true`,
-      token
-    )
+    const res = await get(`/jobs/kindergarten/${kid}?pageNumber=1&pageSize=1`, token)
     if (res.ok) {
       const resJson = await res.json()
       const parsed = resJson.rows.map((e) => ({
         ...e,
         key: e.id,
-        parent: e.user.firstName + ' ' + e.user.lastName,
       }))
-      setChildren(parsed)
+      setJobs(parsed)
       setCount(resJson.count)
     }
     setLoading(false)
   }
   useEffect(() => {
-    fetchAllChildren()
+    fetchAllJobs()
   }, [])
 
   const columns = [
     {
       title: 'First Name',
+      dataIndex: 'firstName',
       key: 'firstName',
-      render: (e) => <Link to={'/child/' + e.id}>{e.firstName}</Link>,
     },
     {
       title: 'Last Name',
@@ -110,23 +107,12 @@ export default function AllChildren() {
   }
   return (
     <div>
-      <h2 style={{ marginTop: 0 }}>All Registered Children on the platform</h2>
+      <h2 style={{ marginTop: 0 }}>Jobs</h2>
       <Table
         bordered
         size='large'
-        expandable={{
-          expandedRowRender: (record) => (
-            <Descriptions title='Parent Info'>
-              <Descriptions.Item label='Name'>
-                {record.user.firstName + ' ' + record.user.lastName}
-              </Descriptions.Item>
-              <Descriptions.Item label='Telephone'> {record.user.phone}</Descriptions.Item>
-              <Descriptions.Item label='Live'>{record.user.country}</Descriptions.Item>
-            </Descriptions>
-          ),
-        }}
         pagination={{
-          onChange: (page) => fetchAllChildren(page),
+          onChange: (page) => fetchAllJobs(page),
           defaultCurrent: 1,
           total: count,
           current: page,
@@ -136,7 +122,7 @@ export default function AllChildren() {
         loading={loading}
         rowSelection={rowSelection}
         columns={columns}
-        dataSource={children}
+        dataSource={jobs}
       />
     </div>
   )

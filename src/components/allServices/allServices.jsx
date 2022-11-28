@@ -1,12 +1,8 @@
 import { Button, Card, Layout } from 'antd'
-import { Content } from 'antd/lib/layout/layout'
-import React from 'react'
-import { useHistory, useParams } from 'react-router'
+import React, { useEffect, useState } from 'react'
 import { LockOutlined } from '@ant-design/icons'
-export default function AllServices() {
-  const history = useHistory()
 
-  const { kid } = useParams()
+export default function AllServices({ onClick, sub }) {
   return (
     <>
       <h1>Available Services</h1>
@@ -28,12 +24,14 @@ export default function AllServices() {
         }
       >
         <Card.Meta title={<h3>HR Managament</h3>} />
-        <Button
-          block
-          type='primary'
-          onClick={() => history.push('/kindergarten/' + kid + '/plans/hr')}
-        >
-          <LockOutlined /> Learn More
+        <Button block type='primary' onClick={onClick}>
+          {sub === 0 ? (
+            <>
+              <LockOutlined /> Learn More
+            </>
+          ) : (
+            'Unlocked'
+          )}
         </Button>
       </Card>
     </>

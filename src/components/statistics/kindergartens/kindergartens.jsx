@@ -1,6 +1,5 @@
 import React from 'react'
 import { Tabs } from 'antd'
-import RoleState from '../users/roleStat'
 import CountryStat from './countryStat'
 import CityStat from './cityStat'
 import NewJoiners from './newJoinersYear'

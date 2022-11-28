@@ -3,7 +3,6 @@ import './registerK.scss'
 import React, { useState } from 'react'
 import { Layout, Steps } from 'antd'
 import Step2 from './step2'
-import { useSelector } from 'react-redux'
 import Step1 from '../../components/registration/step1'
 import { useHistory } from 'react-router-dom'
 

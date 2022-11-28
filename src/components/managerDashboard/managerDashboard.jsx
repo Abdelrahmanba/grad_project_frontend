@@ -17,12 +17,7 @@ export default function ManagerDashboard() {
     {
       label: 'Users',
       icon: <UserOutlined />,
-      key: 'users',
-      children: [
-        { label: 'All Users', key: 'allUsers' },
-        { label: 'Parents', key: 'parents' },
-        { label: 'Kindergarten Owners', key: 'kindergartensOwner' },
-      ],
+      key: 'allUsers',
     },
     {
       label: 'Kindergartens',

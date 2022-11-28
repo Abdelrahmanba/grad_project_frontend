@@ -2,7 +2,6 @@
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken, onMessage } from 'firebase/messaging'
 import { getFirestore } from 'firebase/firestore'
-import { getAnalytics } from 'firebase/analytics'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -21,8 +20,6 @@ const firebaseConfig = {
 // Initialize Firebase
 export const fireApp = initializeApp(firebaseConfig)
 const messaging = getMessaging(fireApp)
-
-const analytics = getAnalytics(fireApp)
 
 export const getTokenImp = (setTokenFound) => {
   return getToken(messaging, {

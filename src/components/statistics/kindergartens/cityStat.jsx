@@ -2,11 +2,13 @@ import { Pie, Column } from '@ant-design/plots'
 import { Segmented } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import landing from '../../../pages/landing/landing'
 import { get } from '../../../utils/apiCall'
 
 export default function CityStat() {
   const [data, setData] = useState([])
   const [diagram, setDiagram] = useState('Rose Diagram')
+  const [loading, setLaoding] = useState(true)
 
   const token = useSelector((state) => state.user.token)
 
@@ -17,6 +19,7 @@ export default function CityStat() {
       const data = resJson.map(({ city, count }) => ({ value: count, type: city }))
       setData(data)
     }
+    setLaoding(false)
   }
   useEffect(() => {
     fetchState()
@@ -64,8 +67,8 @@ export default function CityStat() {
         onChange={(e) => setDiagram(e)}
         style={{ marginBottom: '70px' }}
       />
-      {diagram == 'Rose Diagram' && <Pie {...config} />}
-      {diagram == 'Bar Diagram' && <Column {...barConfig} />}
+      {diagram == 'Rose Diagram' && <Pie loading={loading} {...config} />}
+      {diagram == 'Bar Diagram' && <Column loading={loading} {...barConfig} />}
     </>
   )
 }

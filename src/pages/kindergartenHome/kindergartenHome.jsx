@@ -5,7 +5,6 @@ import {
   Carousel,
   Comment,
   Form,
-  Image,
   Layout,
   Rate,
   Space,
@@ -22,7 +21,6 @@ import L from 'leaflet'
 
 import './kindergartenHome.scss'
 import TextArea from 'antd/lib/input/TextArea'
-import ButtonGroup from 'antd/lib/button/button-group'
 
 export default function KindergartenHome() {
   let { cid, kid } = useParams()

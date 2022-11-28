@@ -27,3 +27,20 @@
   background-size: cover;
   min-height: 500px;
 }
+.menu-child {
+  width: 100%;
+  ul {
+    box-shadow: inset 1px 3px 0px 0 rgba(0, 0, 0, 0.2);
+    height: 110px;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 18px;
+    background-color: #d2001a !important;
+    .ant-menu-item {
+      margin: 0 25px;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}

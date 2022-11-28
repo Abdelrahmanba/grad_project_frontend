@@ -12,7 +12,10 @@ import {
   Skeleton,
   Avatar,
   Spin,
+  Menu,
 } from 'antd'
+import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons'
+
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useHistory, useParams } from 'react-router-dom'
@@ -24,6 +27,23 @@ export default function ChildHome() {
   const [loading, setloading] = useState(true)
   const history = useHistory()
   let { id } = useParams()
+  const menu = [
+    {
+      label: 'Profile',
+      key: 'mail',
+      icon: <MailOutlined style={{ fontSize: 24 }} />,
+    },
+    {
+      label: 'Find Kindergarten',
+      key: 'app',
+      icon: <AppstoreOutlined style={{ fontSize: 24 }} />,
+    },
+    {
+      label: 'Chat Center',
+      key: 'SubMenu',
+      icon: <SettingOutlined style={{ fontSize: 24 }} />,
+    },
+  ]
   const stat = {
     1: 'Under Review',
     2: 'Approved',
@@ -124,11 +144,13 @@ export default function ChildHome() {
   } else
     return (
       <Layout className='layout' style={{ backgroundColor: '#efefef', alignItems: 'center' }}>
+        <section className='menu-child'>
+          <Menu theme='dark' mode='horizontal' items={menu} />
+        </section>
         <Content
           className='content'
           style={{ backgroundColor: '#efefef', paddingTop: 0, width: '80vw', maxWidth: 1600 }}
         >
-          <PageHeader onBack={() => history.goBack()} title='Back' />
           <Card
             bodyStyle={{
               display: 'flex',
