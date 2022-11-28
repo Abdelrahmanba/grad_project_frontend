@@ -36,7 +36,7 @@ export default function Page1() {
           </Space>
         </Col>
         <Col xs={24} md={12} className='img'>
-          <img src={Page} className='page1-img' />
+          <img src={Page} className='page1-img' alt="haha"/>
         </Col>
       </Row>
     </section>

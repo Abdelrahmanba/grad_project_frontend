@@ -23,7 +23,7 @@ export default function MenuBar() {
     const avatar = (
       <span>
         {name}{' '}
-        <Avatar size={30} style={{ backgroundColor: '#d2001a' }}>
+        <Avatar className='logo' size={30} style={{ backgroundColor: '#d2001a' }}>
           {name[0]}
         </Avatar>
       </span>
@@ -79,7 +79,7 @@ export default function MenuBar() {
       case 'dashboard':
         history.push('/dashboard')
         break
-  
+
       default:
         break
     }

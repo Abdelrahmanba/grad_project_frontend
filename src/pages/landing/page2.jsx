@@ -24,7 +24,7 @@ export default function Page2() {
             <div className='slider-img'>
               <img
                 src='https://alcs-slider.netlify.app/images/image-tanya.jpg'
-                alt='Author Image'
+                alt='Author'
               />
             </div>
           </div>
@@ -44,7 +44,7 @@ export default function Page2() {
             <div className='slider-img'>
               <img
                 src='https://media.istockphoto.com/id/846730696/photo/portrait-teenager.jpg?b=1&s=170667a&w=0&k=20&c=PNz3dsppr_Q0s_dNI_LaZdoY0oQtH812tvwZ13n-ods='
-                alt='Author Image'
+                alt='Author 2'
               />
             </div>
           </div>
@@ -64,7 +64,7 @@ export default function Page2() {
             <div className='slider-img'>
               <img
                 src='https://media.istockphoto.com/id/1170911876/photo/selfie-time.jpg?b=1&s=170667a&w=0&k=20&c=ptX2-VggRmWw9M33keVHbfp2-MHUE0k9c3YKlS4QOKs='
-                alt='Author Image'
+                alt='Author 3'
               />
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { Descriptions, Table, Tag } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { get } from '../../utils/apiCall'
 
 export default function AllChildren() {
@@ -38,8 +39,8 @@ export default function AllChildren() {
   const columns = [
     {
       title: 'First Name',
-      dataIndex: 'firstName',
       key: 'firstName',
+      render: (e) => <Link to={'/child/' + e.id}>{e.firstName}</Link>,
     },
     {
       title: 'Last Name',

@@ -9,7 +9,7 @@ export default function Map({ onChange }) {
   const [label, setLabel] = useState('Please Select On The Map')
   const [address, setLocAddress] = useState('')
   const [options, setOptions] = useState([])
-  const [position, setPosition] = useState([49.1951, 16.6068])
+  const [position, setPosition] = useState([32.22111, 35.25444])
   const result = {
     latitude: '0',
     longitude: '0',
@@ -42,41 +42,30 @@ export default function Map({ onChange }) {
     }
   }
 
-  // useEffect(() => {
-  //   if (address.length < 4) {
-  //     return
-  //   } else {
-  //
-  //   }
-  // }, [address])
-
   function DraggableMarker() {
     const markerRef = useRef(null)
     const map = useMap()
 
-    useEffect(() => {
-      map.locate().on('locationfound', function (e) {
-        setPosition(e.latlng)
-        result.latitude = e.latlng.lat
-        result.longitude = e.latlng.lng
-        onChange(result)
-        map.setView(e.latlng, map.getZoom())
-        const radius = e.accuracy
-      })
-    }, [map])
+    // useEffect(() => {
+    //   map.locate({ setView: true }).on('locationfound', function (e) {
+    //     setPosition(e.latlng)
+    //     result.latitude = e.latlng.lat
+    //     result.longitude = e.latlng.lng
+    //     onChange(result)
+    //   })
+    // }, [])
 
     const eventHandlers = useMemo(
       () => ({
         dragend() {
           const marker = markerRef.current
-
           if (marker != null) {
             setPosition(marker.getLatLng())
             result.latitude = marker.getLatLng().lat
             result.longitude = marker.getLatLng().lng
             onChange(result)
 
-            geocode(marker.getLatLng().lat + '%2C' + marker.getLatLng().lng)
+            return geocode(marker.getLatLng().lat + '%2C' + marker.getLatLng().lng)
           }
         },
       }),
@@ -98,8 +87,7 @@ export default function Map({ onChange }) {
           iconAnchor: [10, 41],
           popupAnchor: [2, -40],
           iconUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-icon.png',
-          shadowUrl:
-            'https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png',
+          shadowUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png',
         })}
       />
     )
@@ -115,21 +103,15 @@ export default function Map({ onChange }) {
         options={options}
         style={{ zIndex: 99 }}
         onSelect={(data, o) => {
-          console.log(o)
           setPosition([o.geometry.lat, o.geometry.lng])
         }}
       >
-        <Input.Search size="large" placeholder="City, State or Country " />
+        <Input.Search size='large' placeholder='City, State or Country ' />
       </AutoComplete>
-      <MapContainer
-        center={position}
-        zoom={20}
-        scrollWheelZoom={true}
-        style={{ height: 400 }}
-      >
+      <MapContainer center={position} zoom={10} scrollWheelZoom={true} style={{ height: 400 }}>
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
         />
         <DraggableMarker />
       </MapContainer>

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/charts": "^1.4.2",
     "@capacitor/android": "^4.5.0",
     "@capacitor/core": "^4.5.0",
     "@capacitor/ios": "^4.5.0",
@@ -14,6 +15,7 @@
     "antd": "^4.16.1",
     "aos": "^2.3.4",
     "craco-less": "^2.0.0",
+    "dangerous-html": "^0.1.11",
     "firebase": "^9.14.0",
     "opencage-api-client": "^1.0.0",
     "react": "^18.2.0",

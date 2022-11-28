@@ -18,10 +18,10 @@ export default function RegisterP() {
           <Step title="Step 1" description="Create Your Account " />
           <Step title="Step 2" description="Add Your Children" />
         </Steps>
-        {current == 0 && (
+        {current === 0 && (
           <Step1 onFinish={() => setCurrent(1)} isKindergartenOwner={false} />
         )}
-        {current == 1 && <Step2 />}
+        {current === 1 && <Step2 />}
       </Content>
     </Layout>
   )

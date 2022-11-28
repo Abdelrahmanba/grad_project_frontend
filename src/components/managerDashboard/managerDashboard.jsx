@@ -5,6 +5,9 @@ import { DashboardOutlined, MailOutlined, UserOutlined, TeamOutlined } from '@an
 import Allusers from '../manager/allusers'
 import AllChildren from '../manager/allchildren'
 import AllKindergartens from '../manager/allKindergartens'
+import User from '../statistics/users/user'
+import ChildrenS from '../statistics/children/children'
+import KindergartensS from '../statistics/kindergartens/kindergartens'
 const { Sider, Header, Content, Footer } = Layout
 
 export default function ManagerDashboard() {
@@ -14,12 +17,7 @@ export default function ManagerDashboard() {
     {
       label: 'Users',
       icon: <UserOutlined />,
-      key: 'users',
-      children: [
-        { label: 'All Users', key: 'allUsers' },
-        { label: 'Parents', key: 'parents' },
-        { label: 'Kindergarten Owners', key: 'kindergartensOwner' },
-      ],
+      key: 'allUsers',
     },
     {
       label: 'Kindergartens',
@@ -36,7 +34,12 @@ export default function ManagerDashboard() {
       label: 'Statistics',
       key: 'statistics',
       icon: <DashboardOutlined />,
-      children: [{ label: 'Overview', key: 'overview' }],
+      children: [
+        { label: 'Users', key: 'usersS' },
+        { label: 'Children', key: 'childrenS' },
+        { label: 'Kindergartens', key: 'kindergartensS' },
+        { label: 'Applications', key: 'applicationsS' },
+      ],
     },
   ]
   return (
@@ -57,6 +60,9 @@ export default function ManagerDashboard() {
           {current === 'allUsers' && <Allusers />}
           {current === 'children' && <AllChildren />}
           {current === 'koverview' && <AllKindergartens />}
+          {current === 'usersS' && <User />}
+          {current === 'childrenS' && <ChildrenS />}
+          {current === 'kindergartensS' && <KindergartensS />}
         </Content>
       </Layout>
     </>

@@ -5,7 +5,6 @@ import {
   Carousel,
   Comment,
   Form,
-  Image,
   Layout,
   Rate,
   Space,
@@ -22,7 +21,6 @@ import L from 'leaflet'
 
 import './kindergartenHome.scss'
 import TextArea from 'antd/lib/input/TextArea'
-import ButtonGroup from 'antd/lib/button/button-group'
 
 export default function KindergartenHome() {
   let { cid, kid } = useParams()
@@ -202,8 +200,8 @@ export default function KindergartenHome() {
           title={<h2 style={{ margin: 0 }}>Gallery</h2>}
         >
           <Carousel effect='fade' autoplay>
-            {kindergarten.imgs.map((e) => (
-              <img src={`${process.env.REACT_APP_API_URL + e}`} />
+            {kindergarten.imgs.map((e, i) => (
+              <img key={i} src={`${process.env.REACT_APP_API_URL + e}`} />
             ))}
           </Carousel>
         </Card>
