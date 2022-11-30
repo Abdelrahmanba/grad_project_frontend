@@ -1,5 +1,5 @@
 import { Button, DatePicker, Form, Input, message, Select } from 'antd'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { signIn } from '../../redux/userSlice'
 import { post } from '../../utils/apiCall'

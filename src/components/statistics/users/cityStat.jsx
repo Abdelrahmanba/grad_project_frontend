@@ -62,8 +62,8 @@ export default function CityStat() {
         onChange={(e) => setDiagram(e)}
         style={{ marginBottom: '70px' }}
       />
-      {diagram == 'Rose Diagram' && <Rose {...config} />}
-      {diagram == 'Bar Diagram' && <Column {...barConfig} />}
+      {diagram === 'Rose Diagram' && <Rose {...config} />}
+      {diagram === 'Bar Diagram' && <Column {...barConfig} />}
     </>
   )
 }

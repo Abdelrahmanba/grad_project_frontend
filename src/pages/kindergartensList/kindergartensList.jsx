@@ -10,7 +10,7 @@ export default function KindergartensList() {
   const { search } = useLocation()
   const id = search.match(/(\d+)/)[0]
   const [child, setChild] = useState({ imgs: [], user: {} })
-  const [appliedK, setAppliedK] = useState([])
+  const [appliedS, setAppliedS] = useState([])
   const token = useSelector((state) => state.user.token)
   const history = useHistory()
   const fetchChild = async () => {
@@ -20,7 +20,7 @@ export default function KindergartensList() {
     )
     if (res.ok) {
       const resJson = await res.json()
-      setAppliedK(resJson.register_applications)
+      setAppliedS(resJson.register_applications)
       setChild(resJson)
     } else {
       history.push('/NotFound')
@@ -34,10 +34,10 @@ export default function KindergartensList() {
       <Content className='content'>
         <h1>All Kindergartens</h1>
         <KinderGartenCards
-          url={'/kindergartens?pageNumber=1&pageSize=10&includeImages=true'}
+          url={'/matching?registrationExpired=false'}
           appliable
           childId={id}
-          appliedK={appliedK}
+          appliedS={appliedS}
           onUpdate={() => fetchChild()}
         />
       </Content>

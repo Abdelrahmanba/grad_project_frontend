@@ -1,10 +1,9 @@
-import { Button, Descriptions, Divider, Popconfirm, Table, Tag } from 'antd'
+import { Button, Descriptions, Spin, Table, Tag } from 'antd'
 import ButtonGroup from 'antd/lib/button/button-group'
-import { async } from 'q'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
-import { deleteCall, get, patchCall } from '../../utils/apiCall'
+import { get, patchCall } from '../../utils/apiCall'
 
 export default function AllApplications() {
   const { kid } = useParams()
@@ -13,6 +12,8 @@ export default function AllApplications() {
   const [count, setCount] = useState(0)
   const [applications, setApplications] = useState([])
   const [loading, setLoading] = useState(true)
+  const [semster, setSemster] = useState(undefined)
+
   const appStatus = {
     1: 'Waiting for Your Review',
     2: 'APPROVED - Waiting for confirmation',
@@ -30,6 +31,15 @@ export default function AllApplications() {
       return []
     }
   }
+  const fetchSemster = async (id) => {
+    const res = await get(`/semesters/${id}?includeKindergarten=false`, token)
+    if (res.ok) {
+      const resJson = await res.json()
+      setSemster(resJson)
+    } else {
+      return {}
+    }
+  }
 
   const fetchParent = async (id) => {
     const res = await get(`/children/${id}?includeParent=true`, token)
@@ -40,11 +50,10 @@ export default function AllApplications() {
       return undefined
     }
   }
-  const fetchAllA = async (page = 1) => {
-    setLoading(true)
+  const fetchAllA = async (page = 1, rs) => {
     setPage(page)
     const res = await get(
-      `/RegisterApplication/All/${kid}?pageNumber=${page}&pageSize=10&includeChild=true&includeParent=True&includeKindergarten=false`,
+      `/RegisterApplication/semester/${rs}?pageNumber=${page}&pageSize=10&includeChild=true&includeParent=True&includeKindergarten=false`,
       token
     )
     if (res.ok) {
@@ -53,17 +62,29 @@ export default function AllApplications() {
       for (const app of resJson.rows) {
         const parent = await fetchParent(app.childId)
         const docs = await fetchDocuments(app.id)
-
         parsed.push({ ...app, key: app.id, parent, docs })
       }
 
       setApplications(parsed)
       setCount(resJson.count)
     }
+  }
+
+  const fetchKindergarten = async () => {
+    setLoading(true)
+    const res = await get(`/kindergartens/${kid}?includeRunningSemester=true`, token)
+    if (res.ok) {
+      const resJson = await res.json()
+      if (resJson.runningSemester != null) {
+        await fetchSemster(resJson.runningSemester.id)
+        await fetchAllA(1, resJson.runningSemester.id)
+        setLoading(false)
+      }
+    }
     setLoading(false)
   }
   useEffect(() => {
-    fetchAllA()
+    fetchKindergarten()
   }, [])
 
   const columns = [
@@ -154,42 +175,54 @@ export default function AllApplications() {
     await fetchAllA(page)
     setLoading(false)
   }
+  if (loading) {
+    return <Spin />
+  } else {
+    return (
+      <div>
+        {semster === undefined ? (
+          <h2 style={{ marginTop: 0 }}>Applications </h2>
+        ) : (
+          <h2 style={{ marginTop: 0 }}>Applications for {semster.name} Semester </h2>
+        )}
 
-  return (
-    <div>
-      <h2 style={{ marginTop: 0 }}>Applications</h2>
-      <Table
-        bordered
-        size='large'
-        expandable={{
-          expandedRowRender: (record) => (
-            <Descriptions title='Extra Info'>
-              <Descriptions.Item label='Telephone'> {record.parent.phone}</Descriptions.Item>
-              <Descriptions.Item label='email'> {record.parent.email}</Descriptions.Item>
-              <Descriptions.Item label='Docuemnts'>
-                <ul>
-                  {record.docs.map((doc, i) => (
-                    <li key={i}>
-                      <a href={process.env.REACT_APP_API_URL + doc}>Document {i + 1}</a>
-                    </li>
-                  ))}
-                </ul>
-              </Descriptions.Item>
-            </Descriptions>
-          ),
-        }}
-        pagination={{
-          onChange: (page) => fetchAllA(page),
-          defaultCurrent: 1,
-          total: count,
-          current: page,
-          pageSize: 10,
-          position: ['bottomLeft'],
-        }}
-        loading={loading}
-        columns={columns}
-        dataSource={applications}
-      />
-    </div>
-  )
+        {semster === undefined ? (
+          <h2>Sorry, you dont have any active semsters, please add a semster first</h2>
+        ) : (
+          <Table
+            bordered
+            size='large'
+            expandable={{
+              expandedRowRender: (record) => (
+                <Descriptions title='Extra Info'>
+                  <Descriptions.Item label='Telephone'> {record.parent.phone}</Descriptions.Item>
+                  <Descriptions.Item label='email'> {record.parent.email}</Descriptions.Item>
+                  <Descriptions.Item label='Docuemnts'>
+                    <ul>
+                      {record.docs.map((doc, i) => (
+                        <li key={i}>
+                          <a href={process.env.REACT_APP_API_URL + doc}>Document {i + 1}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </Descriptions.Item>
+                </Descriptions>
+              ),
+            }}
+            pagination={{
+              onChange: (page) => fetchAllA(page),
+              defaultCurrent: 1,
+              total: count,
+              current: page,
+              pageSize: 10,
+              position: ['bottomLeft'],
+            }}
+            loading={loading}
+            columns={columns}
+            dataSource={applications}
+          />
+        )}
+      </div>
+    )
+  }
 }

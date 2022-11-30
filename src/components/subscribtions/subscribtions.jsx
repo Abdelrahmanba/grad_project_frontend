@@ -1,17 +1,15 @@
-import { Button, Descriptions, Divider, Popconfirm, Table, Tag } from 'antd'
+import { Table } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link, useParams } from 'react-router-dom'
-import { deleteCall, get } from '../../utils/apiCall'
+import { useParams } from 'react-router-dom'
+import { get } from '../../utils/apiCall'
 
 export default function Allusesrs() {
-  const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const token = useSelector((state) => state.user.token)
   const [count, setCount] = useState(0)
   const [active, setActive] = useState([])
   const [all, setAll] = useState([])
   const [loading, setLoading] = useState(true)
-  const [loadingDelete, setLoadingDelete] = useState(false)
   const { kid } = useParams()
   const [page, setPage] = useState(1)
   const fetchSub = async (page = 1, active) => {
@@ -44,6 +42,7 @@ export default function Allusesrs() {
   useEffect(() => {
     fetchSub(1)
     fetchSub(1, true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const columns = [
@@ -68,31 +67,7 @@ export default function Allusesrs() {
       dataIndex: 'endTime',
     },
 
-    {
-      title: 'Actions',
-      key: 'operation',
-      fixed: 'right',
-      width: 100,
-      render: (record) => {
-        return (
-          <Popconfirm
-            placement='left'
-            title={'Are You Sure'}
-            onConfirm={async () => {
-              setLoadingDelete(true)
-              await deleteCall('/users/' + record.id, token)
-              await fetchSub(page, true)
-              setLoadingDelete(false)
-            }}
-            okText='Yes'
-            loading={loadingDelete}
-            cancelText='No'
-          >
-            <Button type='link'>Delete</Button>
-          </Popconfirm>
-        )
-      },
-    },
+    {},
   ]
 
   return (

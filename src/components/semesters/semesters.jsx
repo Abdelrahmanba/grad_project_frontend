@@ -112,9 +112,10 @@ export default function Semesters() {
       key: 'operation',
       fixed: 'right',
       width: 100,
-      render: ({ id }) => (
+      render: ({ id, endDate }) => (
         <span>
           <Button
+            disabled={new Date(endDate) > new Date()}
             type='link'
             onClick={async () => {
               await deleteCall('/semesters/' + id, token)

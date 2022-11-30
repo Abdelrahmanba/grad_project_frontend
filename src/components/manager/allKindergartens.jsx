@@ -1,8 +1,7 @@
-import { Button, Descriptions, Divider, Popconfirm, Table, Tag } from 'antd'
+import { Table } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { deleteCall, get } from '../../utils/apiCall'
+import { get } from '../../utils/apiCall'
 
 export default function AllKindergartens() {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])

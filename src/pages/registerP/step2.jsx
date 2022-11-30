@@ -1,10 +1,9 @@
 import { Button, DatePicker, Form, Input, message, Radio } from 'antd'
-import React from 'react'
-import { useState } from 'react'
+import { doc, getFirestore, setDoc } from 'firebase/firestore'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 import { post } from '../../utils/apiCall'
-import { doc, setDoc, getFirestore } from 'firebase/firestore'
 
 export default function Step2(props) {
   const [loading, setLoading] = useState(false)
