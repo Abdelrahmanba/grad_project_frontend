@@ -29,10 +29,13 @@ import Employees from '../../components/hr/employees'
 import Bounses from '../../components/hr/bounses'
 import { LockOutlined } from '@ant-design/icons'
 import Semesters from '../../components/semesters/semesters'
+import ParentsS from '../../components/statistics/parents/parents'
+import RegAppS from '../../components/statistics/regApp/regAppS'
+import ChildrenS from '../../components/statistics/kchildren/children'
 const { Sider, Content } = Layout
 
 export default function KindergartenControl() {
-  const [current, setCurrent] = useState('dashboard')
+  const [current, setCurrent] = useState('applications')
   const { kid } = useParams()
   const [sub, setSub] = useState(0)
 
@@ -53,12 +56,6 @@ export default function KindergartenControl() {
   }, [])
 
   const items = [
-    {
-      label: 'Dashboard',
-      icon: <AppstoreOutlined />,
-      key: 'dashboard',
-    },
-
     {
       label: 'Applications',
       icon: <FileTextOutlined />,
@@ -105,7 +102,11 @@ export default function KindergartenControl() {
       label: 'Statistics',
       key: 'statistics',
       icon: <DashboardOutlined />,
-      children: [{ label: 'Overview', key: 'overview' }],
+      children: [
+        { label: 'Parents', key: 'parentsS' },
+        { label: 'Children', key: 'childrenS' },
+        { label: 'Applications', key: 'applicationS' },
+      ],
     },
   ]
   return (
@@ -134,6 +135,9 @@ export default function KindergartenControl() {
         {current === 'employees' && <Employees />}
         {current === 'bounes' && <Bounses />}
         {current === 'semesters' && <Semesters />}
+        {current === 'parentsS' && <ParentsS />}
+        {current === 'applicationS' && <RegAppS />}
+        {current === 'childrenS' && <ChildrenS />}
       </Content>
     </Layout>
   )

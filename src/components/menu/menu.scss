@@ -1,7 +1,7 @@
 @import '../../theme/scssVariables';
 .header {
-  background-color: white;
- 
+  background-color: $primary;
+
   border: 0;
   justify-content: flex-end;
   z-index: 99;

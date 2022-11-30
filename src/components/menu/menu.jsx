@@ -23,7 +23,7 @@ export default function MenuBar() {
     const avatar = (
       <span>
         {name}{' '}
-        <Avatar className='logo' size={30} style={{ backgroundColor: '#d2001a' }}>
+        <Avatar size={30} style={{ backgroundColor: '#d2001a' }}>
           {name[0]}
         </Avatar>
       </span>

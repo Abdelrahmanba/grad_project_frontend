@@ -26,6 +26,8 @@ export default function Semesters() {
       endDate: values.se[1].format('YYYY-MM-DD'),
       registrationExpiration: values.registrationExpiration.format('YYYY-MM-DD'),
       kindergartenId: kid,
+      name: values.name,
+      tuition: values.tuition,
     })
     if (res.ok) {
       fetchAllSemetsers()
@@ -197,12 +199,12 @@ export default function Semesters() {
             </Col>
             <Col span={12}>
               <Form.Item
-                name='tution'
-                label='Tution'
+                name='tuition'
+                label='Tuition'
                 rules={[
                   {
                     required: true,
-                    message: 'Please enter tution in US $',
+                    message: 'Please enter tuition in US $',
                   },
                 ]}
               >
