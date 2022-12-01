@@ -159,7 +159,7 @@ export default function Sem({ semId }) {
     setPage(page)
 
     const res = await get(
-      `/semesters/${semId}/children?pageNumber=1&pageSize=10&includeParent=true`,
+      `/semesters/${semId}/children?pageNumber=1&pageSize=10&includeParent=true&applicationStatus=1`,
       token
     )
 
