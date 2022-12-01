@@ -9,7 +9,8 @@ import ApplicationStat from '../statistics/applicationStat'
 import ChildrenS from '../statistics/children/children'
 import KindergartensS from '../statistics/kindergartens/kindergartens'
 import User from '../statistics/users/user'
-const { Sider, Content  } = Layout
+import PlansAdmin from '../plansAdmin/plansAdmin'
+const { Sider, Content } = Layout
 
 export default function ManagerDashboard() {
   const [current, setCurrent] = useState('allUsers')
@@ -29,8 +30,19 @@ export default function ManagerDashboard() {
       label: 'Children',
       icon: <TeamOutlined />,
       key: 'children',
-    },
+    }, {
+      label: 'Services',
+      key: 'services',
+      icon: <DashboardOutlined />,
+      children: [
+        {
+          label: 'HR Service', key: 'hr', children:
+            [
+              { label: 'Plans', key: 'plans' },
 
+            ],
+        },],
+    },
     {
       label: 'Statistics',
       key: 'statistics',
@@ -65,6 +77,8 @@ export default function ManagerDashboard() {
           {current === 'childrenS' && <ChildrenS />}
           {current === 'kindergartensS' && <KindergartensS />}
           {current === 'applicationS' && <ApplicationStat />}
+          {current === 'plans' && <PlansAdmin />}
+
         </Content>
       </Layout>
     </>
