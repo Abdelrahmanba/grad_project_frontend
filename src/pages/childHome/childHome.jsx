@@ -255,37 +255,6 @@ export default function ChildHome() {
                 Browser All Kindergartens
               </Button>
             </Card>
-            <Card
-              className='child-card'
-              hoverable={false}
-              style={{ width: '100%', marginTop: 40 }}
-              title={<h2 style={{ margin: 0 }}>Kindergarten</h2>}
-            >
-              {child.kindergarten ? (
-                <Descriptions
-                  title={<h1 style={{ margin: 0 }}>{child.firstName + ' ' + child.lastName}</h1>}
-                  layout='horizontal'
-                  bordered
-                  column={1}
-                >
-                  <Descriptions.Item label='Date of birth'>{child.dateOfBirth}</Descriptions.Item>
-                  <Descriptions.Item label='Gender'>{child.gender}</Descriptions.Item>
-                  <Descriptions.Item label='Current Kindergarten'>
-                    {child.kindergarten ? child.kindergarten.name : 'Not Enrolled'}
-                  </Descriptions.Item>
-
-                  <Descriptions.Item label='Status'>
-                    <Tag color={color} key={child.childStatusId}>
-                      {child.childStatusId === 1 && 'Looking For Kindergarten'}
-                      {child.childStatusId === 2 && 'Enrolled'}
-                      {child.childStatusId === 3 && 'Graduated'}
-                    </Tag>
-                  </Descriptions.Item>
-                </Descriptions>
-              ) : (
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-              )}
-            </Card>
           </Content>
         )}
       </Layout>
