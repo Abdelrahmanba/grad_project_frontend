@@ -6,6 +6,7 @@ import {
   Comment,
   Form,
   Layout,
+  message,
   Rate,
   Space,
   Statistic,
@@ -31,6 +32,7 @@ export default function KindergartenHome() {
   const [value, setValue] = useState('')
   const [rating, setRating] = useState(0)
   const [rate, setRate] = useState(0)
+  const pid = useSelector((state) => state.user.user.id)
 
   const token = useSelector((state) => state.user.token)
   const fetchK = async () => {
@@ -58,7 +60,14 @@ export default function KindergartenHome() {
 
   const handleSubmit = async () => {
     if (!value) return
-
+    let reviewed = false
+    reviews.forEach((r) => {
+      if (r.userId === pid) {
+        message.error('You already reviewd this kindergarten')
+        reviewed = true
+      }
+    })
+    if (reviewed) return
     setSubmitting(true)
     const res = await post('/reviews', token, {
       comment: value,
@@ -77,6 +86,7 @@ export default function KindergartenHome() {
   useEffect(() => {
     fetchK()
     fetchR()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
     <Layout className='layout' style={{ backgroundColor: '#efefef', alignItems: 'center' }}>
@@ -201,7 +211,7 @@ export default function KindergartenHome() {
         >
           <Carousel effect='fade' autoplay>
             {kindergarten.imgs.map((e, i) => (
-              <img key={i} src={`${process.env.REACT_APP_API_URL + e}`} />
+              <img key={i} src={`${process.env.REACT_APP_API_URL + e}`} alt='haha' />
             ))}
           </Carousel>
         </Card>
@@ -211,8 +221,9 @@ export default function KindergartenHome() {
           hoverable={false}
           style={{ width: '100%', marginTop: 40 }}
         >
-          {reviews.map((i) => (
+          {reviews.map((i, index) => (
             <Comment
+              key={index}
               author={i.user.firstName + ' ' + i.user.lastName}
               datetime={new Date(i.createdAt).toUTCString()}
               avatar={<Avatar src='https://joeschmoe.io/api/v1/random' alt='Han Solo' />}

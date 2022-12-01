@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { SmileOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
+import { ExclamationCircleOutlined, SmileOutlined } from '@ant-design/icons'
 import { Button, Card, Modal, Pagination, Skeleton, Space } from 'antd'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { deleteCall, get } from '../../utils/apiCall'
 import ApplicationForm from '../applicationForm/applicationForm'
-import { useHistory } from 'react-router-dom'
 const { confirm } = Modal
 
 export default function KinderGartenCards({
@@ -13,7 +13,7 @@ export default function KinderGartenCards({
   appliable,
   url,
   childId,
-  appliedK = [],
+  appliedS = [],
   onUpdate = () => {},
 }) {
   const token = useSelector((state) => state.user.token)
@@ -46,11 +46,8 @@ export default function KinderGartenCards({
     setLoading(false)
   }
   useEffect(() => {
-    const funCall = async () => {
-      await fetchKindergartens()
-    }
-    funCall()
-  }, [])
+    fetchKindergartens()
+  }, [url])
 
   useEffect(() => {
     setKindergartens((kindergartens) => [...kindergartens, newKindergarten])
@@ -59,8 +56,8 @@ export default function KinderGartenCards({
   const [kindergartens, setKindergartens] = useState([])
   const [loading, setLoading] = useState(true)
   const showApply = (e) => {
-    const kindergartenId = e.currentTarget.getAttribute('value')
-    setValues({ childId, kindergartenId })
+    const semesterId = e.currentTarget.getAttribute('value')
+    setValues({ childId, semesterId })
     setOpen(true)
   }
   const showConfirm = async (e) => {
@@ -92,7 +89,10 @@ export default function KinderGartenCards({
       <>
         <Space size={'large'} wrap>
           {kindergartens.map((kindergarten, index) => {
-            const i = appliedK.map((e) => e.kindergartenId).indexOf(kindergarten.id)
+            let i = -1
+            if (appliable) {
+              i = appliedS.map((e) => e.semesterId).indexOf(kindergarten.runningSemester.id)
+            }
             return (
               <Card
                 className='card'
@@ -104,7 +104,7 @@ export default function KinderGartenCards({
                     ? [
                         i !== -1 ? (
                           <Button
-                            value={appliedK[i].id}
+                            value={appliedS[i].id}
                             type='primary'
                             onClick={showConfirm}
                             block
@@ -114,7 +114,7 @@ export default function KinderGartenCards({
                           </Button>
                         ) : (
                           <Button
-                            value={kindergarten.id}
+                            value={kindergarten.runningSemester.id}
                             type='primary'
                             onClick={showApply}
                             block

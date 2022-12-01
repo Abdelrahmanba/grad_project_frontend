@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 
+import { DashboardOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons'
 import { Layout, Menu } from 'antd'
-import { DashboardOutlined, MailOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons'
-import Allusers from '../manager/allusers'
 import AllChildren from '../manager/allchildren'
 import AllKindergartens from '../manager/allKindergartens'
-import User from '../statistics/users/user'
+import Allusers from '../manager/allusers'
+import ApplicationStat from '../statistics/applicationStat'
 import ChildrenS from '../statistics/children/children'
 import KindergartensS from '../statistics/kindergartens/kindergartens'
-const { Sider, Header, Content, Footer } = Layout
+import User from '../statistics/users/user'
+const { Sider, Content  } = Layout
 
 export default function ManagerDashboard() {
   const [current, setCurrent] = useState('allUsers')
@@ -38,7 +39,7 @@ export default function ManagerDashboard() {
         { label: 'Users', key: 'usersS' },
         { label: 'Children', key: 'childrenS' },
         { label: 'Kindergartens', key: 'kindergartensS' },
-        { label: 'Applications', key: 'applicationsS' },
+        { label: 'Applications', key: 'applicationS' },
       ],
     },
   ]
@@ -63,6 +64,7 @@ export default function ManagerDashboard() {
           {current === 'usersS' && <User />}
           {current === 'childrenS' && <ChildrenS />}
           {current === 'kindergartensS' && <KindergartensS />}
+          {current === 'applicationS' && <ApplicationStat />}
         </Content>
       </Layout>
     </>

@@ -1,11 +1,9 @@
-import { Breadcrumb, Col, Layout, Row, Spin, Typography } from 'antd'
-import React from 'react'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
-import { setUser } from '../../redux/userSlice'
 import { HomeOutlined, UserOutlined } from '@ant-design/icons'
+import { Breadcrumb, Col, Layout, Row, Spin, Typography } from 'antd'
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setUser } from '../../redux/userSlice'
 import { patchCall } from '../../utils/apiCall'
-import { useState } from 'react'
 const { Content } = Layout
 
 export default function Settings() {

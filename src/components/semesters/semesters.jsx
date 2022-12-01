@@ -4,8 +4,9 @@ import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom/cjs/react-router-dom'
 import { deleteCall, get, post } from '../../utils/apiCall'
 import { PlusOutlined } from '@ant-design/icons'
+import { Link } from 'react-router-dom'
 
-export default function Semesters() {
+export default function Semesters({ onClick }) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const token = useSelector((state) => state.user.token)
   const [count, setCount] = useState(0)
@@ -26,6 +27,8 @@ export default function Semesters() {
       endDate: values.se[1].format('YYYY-MM-DD'),
       registrationExpiration: values.registrationExpiration.format('YYYY-MM-DD'),
       kindergartenId: kid,
+      name: values.name,
+      tuition: values.tuition,
     })
     if (res.ok) {
       fetchAllSemetsers()
@@ -62,8 +65,12 @@ export default function Semesters() {
   const columns = [
     {
       title: 'Name',
-      dataIndex: 'name',
       key: 'name',
+      render: (n) => (
+        <Button type='link' onClick={() => onClick(n.id)}>
+          {n.name}
+        </Button>
+      ),
     },
     {
       title: 'Tuition',
@@ -112,9 +119,10 @@ export default function Semesters() {
       key: 'operation',
       fixed: 'right',
       width: 100,
-      render: ({ id }) => (
+      render: ({ id, endDate }) => (
         <span>
           <Button
+            disabled={new Date(endDate) > new Date()}
             type='link'
             onClick={async () => {
               await deleteCall('/semesters/' + id, token)
@@ -196,12 +204,12 @@ export default function Semesters() {
             </Col>
             <Col span={12}>
               <Form.Item
-                name='tution'
-                label='Tution'
+                name='tuition'
+                label='Tuition'
                 rules={[
                   {
                     required: true,
-                    message: 'Please enter tution in US $',
+                    message: 'Please enter tuition in US $',
                   },
                 ]}
               >

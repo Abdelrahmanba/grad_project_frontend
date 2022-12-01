@@ -1,8 +1,7 @@
-import { Pie, Column } from '@ant-design/plots'
+import { Column, Pie } from '@ant-design/plots'
 import { Segmented } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import landing from '../../../pages/landing/landing'
 import { get } from '../../../utils/apiCall'
 
 export default function CityStat() {
@@ -23,6 +22,7 @@ export default function CityStat() {
   }
   useEffect(() => {
     fetchState()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const barConfig = {
@@ -67,8 +67,8 @@ export default function CityStat() {
         onChange={(e) => setDiagram(e)}
         style={{ marginBottom: '70px' }}
       />
-      {diagram == 'Rose Diagram' && <Pie loading={loading} {...config} />}
-      {diagram == 'Bar Diagram' && <Column loading={loading} {...barConfig} />}
+      {diagram === 'Rose Diagram' && <Pie loading={loading} {...config} />}
+      {diagram === 'Bar Diagram' && <Column loading={loading} {...barConfig} />}
     </>
   )
 }

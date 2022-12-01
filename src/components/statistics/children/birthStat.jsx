@@ -1,9 +1,9 @@
 import { Column } from '@ant-design/plots'
 import { DatePicker, Space } from 'antd'
+import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { get } from '../../../utils/apiCall'
-import moment from 'moment'
 
 export default function NewJoiners() {
   const [data, setData] = useState([])

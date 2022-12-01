@@ -1,15 +1,15 @@
 import { Avatar, Empty, Layout, List, PageHeader } from 'antd'
-import React, { useEffect, useState } from 'react'
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import React, { useEffect, useState } from 'react'
 
-import { useHistory, useParams } from 'react-router'
-import { get } from '../../utils/apiCall'
 import { useSelector } from 'react-redux'
+import { useHistory, useParams } from 'react-router'
 import { Link } from 'react-router-dom'
+import { get } from '../../utils/apiCall'
 const { Content } = Layout
 
 export default function Messages() {
-  const { kid, cid } = useParams()
+  const { id } = useParams()
   const db = getFirestore()
   const history = useHistory()
   const [child, setChild] = useState({ imgs: [], user: {} })
@@ -19,7 +19,7 @@ export default function Messages() {
   const [loading, setLoading] = useState(false)
 
   const token = useSelector((state) => state.user.token)
-  const docRef = doc(db, 'children', cid.toString())
+  const docRef = doc(db, 'children', id.toString())
   const getDocs = async () => {
     setLoading(true)
     const docSnap = await getDoc(docRef)
@@ -36,7 +36,7 @@ export default function Messages() {
   const fetchChild = async () => {
     setLoading(true)
 
-    const res = await get(`/children/${cid}`, token)
+    const res = await get(`/children/${id}`, token)
     if (res.ok) {
       const resJson = await res.json()
       setChild(resJson)
@@ -60,7 +60,7 @@ export default function Messages() {
   }, [])
 
   return (
-    <Layout className='layout'>
+    <Layout className='layout' style={{ width: '100%' }}>
       <Content className='content'>
         <PageHeader
           className='site-page-header'
@@ -81,7 +81,7 @@ export default function Messages() {
               <List.Item key={i}>
                 <List.Item.Meta
                   avatar={<Avatar src={`${process.env.REACT_APP_API_URL + k.imgs[0]}`} />}
-                  title={<Link to={'/messages/' + cid + '/' + kindergartens[i]}>{k.name}</Link>}
+                  title={<Link to={'/messages/' + id + '/' + kindergartens[i]}>{k.name}</Link>}
                   description={k.locationFormatted}
                 />
               </List.Item>

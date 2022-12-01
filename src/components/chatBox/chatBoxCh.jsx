@@ -1,4 +1,4 @@
-import { Avatar, Breadcrumb, Button, Empty, Form, Input, Layout, List, PageHeader } from 'antd'
+import {  Button, Empty, Form, Input, Layout, PageHeader } from 'antd'
 import React, { useEffect, useState } from 'react'
 import {
   doc,
@@ -18,7 +18,7 @@ import { useSelector } from 'react-redux'
 import { db } from '../../utils/firebase'
 const { Content } = Layout
 
-export default function ChatBoxCh(type) {
+export default function ChatBoxCh() {
   const { kid, cid } = useParams()
   const [child, setChild] = useState({ imgs: [], user: {} })
   const [value, setValue] = useState('')

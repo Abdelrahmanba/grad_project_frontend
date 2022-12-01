@@ -1,20 +1,39 @@
-import { Button, Card, Layout, message, Space, Spin } from 'antd'
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { get, post } from '../../utils/apiCall'
 import {
   BarChartOutlined,
-  SwapRightOutlined,
-  LineChartOutlined,
   DotChartOutlined,
+  LineChartOutlined,
   RightSquareOutlined,
+  SwapRightOutlined,
 } from '@ant-design/icons'
-import './plans.scss'
+import { Button, Layout, message, Space, Spin } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import landing from '../../pages/landing/landing'
+import { get, post } from '../../utils/apiCall'
+import './plans.scss'
 export default function Plans({ kindergartenId }) {
   const [plans, setPlans] = useState([])
+  const [subscribed, setSubscribed] = useState(false)
+
   const [loading, setLaoding] = useState(true)
   const token = useSelector((state) => state.user.token)
+
+  const fetchSubs = async () => {
+    const res = await get(
+      `/subscriptions/kindergartens/${kindergartenId}?includePlan=true&includeService=true&includeKindergarten=false&isActive=true&orderBy=end_time&orderType=desc`,
+      token
+    )
+    if (res.ok) {
+      const subs = await res.json()
+      subs.rows.forEach((element) => {
+        if (element.plan.serviceId === 1) {
+          setSubscribed(true)
+        }
+      })
+    }
+    setLaoding(false)
+  }
+
   const fetchPlans = async () => {
     const res = await get('/plans/services/1', token)
     if (res.ok) {
@@ -32,6 +51,8 @@ export default function Plans({ kindergartenId }) {
   }
   useEffect(() => {
     fetchPlans()
+    fetchSubs()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const logos = [
     <BarChartOutlined
@@ -118,12 +139,14 @@ export default function Plans({ kindergartenId }) {
                   <li className='pricing-features-item'>24 Hours Support</li>
                 </ul>
                 <span className='pricing-price'>{e.price}$</span>
+
                 <Button
                   onClick={() => subscribe(e.id)}
-                  type={i == 1 ? 'primary' : 'default'}
+                  type={i === 1 ? 'primary' : 'default'}
                   style={{ marginTop: 30, width: 120, height: 50, border: 'red 1px solid' }}
+                  disabled={subscribed}
                 >
-                  Register
+                  {subscribed ? 'Registered' : 'Register'}
                 </Button>
               </div>
             ))}

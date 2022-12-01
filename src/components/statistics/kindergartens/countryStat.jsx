@@ -1,5 +1,4 @@
 import { AreaMap } from '@ant-design/maps'
-import { DatePicker, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { get } from '../../../utils/apiCall'
@@ -22,7 +21,7 @@ export default function CountryStat() {
       if (res.ok) {
         const resJson = await res.json()
         contriesJson.forEach((element) => {
-          const index = resJson.features.findIndex((e) => e.properties.name == element.country)
+          const index = resJson.features.findIndex((e) => e.properties.name === element.country)
           if (index === -1) {
             resJson.features[80].properties.count = resJson.features[80].properties.count
               ? (resJson.features[80].properties.count += element.count)
@@ -44,6 +43,7 @@ export default function CountryStat() {
   }
   useEffect(() => {
     fetchState()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const config = {

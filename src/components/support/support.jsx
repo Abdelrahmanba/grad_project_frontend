@@ -1,12 +1,11 @@
-import { Avatar, Breadcrumb, Empty, Layout, List, PageHeader } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { Avatar, Empty, Layout, List, PageHeader } from 'antd'
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import React, { useEffect, useState } from 'react'
 
-import { HomeOutlined, UserOutlined } from '@ant-design/icons'
-import { useHistory, useParams } from 'react-router'
-import { get } from '../../utils/apiCall'
 import { useSelector } from 'react-redux'
+import { useHistory, useParams } from 'react-router'
 import { Link } from 'react-router-dom'
+import { get } from '../../utils/apiCall'
 const { Content } = Layout
 
 export default function Messages() {
