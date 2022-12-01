@@ -17,6 +17,7 @@ import KindergartenControl from '../pages/kindergartenControl/kindergartenContro
 import ChatBoxCh from '../components/chatBox/chatBoxCh'
 import ChatBoxK from '../components/chatBox/chatBoxK'
 import Plans from '../components/plans/plans'
+import Sem from '../components/sem/sem'
 
 const Router = () => {
   return (
@@ -37,6 +38,8 @@ const Router = () => {
 
         <Route path='/child/:id' exact component={ChildHome} />
         <Route path='/kindergarten/:kid' exact component={KindergartenControl} />
+        <Route path='/kindergarten/:kid/s/:sid' exact component={Sem} />
+
         <Route path='/kindergarten/:kid/plans/hr' component={Plans} />
 
         <Route path='/all-kindergartens' component={KindergartensList} />

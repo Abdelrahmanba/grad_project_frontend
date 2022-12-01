@@ -1,15 +1,14 @@
-import { PlusOutlined } from '@ant-design/icons'
 import {
   Button,
   Col,
   DatePicker,
+  Descriptions,
+  Divider,
   Drawer,
   Form,
   Input,
   message,
-  Modal,
   Row,
-  Select,
   Space,
   Table,
 } from 'antd'
@@ -18,12 +17,13 @@ import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom/cjs/react-router-dom'
 import { deleteCall, get, post } from '../../utils/apiCall'
 
-export default function Employees() {
+export default function TimeOff() {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const token = useSelector((state) => state.user.token)
   const [count, setCount] = useState(0)
   const [employees, setEmployees] = useState([])
   const [jobs, setJobs] = useState([])
+  const [employee, setEmployee] = useState({})
 
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
@@ -31,7 +31,6 @@ export default function Employees() {
 
   const [form] = Form.useForm()
   const [open, setOpen] = useState(false)
-
   const fetchAllJobs = async (page = 1) => {
     setLoading(true)
     setPage(page)
@@ -50,13 +49,28 @@ export default function Employees() {
     }
     setLoading(false)
   }
+  const fetchAllT = async (id) => {
+    setLoading(true)
+    setPage(page)
+
+    const res = await get(
+      `/timeoffs/employee/${id}?pageNumber=1&pageSize=10&includeTimeOffCategory=true`,
+      token
+    )
+    if (res.ok) {
+      const resJson = await res.json()
+      return resJson.rows
+    }
+    setLoading(false)
+  }
 
   const onOk = async () => {
     const values = await form.validateFields()
-    const res = await post(`/employees`, token, {
+    const res = await post(`/timeoffs`, token, {
       ...values,
-      hireDate: values.hireDate.format('YYYY-MM-DD'),
-      dateOfBirth: values.dateOfBirth.format('YYYY-MM-DD'),
+      timeOffCategoryId:2,
+      startDate: values.startDate.format('YYYY-MM-DD'),
+      endDate: values.endDate.format('YYYY-MM-DD'),
     })
     if (res.ok) {
       fetchAllEmployees(page)
@@ -84,6 +98,11 @@ export default function Employees() {
         ...e,
         key: e.id,
       }))
+
+      for (const emp of parsed) {
+        const b = await fetchAllT(emp.id)
+        emp.timeOff = b
+      }
       setEmployees(parsed)
       setCount(resJson.count)
     }
@@ -105,11 +124,7 @@ export default function Employees() {
       dataIndex: 'lastName',
       key: 'lastName',
     },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-    },
+
     {
       title: 'Phone',
       dataIndex: 'phone',
@@ -142,29 +157,19 @@ export default function Employees() {
       key: 'operation',
       fixed: 'right',
       width: 170,
-      render: ({ id, jobTitle, description }) => (
+      render: (em) => (
         <span>
           <Button
             type='link'
             onClick={async () => {
               setLoading(true)
               setOpen(true)
+              setEmployee(em)
               fetchAllEmployees(page)
               setLoading(false)
             }}
           >
-            Edit
-          </Button>
-          <Button
-            type='link'
-            onClick={async () => {
-              setLoading(true)
-              await deleteCall('/jobs/' + id, token)
-              fetchAllEmployees(page)
-              setLoading(false)
-            }}
-          >
-            Remove
+            Add Time Off
           </Button>
         </span>
       ),
@@ -184,15 +189,8 @@ export default function Employees() {
   }
   return (
     <div>
-      <h1 style={{ marginTop: 0 }}>Employees</h1>
-      <Button
-        type='primary'
-        onClick={showDrawer}
-        icon={<PlusOutlined />}
-        style={{ marginBottom: 20 }}
-      >
-        New Employee
-      </Button>
+      <h1 style={{ marginTop: 0 }}>Time Off</h1>
+
       <Table
         bordered
         size='large'
@@ -205,12 +203,47 @@ export default function Employees() {
           position: ['bottomLeft'],
         }}
         loading={loading}
-        rowSelection={rowSelection}
         columns={columns}
         dataSource={employees}
+        expandable={{
+          childrenColumnName: 'none',
+          rowExpandable: (record) => record.timeOff.length !== 0,
+          expandedRowRender: (record) =>
+            record.timeOff.map((b, index) => (
+              <>
+                <Descriptions column={2} key={index} title='Time Off'>
+                  <Descriptions.Item key={'p' + index} label='duration'>
+                    {b.duration}
+                  </Descriptions.Item>
+                  <Descriptions.Item key={'pcxx' + index} label='Start Date'>
+                    {b.startDate}
+                  </Descriptions.Item>
+                  <Descriptions.Item key={'pcx' + index} label='End Date'>
+                    {b.endDate}
+                  </Descriptions.Item>
+                  <Descriptions.Item key={'pcx' + index} label='Duration'>
+                    {b.duration}
+                  </Descriptions.Item>
+                  <Descriptions.Item key={'pcx' + index} label='Note'>
+                    {b.note}
+                  </Descriptions.Item>
+                </Descriptions>
+                <Button
+                  type='link'
+                  onClick={async () => {
+                    await deleteCall('/timeoffs/' + b.id)
+                    await fetchAllEmployees()
+                  }}
+                >
+                  Delete Time Off
+                </Button>
+                {index !== record.timeOff.length - 1 && <Divider />}
+              </>
+            )),
+        }}
       />
       <Drawer
-        title='Add new Employee'
+        title='Add New Bouns'
         width={600}
         onClose={onClose}
         open={open}
@@ -230,26 +263,19 @@ export default function Employees() {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name='firstName'
-                label='First Name'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter First Name',
-                  },
-                ]}
+                initialValue={employee.id}
+                name='employeeId'
+                label={employee.firstName + ' ' + employee.lastName}
               >
-                <Input />
+                <Input hidden />
               </Form.Item>
-            </Col>
-            <Col span={12}>
               <Form.Item
-                name='lastName'
-                label='Last Name'
+                name='note'
+                label='Note'
                 rules={[
                   {
                     required: true,
-                    message: 'Please enter Last Name',
+                    message: 'Please enter Note',
                   },
                 ]}
               >
@@ -259,89 +285,16 @@ export default function Employees() {
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item
-                name='email'
-                label='Email'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter Email',
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name='phone'
-                label='phone'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter phone',
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name='country'
-                label='Country'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter Country',
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name='city'
-                label='City'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter Last Name',
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name='hireDate'
-                label='Hire Date'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter hireDate',
-                  },
-                ]}
-              >
+              <Form.Item name='startDate' label={'Start Date'}>
                 <DatePicker />
               </Form.Item>
-            </Col>
-            <Col span={12}>
               <Form.Item
-                name='dateOfBirth'
-                label='Date Of Birth'
+                name='endDate'
+                label='End Date'
                 rules={[
                   {
                     required: true,
-                    message: 'Please enter Last Name',
+                    message: 'Please enter Amount',
                   },
                 ]}
               >
@@ -352,30 +305,16 @@ export default function Employees() {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name='salary'
-                label='Salary'
+                name='duration'
+                label='duration'
                 rules={[
                   {
                     required: true,
-                    message: 'Please enter salary',
+                    message: 'Please enter duration',
                   },
                 ]}
               >
                 <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name='jobId'
-                label='Job'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter Job',
-                  },
-                ]}
-              >
-                <Select options={jobs} />
               </Form.Item>
             </Col>
           </Row>

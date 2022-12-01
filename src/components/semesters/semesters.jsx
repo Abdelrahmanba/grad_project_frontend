@@ -4,8 +4,9 @@ import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom/cjs/react-router-dom'
 import { deleteCall, get, post } from '../../utils/apiCall'
 import { PlusOutlined } from '@ant-design/icons'
+import { Link } from 'react-router-dom'
 
-export default function Semesters() {
+export default function Semesters({ onClick }) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const token = useSelector((state) => state.user.token)
   const [count, setCount] = useState(0)
@@ -64,8 +65,12 @@ export default function Semesters() {
   const columns = [
     {
       title: 'Name',
-      dataIndex: 'name',
       key: 'name',
+      render: (n) => (
+        <Button type='link' onClick={() => onClick(n.id)}>
+          {n.name}
+        </Button>
+      ),
     },
     {
       title: 'Tuition',

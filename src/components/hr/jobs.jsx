@@ -1,29 +1,66 @@
-import { Table, Tag } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { PlusOutlined } from '@ant-design/icons'
+import {
+  Button,
+  Col,
+  DatePicker,
+  Drawer,
+  Form,
+  Input,
+  message,
+  Modal,
+  Row,
+  Space,
+  Table,
+} from 'antd'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom/cjs/react-router-dom'
-import { get } from '../../utils/apiCall'
+import { deleteCall, get, patchCall, post } from '../../utils/apiCall'
 
 export default function Jobs() {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const token = useSelector((state) => state.user.token)
   const [count, setCount] = useState(0)
   const [jobs, setJobs] = useState([])
+  const [freq, setFreq] = useState({})
+
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const { kid } = useParams()
 
+  const [form] = Form.useForm()
+  const [open, setOpen] = useState(false)
+
+  const onOk = async () => {
+    const values = await form.validateFields()
+    const res = await post(`/jobs`, token, { ...values, kindergartenId: kid })
+    if (res.ok) {
+      fetchAllJobs(page)
+    } else {
+      const resJson = await res.json()
+      message.error(resJson.msg)
+    }
+    form.resetFields()
+    setOpen(false)
+  }
+  const onClose = async (e) => {
+    setOpen(false)
+  }
   const fetchAllJobs = async (page = 1) => {
     setLoading(true)
     setPage(page)
 
-    const res = await get(`/jobs/kindergarten/${kid}?pageNumber=1&pageSize=1`, token)
+    const res = await get(
+      `/jobs/kindergarten/${kid}?pageNumber=${page}&pageSize=10&includeKindergarten=false`,
+      token
+    )
     if (res.ok) {
       const resJson = await res.json()
       const parsed = resJson.rows.map((e) => ({
         ...e,
         key: e.id,
       }))
+      setFreq(resJson.jobFreqs)
       setJobs(parsed)
       setCount(resJson.count)
     }
@@ -35,66 +72,54 @@ export default function Jobs() {
 
   const columns = [
     {
-      title: 'First Name',
-      dataIndex: 'firstName',
-      key: 'firstName',
+      title: 'Title',
+      dataIndex: 'jobTitle',
+      key: 'title',
     },
     {
-      title: 'Last Name',
-      dataIndex: 'lastName',
-      key: 'lastName',
-    },
-    Table.EXPAND_COLUMN,
-    {
-      title: 'Parent',
-      dataIndex: 'parent',
-      key: 'parent',
+      title: 'description',
+      dataIndex: 'description',
+      key: 'description',
     },
     {
-      title: 'Status',
-      key: 'status',
-      dataIndex: 'childStatusId',
-      render: (tag) => {
-        let color
-        if (tag === 1) {
-          color = 'volcano'
-        }
-        if (tag === 2) {
-          color = 'geekblue'
-        }
-        if (tag === 3) {
-          color = 'green'
-        }
-        return (
-          <span>
-            <Tag color={color} key={tag}>
-              {tag === 1 && 'Looking For Kindergarten'}
-              {tag === 2 && 'Enrolled'}
-              {tag === 3 && 'Graduated'}
-            </Tag>
-          </span>
-        )
+      title: 'No. Of Employees',
+      key: 'emp',
+      render: (e) => {
+        return freq[e.jobTitle]
       },
     },
 
     {
-      title: 'Kindergarten',
-      dataIndex: 'kindergarten',
-      key: 'kindergarten',
-      render: (k) => {
-        if (k === null) {
-          return 'N/A'
-        } else {
-          return k.name
-        }
-      },
-    },
-    {
       title: 'Actions',
       key: 'operation',
       fixed: 'right',
-      width: 100,
-      render: () => <a>Remove</a>,
+      width: 170,
+      render: ({ id, jobTitle, description }) => (
+        <span>
+          <Button
+            type='link'
+            onClick={async () => {
+              setLoading(true)
+              setOpen(true)
+              fetchAllJobs(page)
+              setLoading(false)
+            }}
+          >
+            Edit
+          </Button>
+          <Button
+            type='link'
+            onClick={async () => {
+              setLoading(true)
+              await deleteCall('/jobs/' + id, token)
+              fetchAllJobs(page)
+              setLoading(false)
+            }}
+          >
+            Remove
+          </Button>
+        </span>
+      ),
     },
   ]
   const onSelectChange = (newSelectedRowKeys) => {
@@ -105,9 +130,21 @@ export default function Jobs() {
     selectedRowKeys,
     onChange: onSelectChange,
   }
+
+  const showDrawer = () => {
+    setOpen(true)
+  }
   return (
     <div>
       <h2 style={{ marginTop: 0 }}>Jobs</h2>
+      <Button
+        type='primary'
+        onClick={showDrawer}
+        icon={<PlusOutlined />}
+        style={{ marginBottom: 20 }}
+      >
+        New Job
+      </Button>
       <Table
         bordered
         size='large'
@@ -124,6 +161,59 @@ export default function Jobs() {
         columns={columns}
         dataSource={jobs}
       />
+      <Drawer
+        title='Create a new Semester'
+        width={600}
+        onClose={onClose}
+        open={open}
+        bodyStyle={{
+          paddingBottom: 80,
+        }}
+        extra={
+          <Space>
+            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={onOk} type='primary'>
+              Submit
+            </Button>
+          </Space>
+        }
+      >
+        <Form layout='vertical' form={form}>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name='jobTitle'
+                label='Job Title'
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter Job Title',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={24}>
+              <Form.Item
+                name='description'
+                label='Description'
+                rules={[
+                  {
+                    required: true,
+                    message: 'please enter description',
+                  },
+                ]}
+              >
+                <Input.TextArea rows={4} placeholder='please enter description' />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </Drawer>
     </div>
   )
 }

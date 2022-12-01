@@ -32,12 +32,15 @@ import Semesters from '../../components/semesters/semesters'
 import ParentsS from '../../components/statistics/parents/parents'
 import RegAppS from '../../components/statistics/regApp/regAppS'
 import ChildrenS from '../../components/statistics/kchildren/children'
+import TimeOff from '../../components/hr/timeOff'
+import Sem from '../../components/sem/sem'
 const { Sider, Content } = Layout
 
 export default function KindergartenControl() {
   const [current, setCurrent] = useState('applications')
   const { kid } = useParams()
   const [sub, setSub] = useState(0)
+  const [sid, setSid] = useState(-1)
 
   const token = useSelector((state) => state.user.token)
 
@@ -84,6 +87,7 @@ export default function KindergartenControl() {
             { label: 'Jobs', key: 'jobs', icon: <LaptopOutlined /> },
             { label: 'Employees', key: 'employees', icon: <UsergroupAddOutlined /> },
             { label: 'Bounces', key: 'bounes', icon: <DollarOutlined /> },
+            { label: 'Time Off', key: 'timeOff', icon: <BookOutlined /> },
           ],
         },
       ],
@@ -134,7 +138,18 @@ export default function KindergartenControl() {
         {current === 'jobs' && <Jobs />}
         {current === 'employees' && <Employees />}
         {current === 'bounes' && <Bounses />}
-        {current === 'semesters' && <Semesters />}
+        {current === 'timeOff' && <TimeOff />}
+
+        {current === 'semesters' && (
+          <Semesters
+            onClick={(id) => {
+              setSid(id)
+              setCurrent('sem')
+            }}
+          />
+        )}
+        {current === 'sem' && <Sem semId={sid} />}
+
         {current === 'parentsS' && <ParentsS />}
         {current === 'applicationS' && <RegAppS />}
         {current === 'childrenS' && <ChildrenS />}
