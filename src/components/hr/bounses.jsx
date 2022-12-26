@@ -49,20 +49,6 @@ export default function Bounses() {
     }
     setLoading(false)
   }
-  const fetchAllBounses = async (id) => {
-    setLoading(true)
-    setPage(page)
-
-    const res = await get(
-      `/bonuses/employee/${id}?pageNumber=1&pageSize=10&includeEmployee=false`,
-      token
-    )
-    if (res.ok) {
-      const resJson = await res.json()
-      return resJson.rows
-    }
-    setLoading(false)
-  }
 
   const onOk = async () => {
     const values = await form.validateFields()
@@ -86,21 +72,15 @@ export default function Bounses() {
     setLoading(true)
     setPage(page)
 
-    const res = await get(
-      `/employees/kindergarten/${kid}?pageNumber=${page}&pageSize=10&includeKindergarten=false`,
-      token
-    )
+    const res = await get(`/bonuses/kindergarten/2?includeEmployee=true&includeJob=false`, token)
     if (res.ok) {
       const resJson = await res.json()
       const parsed = resJson.rows.map((e) => ({
         ...e,
         key: e.id,
+        ...{ ...e.employee },
       }))
-
-      for (const emp of parsed) {
-        const b = await fetchAllBounses(emp.id)
-        emp.bounses = b
-      }
+      console.log(parsed)
       setEmployees(parsed)
       setCount(resJson.count)
     }
@@ -113,6 +93,17 @@ export default function Bounses() {
 
   const columns = [
     {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+    },
+    {
+      title: 'Date',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+    },
+
+    {
       title: 'First Name',
       dataIndex: 'firstName',
       key: 'firstName',
@@ -122,58 +113,22 @@ export default function Bounses() {
       dataIndex: 'lastName',
       key: 'lastName',
     },
-
-    {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
-    },
-    {
-      title: 'Hire Date',
-      dataIndex: 'hireDate',
-      key: 'hireDate',
-    },
-    {
-      title: 'Salary',
-      dataIndex: 'salary',
-      key: 'salary',
-    },
-    {
-      title: 'Job',
-      key: 'jobId',
-      render: ({ jobId }) => {
-        const job = jobs.find((e) => e.value == jobId)
-        if (job) {
-          return job.label
-        } else {
-          return ''
-        }
-      },
-    },
     {
       title: 'Actions',
-      key: 'operation',
-      fixed: 'right',
-      width: 170,
-      render: (em) => (
-        <span>
-          <Button
-            type='link'
-            onClick={async () => {
-              setLoading(true)
-              setOpen(true)
-              setEmployee(em)
-              fetchAllEmployees(page)
-              setLoading(false)
-            }}
-          >
-            Add Bonus
-          </Button>
-        </span>
+      key: 'Actions',
+      render: (r) => (
+        <Button
+          type='link'
+          onClick={async () => {
+            await deleteCall('/bonuses/' + r.id, token)
+            await fetchAllEmployees()
+          }}
+        >
+          Delete Bonus
+        </Button>
       ),
     },
   ]
-
 
   const showDrawer = () => {
     setOpen(true)
@@ -198,9 +153,8 @@ export default function Bounses() {
         dataSource={employees}
         expandable={{
           childrenColumnName: 'none',
-          rowExpandable: (record) => record.bounses.length !== 0,
           expandedRowRender: (record) =>
-            record.bounses.map((b, index) => (
+            record.map((b, index) => (
               <>
                 <Descriptions column={2} key={index} title='Bonuses'>
                   <Descriptions.Item key={'p' + index} label='Amount'>
