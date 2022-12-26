@@ -65,6 +65,16 @@ export default function Allusesrs() {
       dataIndex: 'roleId',
       render: (r) => roles[r],
     },
+    {
+      title: 'Country',
+      key: 'country',
+      dataIndex: 'country',
+    },
+    {
+      title: 'City',
+      key: 'city',
+      dataIndex: 'city',
+    },
     Table.EXPAND_COLUMN,
     {
       title: 'Children',

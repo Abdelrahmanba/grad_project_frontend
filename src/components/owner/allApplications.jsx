@@ -7,7 +7,7 @@ import { get, patchCall } from '../../utils/apiCall'
 
 export default function AllApplications() {
   const { kid } = useParams()
-  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [kindergarten, setKindergarten] = useState({})
   const token = useSelector((state) => state.user.token)
   const [count, setCount] = useState(0)
   const [applications, setApplications] = useState([])
@@ -75,6 +75,7 @@ export default function AllApplications() {
     const res = await get(`/kindergartens/${kid}?includeRunningSemester=true`, token)
     if (res.ok) {
       const resJson = await res.json()
+      setKindergarten(resJson)
       if (resJson.runningSemester != null) {
         await fetchSemster(resJson.runningSemester.id)
         await fetchAllA(1, resJson.runningSemester.id)
@@ -152,27 +153,38 @@ export default function AllApplications() {
     {
       title: 'Actions',
       key: 'actions',
-      render: (record) => (
-        <ButtonGroup>
-          {record.ApplicationStatus !== 2 && (
-            <Button type='primary' onClick={() => updateApp(record.id, 2)}>
-              Accept
-            </Button>
-          )}
-          <Button type='ghost' onClick={() => updateApp(record.id, 4)}>
-            Reject
-          </Button>
-        </ButtonGroup>
-      ),
+      render: (record) => {
+        return (
+          <ButtonGroup>
+            {record.ApplicationStatus == 1 && (
+              <Button type='primary' onClick={() => updateApp(record.id, 2)}>
+                Accept
+              </Button>
+            )}
+            {record.ApplicationStatus == 2 && (
+              <Button type='primary' onClick={() => updateApp(record.id, 3)}>
+                Confirm
+              </Button>
+            )}
+            {record.ApplicationStatus !== 4 && (
+              <Button type='ghost' onClick={() => updateApp(record.id, 4)}>
+                Reject
+              </Button>
+            )}
+          </ButtonGroup>
+        )
+      },
     },
   ]
 
   const updateApp = async (id, status) => {
     setLoading(true)
+    console.log(id)
+
     const res = await patchCall('/RegisterApplication/' + id, token, {
       applicationStatus: status,
     })
-    await fetchAllA(page)
+    await fetchAllA(page, kindergarten.runningSemester.id)
     setLoading(false)
   }
   if (loading) {

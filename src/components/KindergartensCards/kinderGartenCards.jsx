@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { deleteCall, get } from '../../utils/apiCall'
 import ApplicationForm from '../applicationForm/applicationForm'
+import { imgs } from '../../utils/kindergartenImgs'
 const { confirm } = Modal
 
 export default function KinderGartenCards({
@@ -90,7 +91,8 @@ export default function KinderGartenCards({
         <Space size={'large'} wrap>
           {kindergartens.map((kindergarten, index) => {
             let i = -1
-            if (appliable) {
+            const app = appliable && kindergarten.runningSemester
+            if (app) {
               i = appliedS.map((e) => e.semesterId).indexOf(kindergarten.runningSemester.id)
             }
             return (
@@ -100,7 +102,7 @@ export default function KinderGartenCards({
                 hoverable
                 key={index}
                 actions={
-                  appliable
+                  app
                     ? [
                         i !== -1 ? (
                           <Button
@@ -143,23 +145,38 @@ export default function KinderGartenCards({
                       }}
                     />
                   ) : (
-                    <SmileOutlined
+                    <div
                       onClick={() =>
                         appliable
                           ? history.push('/child/' + childId + '/kindergarten/' + kindergarten.id)
                           : history.push('/kindergarten/' + kindergarten.id)
                       }
-                      style={{ fontSize: 120, margin: '30px 0' }}
+                      alt='example'
+                      className='cover'
+                      style={{
+                        backgroundImage: `url(
+                    ${imgs[index % 9]}
+                  )`,
+                      }}
                     />
                   )
                 }
               >
                 <Skeleton loading={loading} avatar active>
-                  <Card.Meta
-                    title={kindergarten.name}
-                    description={kindergarten.locationFormatted}
-                  />
+                  <Card.Meta title={kindergarten.name} />
                 </Skeleton>
+                <Space direction='vertical'>
+                  <h4 style={{ color: 'gray', marginTop: 5 }}>
+                    {kindergarten.runningSemester
+                      ? 'Start Date:' + kindergarten.runningSemester.startDate
+                      : ''}
+                  </h4>
+                  <h4 style={{ color: 'gray' }}>
+                    {kindergarten.runningSemester
+                      ? 'Tuition: ' + kindergarten.runningSemester.tuition + '$'
+                      : ''}
+                  </h4>
+                </Space>
               </Card>
             )
           })}
