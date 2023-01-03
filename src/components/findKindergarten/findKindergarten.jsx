@@ -8,6 +8,8 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 import { useForm } from 'antd/lib/form/Form'
 import { useSelector } from 'react-redux'
 import { get } from '../../utils/apiCall'
+import opencage from 'opencage-api-client'
+
 import KinderGartenCards from '../KindergartensCards/kinderGartenCards'
 import { useParams } from 'react-router-dom'
 export default function FindKindergarten() {
@@ -43,11 +45,16 @@ export default function FindKindergarten() {
   const onChange = (value) => {
     setCurrent(value)
   }
-  const successCallback = (position) => {
+  const successCallback = async (position) => {
+    const res = await opencage.geocode({
+      key: 'dfbc15eb0c4f47238c36aa6ae7072741',
+      q: position.coords.latitude + ',' + position.coords.longitude,
+    })
+    console.log(res)
     form.setFieldValue('latitude', position.coords.latitude)
     form.setFieldValue('longitude', position.coords.longitude)
-    form.setFieldValue('city', user.user.city)
-    form.setFieldValue('country', user.user.country)
+    form.setFieldValue('city', res.results[0].components.city)
+    form.setFieldValue('country', res.results[0].components.country)
   }
 
   const onFinish = (values) => {
@@ -193,7 +200,7 @@ export default function FindKindergarten() {
                   <Input placeholder='Optional' />
                 </Form.Item>
                 <Form.Item label='Country' name='country'>
-                  <Select defaultValue={'Palestine'} options={countries} />
+                  <Select options={countries} />
                 </Form.Item>
                 <Form.Item label='City' name='city'>
                   <Input placeholder='Optional' />

@@ -46,14 +46,6 @@ export default function Map({ onChange }) {
     const markerRef = useRef(null)
     const map = useMap()
 
-    // useEffect(() => {
-    //   map.locate({ setView: true }).on('locationfound', function (e) {
-    //     setPosition(e.latlng)
-    //     result.latitude = e.latlng.lat
-    //     result.longitude = e.latlng.lng
-    //     onChange(result)
-    //   })
-    // }, [])
 
     const eventHandlers = useMemo(
       () => ({
