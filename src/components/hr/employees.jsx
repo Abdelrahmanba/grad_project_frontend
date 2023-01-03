@@ -159,7 +159,7 @@ export default function Employees() {
             type='link'
             onClick={async () => {
               setLoading(true)
-              await deleteCall('/jobs/' + id, token)
+              await deleteCall('/employees/' + id, token)
               fetchAllEmployees(page)
               setLoading(false)
             }}

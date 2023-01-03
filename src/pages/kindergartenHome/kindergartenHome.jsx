@@ -19,6 +19,7 @@ import { useHistory } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { get, post } from '../../utils/apiCall'
 import L from 'leaflet'
+import { imgs } from '../../utils/kindergartenImgs'
 
 import './kindergartenHome.scss'
 import TextArea from 'antd/lib/input/TextArea'
@@ -103,12 +104,21 @@ export default function KindergartenHome() {
           hoverable={false}
           style={{ width: '100%' }}
           cover={
-            <div
-              className='kbg'
-              style={{
-                backgroundImage: `url(${process.env.REACT_APP_API_URL + kindergarten.imgs[0]})`,
-              }}
-            />
+            kindergarten.imgs[0] ? (
+              <div
+                className='kbg'
+                style={{
+                  backgroundImage: `url(${process.env.REACT_APP_API_URL + kindergarten.imgs[0]})`,
+                }}
+              />
+            ) : (
+              <div
+                className='kbg'
+                style={{
+                  backgroundImage: `url(${imgs[Math.floor(Math.random() * (8 - 0 + 1)) + 0]})`,
+                }}
+              />
+            )
           }
         >
           <Card.Meta

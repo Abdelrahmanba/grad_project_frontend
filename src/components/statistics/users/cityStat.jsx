@@ -1,5 +1,5 @@
 import { Rose, Column } from '@ant-design/plots'
-import { Segmented } from 'antd'
+import { Segmented, Select } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { get } from '../../../utils/apiCall'
@@ -10,9 +10,19 @@ export default function CityStat() {
   const [loading, setLaoding] = useState(true)
 
   const token = useSelector((state) => state.user.token)
+  const [options, setoptions] = useState([{ value: 'Palestine' }])
 
-  const fetchState = async () => {
-    const res = await get('/stats/users/grouping/city', token)
+  const fetchCountries = async () => {
+    const countries = await get('/stats/users/grouping/country', token)
+    if (countries.ok) {
+      const resJ = await countries.json()
+      const options = resJ.map((e) => ({ value: e.country, label: e.country }))
+      setoptions(options)
+    }
+  }
+
+  const fetchState = async (country = options[0].value) => {
+    const res = await get('/stats/users/grouping/city?country=' + country, token)
     if (res.ok) {
       const resJson = await res.json()
       const data = resJson.map(({ city, count }) => ({ value: count, type: city }))
@@ -22,6 +32,7 @@ export default function CityStat() {
   }
   useEffect(() => {
     fetchState()
+    fetchCountries()
   }, [])
 
   const barConfig = {
@@ -61,6 +72,12 @@ export default function CityStat() {
         options={['Rose Diagram', 'Bar Diagram']}
         onChange={(e) => setDiagram(e)}
         style={{ marginBottom: '70px' }}
+      />
+      <Select
+        options={options}
+        style={{ minWidth: 150 }}
+        defaultValue={options[0].value}
+        onSelect={(e) => fetchState(e)}
       />
       {diagram === 'Rose Diagram' && <Rose {...config} />}
       {diagram === 'Bar Diagram' && <Column {...barConfig} />}
