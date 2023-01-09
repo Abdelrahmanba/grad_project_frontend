@@ -5,7 +5,7 @@ import opencage from 'opencage-api-client'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 
-export default function Map({ onChange, pos = [32.22111, 35.25444] }) {
+export default function Map2({ onChange, pos = [32.22111, 35.25444] }) {
   const [label, setLabel] = useState('Please Select On The Map')
   const [address, setLocAddress] = useState('')
   const [options, setOptions] = useState([])
@@ -43,7 +43,7 @@ export default function Map({ onChange, pos = [32.22111, 35.25444] }) {
     }
   }
 
-  function DraggableMarker({ pos }) {
+  function DraggableMarker({ pos = [32.22111, 35.25444] }) {
     const markerRef = useRef(null)
     const map = useMap()
     const eventHandlers = useMemo(
@@ -67,6 +67,10 @@ export default function Map({ onChange, pos = [32.22111, 35.25444] }) {
       map.setView(position)
     }, [position])
 
+    useEffect(() => {
+      setPosition(pos)
+    }, [pos])
+
     return (
       <Marker
         draggable={true}
@@ -85,21 +89,12 @@ export default function Map({ onChange, pos = [32.22111, 35.25444] }) {
   }
   return (
     <>
-      <h3 style={{ marginBottom: 20, marginTop: 5 }}>{label}</h3>
-      <AutoComplete
-        onChange={(e) => {
-          setLocAddress(e)
-          if (e.length > 4) geocode(e)
-        }}
-        options={options}
-        style={{ zIndex: 99 }}
-        onSelect={(data, o) => {
-          setPosition([o.geometry.lat, o.geometry.lng])
-        }}
+      <MapContainer
+        center={position}
+        zoom={10}
+        scrollWheelZoom={true}
+        style={{ height: 400, width: 600 }}
       >
-        <Input.Search size='large' placeholder='City, State or Country ' />
-      </AutoComplete>
-      <MapContainer center={position} zoom={10} scrollWheelZoom={true} style={{ height: 400 }}>
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'

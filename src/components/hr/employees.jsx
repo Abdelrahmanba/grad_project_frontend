@@ -13,6 +13,7 @@ import {
   Space,
   Table,
 } from 'antd'
+import Search from 'antd/lib/input/Search'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom/cjs/react-router-dom'
@@ -70,12 +71,12 @@ export default function Employees() {
   const onClose = async (e) => {
     setOpen(false)
   }
-  const fetchAllEmployees = async (page = 1) => {
+  const fetchAllEmployees = async (page = 1, value = '') => {
     setLoading(true)
     setPage(page)
 
     const res = await get(
-      `/employees/kindergarten/${kid}?pageNumber=${page}&pageSize=10&includeKindergarten=false`,
+      `/employees/kindergarten/${kid}?pageNumber=${page}&pageSize=10&includeKindergarten=false&searchQuery=${value}`,
       token
     )
     if (res.ok) {
@@ -182,17 +183,31 @@ export default function Employees() {
   const showDrawer = () => {
     setOpen(true)
   }
+  const onSearch = async (value) => {
+    console.log(value)
+    await fetchAllEmployees(page, value)
+  }
+
   return (
     <div>
       <h1 style={{ marginTop: 0 }}>Employees</h1>
-      <Button
-        type='primary'
-        onClick={showDrawer}
-        icon={<PlusOutlined />}
-        style={{ marginBottom: 20 }}
-      >
-        New Employee
-      </Button>
+      <Space direction='vertical'>
+        <Search
+          placeholder='input search text'
+          onSearch={onSearch}
+          style={{
+            width: 200,
+          }}
+        />
+        <Button
+          type='primary'
+          onClick={showDrawer}
+          icon={<PlusOutlined />}
+          style={{ marginBottom: 20 }}
+        >
+          New Employee
+        </Button>
+      </Space>
       <Table
         bordered
         size='large'

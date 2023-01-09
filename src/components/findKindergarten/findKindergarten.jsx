@@ -12,6 +12,7 @@ import opencage from 'opencage-api-client'
 
 import KinderGartenCards from '../KindergartensCards/kinderGartenCards'
 import { useParams } from 'react-router-dom'
+import Map2 from '../map/map2'
 export default function FindKindergarten() {
   const [current, setCurrent] = useState(0)
   const [location, setLocation] = useState({
@@ -23,6 +24,7 @@ export default function FindKindergarten() {
   const [tution, setTution] = useState([-1, -1])
   const [appliedK, setAppliedK] = useState([])
   const [url, seturl] = useState('')
+  const [pos, setPos] = useState([32.22111, 35.25444])
 
   const { id } = useParams()
 
@@ -50,13 +52,24 @@ export default function FindKindergarten() {
       key: 'dfbc15eb0c4f47238c36aa6ae7072741',
       q: position.coords.latitude + ',' + position.coords.longitude,
     })
-    console.log(res)
+    setPos([position.coords.latitude, position.coords.longitude])
+
     form.setFieldValue('latitude', position.coords.latitude)
     form.setFieldValue('longitude', position.coords.longitude)
     form.setFieldValue('city', res.results[0].components.city)
     form.setFieldValue('country', res.results[0].components.country)
   }
-
+  const setPosition = async (position) => {
+    const res = await opencage.geocode({
+      key: 'dfbc15eb0c4f47238c36aa6ae7072741',
+      q: position.latitude + ',' + position.longitude,
+    })
+    setPos([position.latitude, position.longitude])
+    form.setFieldValue('latitude', position.latitude)
+    form.setFieldValue('longitude', position.longitude)
+    form.setFieldValue('city', res.results[0].components.city)
+    form.setFieldValue('country', res.results[0].components.country)
+  }
   const onFinish = (values) => {
     setLocation(values)
     setCurrent(1)
@@ -179,6 +192,7 @@ export default function FindKindergarten() {
                 Get my current Location
               </Button>
               <span>OR</span>
+              <Map2 onChange={setPosition} pos={pos} />
               <Form
                 form={form}
                 style={{ width: '600px' }}

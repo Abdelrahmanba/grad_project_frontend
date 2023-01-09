@@ -53,7 +53,7 @@ const ApplicationForm = ({ open, onCancel, appValues, onUpdate }) => {
     >
       <Form form={form} layout='vertical' name='form_in_modal'>
         <Form.Item
-          label='Files'
+          label='Birth Certificate'
           tooltip='Add any documents that could support your application'
           rules={[
             {

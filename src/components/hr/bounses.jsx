@@ -151,32 +151,6 @@ export default function Bounses() {
         loading={loading}
         columns={columns}
         dataSource={employees}
-        expandable={{
-          childrenColumnName: 'none',
-          expandedRowRender: (record) =>
-            record.map((b, index) => (
-              <>
-                <Descriptions column={2} key={index} title='Bonuses'>
-                  <Descriptions.Item key={'p' + index} label='Amount'>
-                    {b.amount}
-                  </Descriptions.Item>
-                  <Descriptions.Item key={'pc' + index} label='Date'>
-                    {b.createdAt}
-                  </Descriptions.Item>
-                </Descriptions>
-                <Button
-                  type='link'
-                  onClick={async () => {
-                    await deleteCall('/bonuses/' + b.id, token)
-                    await fetchAllEmployees()
-                  }}
-                >
-                  Delete Bonus
-                </Button>
-                {index !== record.bounses.length - 1 && <Divider />}
-              </>
-            )),
-        }}
       />
       <Drawer
         title='Add New Bouns'
