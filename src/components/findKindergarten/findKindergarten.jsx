@@ -92,7 +92,7 @@ export default function FindKindergarten() {
 
   useEffect(() => {
     if (current === 3) {
-      let url = `/matching?pageNumber=1&pageSize=10`
+      let url = ``
       if (location.city !== undefined && location.city !== '') {
         url += `&city=${location.city}`
       }

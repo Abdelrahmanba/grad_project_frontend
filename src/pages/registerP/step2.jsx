@@ -14,14 +14,13 @@ export default function Step2(props) {
   const onFinish = async (values) => {
     setLoading(true)
     const res = await post('/children', token, values)
-    const resJson = await res.json()
     if (res.ok) {
       message.success('New Child Added Successfully')
       const resJson = await res.json()
       await setDoc(doc(db, 'children', resJson.id.toString()), { kindergartens: [] })
       history.push('/dashboard')
     } else {
-      message.error(resJson.errors[0].message)
+      message.error("Something Wrong")
     }
     setLoading(false)
   }
