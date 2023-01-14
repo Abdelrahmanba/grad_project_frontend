@@ -1,9 +1,11 @@
 import { Layout } from 'antd'
+import Search from 'antd/lib/input/Search'
 import { Content } from 'antd/lib/layout/layout'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import KinderGartenCards from '../../components/KindergartensCards/kinderGartenCards'
+import KinderGartenCardsuser from '../../components/KindergartensCards/kinderGartenCardsuser'
 import { get } from '../../utils/apiCall'
 
 export default function KindergartensList() {
@@ -33,8 +35,8 @@ export default function KindergartensList() {
     <Layout className='layout'>
       <Content className='content'>
         <h1>All Kindergartens</h1>
-        <KinderGartenCards
-          url={'/matching?registrationExpired=false'}
+        
+        <KinderGartenCardsuser
           appliable
           childId={id}
           appliedS={appliedS}

@@ -27,7 +27,7 @@ import TextArea from 'antd/lib/input/TextArea'
 export default function KindergartenHome() {
   let { cid, kid } = useParams()
   const history = useHistory()
-  const [kindergarten, setKindergarten] = useState({ imgs: [] })
+  const [kindergarten, setKindergarten] = useState({ imgs: [],runningSemester:{} })
   const [reviews, setReviews] = useState([])
   const [submitting, setSubmitting] = useState(false)
   const [value, setValue] = useState('')
@@ -37,9 +37,10 @@ export default function KindergartenHome() {
 
   const token = useSelector((state) => state.user.token)
   const fetchK = async () => {
-    const res = await get(`/kindergartens/${kid}`, token)
+    const res = await get(`/kindergartens/${kid}?includeRunningSemester=true`, token)
     if (res.ok) {
       const resJson = await res.json()
+      console.log(resJson)
       setKindergarten(resJson)
     } else {
       history.push('/NotFound')
@@ -203,13 +204,18 @@ export default function KindergartenHome() {
           className='kgp-card'
           hoverable={false}
           style={{ width: '100%', marginTop: 40 }}
-          title={<h2 style={{ margin: 0 }}>Tuition</h2>}
+          title={<h2 style={{ margin: 0 }}>{kindergarten.runningSemester.name}</h2>}
         >
           <Card.Grid hoverable={false} style={{ width: '50%', boxShadow: 'none' }}>
-            <Statistic title='Per Term' value={93100} suffix='USD' />
+            <Statistic title='Per Term' value={kindergarten.runningSemester.tuition} suffix='USD' />
           </Card.Grid>
           <Card.Grid hoverable={false} style={{ width: '50%', boxShadow: 'none' }}>
-            <Statistic title='Financetial Aid' value={'Available'} />
+            <Statistic title='Start Date' value={kindergarten.runningSemester.startDate} />
+          </Card.Grid>
+          <Card.Grid hoverable={false} style={{ width: '50%', boxShadow: 'none' }}>
+            <Statistic title='End Date' value={kindergarten.runningSemester.endDate} />
+          </Card.Grid> <Card.Grid hoverable={false} style={{ width: '50%', boxShadow: 'none' }}>
+            <Statistic title='Registeration End' value={kindergarten.runningSemester.registrationExpiration} />
           </Card.Grid>
         </Card>
 

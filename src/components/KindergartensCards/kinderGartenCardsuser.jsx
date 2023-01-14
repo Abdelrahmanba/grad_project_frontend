@@ -6,9 +6,10 @@ import { useHistory } from 'react-router-dom'
 import { deleteCall, get } from '../../utils/apiCall'
 import ApplicationForm from '../applicationForm/applicationForm'
 import { imgs } from '../../utils/kindergartenImgs'
+import Search from 'antd/lib/input/Search'
 const { confirm } = Modal
 
-export default function MatchingList({
+export default function KinderGartenCardsuser({
   newKindergarten,
   children,
   appliable,
@@ -24,23 +25,18 @@ export default function MatchingList({
   const [open, setOpen] = useState(false)
   const history = useHistory()
   const [page, setPage] = useState(1)
-  const onPageChange = async (page) => {
-    setLoading(true)
-    setPage(page)
-    const res = await get(
 
-      `/matching?pageNumber=${page}&pageSize=200`+url,
-      token
-    )
-    if (res.ok) {
-      const resJson = await res.json()
-      setKindergartens(resJson.rows)
-    }
-    setLoading(false)
+  const onPageChange = ()=>{
+setPage(1)
   }
-  const fetchKindergartens = async () => {
+  const onSearch = async (value) => {
+    console.log(value)
+    await fetchKindergartens(page, value)
+  }
+
+  const fetchKindergartens = async (page=1,value="") => {
     setLoading(true)
-    const res = await get(`/matching?pageNumber=${1}&pageSize=200`+url, token)
+    const res = await get(`/kindergartens?pageNumber=${page}&pageSize=200&includeRunningSemester=true&includeImages=true&searchQuery=${value}`, token)
     if (res.ok) {
       const resJson = await res.json()
       setKindergartens(resJson.rows)
@@ -48,13 +44,14 @@ export default function MatchingList({
     }
     setLoading(false)
   }
-  useEffect(() => {
-    fetchKindergartens()
-  }, [url])
+
 
   useEffect(() => {
     setKindergartens((kindergartens) => [...kindergartens, newKindergarten])
   }, [newKindergarten])
+
+  useEffect(() => {
+fetchKindergartens(page)  }, [page])
 
   const [kindergartens, setKindergartens] = useState([])
   const [loading, setLoading] = useState(true)
@@ -93,10 +90,18 @@ export default function MatchingList({
    else {
     return (
       <>
+      <Search
+          placeholder='input search text'
+          onSearch={onSearch}
+          style={{
+            width: 200,
+          }}
+        />
         <Space size={'large'} wrap>
           {kindergartens.map((kindergarten, index) => {
             let i = -1
             const app = appliable && kindergarten.runningSemester
+
             if (app) {
               i = appliedS.map((e) => e.semesterId).indexOf(kindergarten.runningSemester.id)
             }
@@ -173,32 +178,12 @@ export default function MatchingList({
                 <Space direction='vertical'>
                   <h4 style={{ color: 'gray', marginTop: 5 }}>
                     {kindergarten.runningSemester
-                      ? <span>Start Date: <span style = {{color:kindergarten.runningSemester.startDate < new Date()? "red" : "green"  }}>{kindergarten.runningSemester.startDate}</span></span>
+                      ? 'Start Date:' + kindergarten.runningSemester.startDate
                       : ''}
-                      
-                  </h4> <h4 style={{ color: 'gray', marginTop: 5 }}>
-                    {kindergarten.runningSemester
-                      ? <span>End Date:<span style = {{color:kindergarten.runningSemester.endDate < new Date()? "red" : "green"  }}>{kindergarten.runningSemester.endDate}</span></span>
-                      : ''}
-                      
-                  </h4>
-                  <h4 style={{ color: 'gray', marginTop: 5 }}>
-                    {kindergarten.runningSemester
-                      ? <span>Registeration Expiration:<span style = {{color:kindergarten.runningSemester.registrationExpiration < new Date()? "red" : "green"  }}>{kindergarten.runningSemester.registrationExpiration}</span></span>
-                      : ''}
-                      
                   </h4>
                   <h4 style={{ color: 'gray' }}>
                     {kindergarten.runningSemester
                       ? 'Tuition: ' + kindergarten.runningSemester.tuition + '$'
-                      : ''}
-                  </h4>{kindergarten.distanceInKm&& <h4 style={{ color: 'gray' }}>
-                    {kindergarten.distanceInKm|0} Km from your location</h4>
-                  }
-                 
-                  <h4 style={{ color: 'gray' }}>
-                    {kindergarten.runningSemester
-                      ?  kindergarten.runningSemester.name
                       : ''}
                   </h4>
                 </Space>

@@ -1,4 +1,5 @@
-import { Button, Descriptions, Divider, Popconfirm, Table, Tag } from 'antd'
+import { Button, Descriptions, Divider, Popconfirm, Space, Table, Tag } from 'antd'
+import Search from 'antd/lib/input/Search'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -13,13 +14,18 @@ export default function Allusesrs() {
   const [loadingDelete, setLoadingDelete] = useState(false)
 
   const [page, setPage] = useState(1)
+
+  const onSearch = async (value) => {
+    console.log(value)
+    await fetchAllUsers(page, value)
+  }
   const roles = { 1: 'Parent', 2: 'Owner', 3: 'Site Maneger' }
-  const fetchAllUsers = async (page = 1) => {
+  const fetchAllUsers = async (page = 1,value="") => {
     setLoading(true)
     setPage(page)
 
     const res = await get(
-      `/users/All?pageNumber=${page}&pageSize=10&includeChildren=true&includeRole=false`,
+      `/users/All?pageNumber=${page}&pageSize=10&includeChildren=true&includeRole=false&searchQuery=${value}`,
       token
     )
     if (res.ok) {
@@ -127,6 +133,14 @@ export default function Allusesrs() {
   return (
     <div>
       <h2 style={{ marginTop: 0 }}>Website Users</h2>
+      <Space direction='vertical'>
+      <Search
+          placeholder='input search text'
+          onSearch={onSearch}
+          style={{
+            width: 200,
+          }}
+        />
       <Button
         onClick={bulkDelete}
         type='primary'
@@ -137,6 +151,8 @@ export default function Allusesrs() {
       >
         Delete Selected
       </Button>
+      </Space>
+
       <Table
         bordered
         size='large'
