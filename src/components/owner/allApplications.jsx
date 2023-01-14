@@ -1,5 +1,6 @@
 import { Button, Descriptions, Spin, Table, Tag } from 'antd'
 import ButtonGroup from 'antd/lib/button/button-group'
+import Search from 'antd/lib/input/Search'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
@@ -50,10 +51,10 @@ export default function AllApplications() {
       return undefined
     }
   }
-  const fetchAllA = async (page = 1, rs) => {
+  const fetchAllA = async (page = 1, rs,value = '') => {
     setPage(page)
     const res = await get(
-      `/RegisterApplication/semester/${rs}?pageNumber=${page}&pageSize=10&includeChild=true&includeParent=True&includeKindergarten=false`,
+      `/RegisterApplication/semester/${rs}?pageNumber=${page}&pageSize=10&includeChild=true&includeParent=True&includeKindergarten=false&searchQuery=${value}`,
       token
     )
     if (res.ok) {
@@ -187,6 +188,10 @@ export default function AllApplications() {
     await fetchAllA(page, kindergarten.runningSemester.id)
     setLoading(false)
   }
+  const onSearch = async (value) => {
+    console.log(value)
+    await fetchAllA(page, kindergarten.runningSemester.id,value)
+  }
   if (loading) {
     return <Spin />
   } else {
@@ -201,6 +206,14 @@ export default function AllApplications() {
         {semster === undefined ? (
           <h2>Sorry, you dont have any active semsters, please add a semster first</h2>
         ) : (
+          <>
+           <Search
+          placeholder='input search text'
+          onSearch={onSearch}
+          style={{
+            width: 200,
+          }}
+        />
           <Table
             bordered
             size='large'
@@ -233,6 +246,7 @@ export default function AllApplications() {
             columns={columns}
             dataSource={applications}
           />
+          </>
         )}
       </div>
     )

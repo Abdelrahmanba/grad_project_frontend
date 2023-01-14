@@ -12,6 +12,7 @@ import {
   Space,
   Table,
 } from 'antd'
+import Search from 'antd/lib/input/Search'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom/cjs/react-router-dom'
@@ -46,12 +47,12 @@ export default function Jobs() {
   const onClose = async (e) => {
     setOpen(false)
   }
-  const fetchAllJobs = async (page = 1) => {
+  const fetchAllJobs = async (page = 1,value="") => {
     setLoading(true)
     setPage(page)
 
     const res = await get(
-      `/jobs/kindergarten/${kid}?pageNumber=${page}&pageSize=10&includeKindergarten=false`,
+      `/jobs/kindergarten/${kid}?pageNumber=${page}&pageSize=10&includeKindergarten=false&searchQuery=${value}`,
       token
     )
     if (res.ok) {
@@ -134,9 +135,21 @@ export default function Jobs() {
   const showDrawer = () => {
     setOpen(true)
   }
+  const onSearch = async (value) => {
+    console.log(value)
+    await fetchAllJobs(page, value)
+  }
   return (
     <div>
       <h2 style={{ marginTop: 0 }}>Jobs</h2>
+      <Space direction='vertical'>
+      <Search
+          placeholder='input search text'
+          onSearch={onSearch}
+          style={{
+            width: 200,
+          }}
+        />
       <Button
         type='primary'
         onClick={showDrawer}
@@ -145,6 +158,7 @@ export default function Jobs() {
       >
         New Job
       </Button>
+      </Space>
       <Table
         bordered
         size='large'

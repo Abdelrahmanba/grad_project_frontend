@@ -187,6 +187,7 @@ export default function Employees() {
     console.log(value)
     await fetchAllEmployees(page, value)
   }
+  
 
   return (
     <div>

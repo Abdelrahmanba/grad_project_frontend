@@ -12,6 +12,7 @@ import {
   Space,
   Table,
 } from 'antd'
+import Search from 'antd/lib/input/Search'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom/cjs/react-router-dom'
@@ -68,11 +69,11 @@ export default function Bounses() {
   const onClose = async (e) => {
     setOpen(false)
   }
-  const fetchAllEmployees = async (page = 1) => {
+  const fetchAllEmployees = async (page = 1,value="") => {
     setLoading(true)
     setPage(page)
 
-    const res = await get(`/bonuses/kindergarten/2?includeEmployee=true&includeJob=false`, token)
+    const res = await get(`/bonuses/kindergarten/2?includeEmployee=true&includeJob=false&searchQuery=${value}`, token)
     if (res.ok) {
       const resJson = await res.json()
       const parsed = resJson.rows.map((e) => ({
@@ -133,10 +134,20 @@ export default function Bounses() {
   const showDrawer = () => {
     setOpen(true)
   }
+  const onSearch = async (value) => {
+    console.log(value)
+    await fetchAllEmployees(page, value)
+  }
   return (
     <div>
       <h1 style={{ marginTop: 0 }}>Bounses</h1>
-
+      <Search
+          placeholder='input search text'
+          onSearch={onSearch}
+          style={{
+            width: 200,
+          }}
+        />
       <Table
         bordered
         size='large'

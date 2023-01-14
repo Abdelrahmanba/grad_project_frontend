@@ -8,7 +8,7 @@ import ApplicationForm from '../applicationForm/applicationForm'
 import { imgs } from '../../utils/kindergartenImgs'
 const { confirm } = Modal
 
-export default function KinderGartenCards({
+export default function MatchingList({
   newKindergarten,
   children,
   appliable,
@@ -28,7 +28,8 @@ export default function KinderGartenCards({
     setLoading(true)
     setPage(page)
     const res = await get(
-      `/kindergartens?pageNumber=${page}&pageSize=200&includeImages=true`,
+
+      `/matching?pageNumber=${page}&pageSize=200`+url,
       token
     )
     if (res.ok) {
@@ -39,7 +40,7 @@ export default function KinderGartenCards({
   }
   const fetchKindergartens = async () => {
     setLoading(true)
-    const res = await get(url, token)
+    const res = await get(`/matching?pageNumber=${1}&pageSize=200`+url, token)
     if (res.ok) {
       const resJson = await res.json()
       setKindergartens(resJson.rows)
@@ -178,6 +179,14 @@ export default function KinderGartenCards({
                   <h4 style={{ color: 'gray' }}>
                     {kindergarten.runningSemester
                       ? 'Tuition: ' + kindergarten.runningSemester.tuition + '$'
+                      : ''}
+                  </h4>{kindergarten.distanceInKm&& <h4 style={{ color: 'gray' }}>
+                    {kindergarten.distanceInKm||0} Km from your location</h4>
+                  }
+                 
+                  <h4 style={{ color: 'gray' }}>
+                    {kindergarten.runningSemester
+                      ?  kindergarten.runningSemester.name
                       : ''}
                   </h4>
                 </Space>

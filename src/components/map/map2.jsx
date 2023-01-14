@@ -33,7 +33,12 @@ export default function Map2({ onChange, pos = [32.22111, 35.25444] }) {
       )
       result.locationFormatted = res.results[0].formatted
       result.city = res.results[0].components.city
-      result.country = res.results[0].components.country
+      if(res.results[0].components.country=="Palestinian Territory" ){
+        result.country = "Palestine"
+      }else{
+
+        result.country = res.results[0].components.country
+      }
       result.geometry = res.results[0].geometry
 
       onChange(result)

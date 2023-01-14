@@ -1,4 +1,5 @@
 import { Descriptions, Table, Tag } from 'antd'
+import Search from 'antd/lib/input/Search'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -12,12 +13,12 @@ export default function AllChildren() {
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
 
-  const fetchAllChildren = async (page = 1) => {
+  const fetchAllChildren = async (page = 1,value = '') => {
     setLoading(true)
     setPage(page)
 
     const res = await get(
-      `/children/all?pageNumber=${page}&pageSize=10&includeParent=true&includeChildStatus=true&includeKindergarten=true`,
+      `/children/all?pageNumber=${page}&pageSize=10&includeParent=true&includeChildStatus=true&includeKindergarten=true&searchQuery=${value}`,
       token
     )
     if (res.ok) {
@@ -108,9 +109,21 @@ export default function AllChildren() {
     selectedRowKeys,
     onChange: onSelectChange,
   }
+  const onSearch = async (value) => {
+    console.log(value)
+    await fetchAllChildren(page, value)
+  }
   return (
     <div>
+
       <h2 style={{ marginTop: 0 }}>All Registered Children on the platform</h2>
+      <Search
+          placeholder='input search text'
+          onSearch={onSearch}
+          style={{
+            width: 200,
+          }}
+        />
       <Table
         bordered
         size='large'

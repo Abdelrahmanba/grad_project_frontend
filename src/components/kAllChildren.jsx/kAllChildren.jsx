@@ -1,4 +1,5 @@
 import { Table, Tag } from 'antd'
+import Search from 'antd/lib/input/Search'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router'
@@ -13,12 +14,12 @@ export default function KAllChildren() {
   const [page, setPage] = useState(1)
   const { kid } = useParams()
 
-  const fetchAllChildren = async (page = 1) => {
+  const fetchAllChildren = async (page = 1, value = '') => {
     setLoading(true)
     setPage(page)
 
     const res = await get(
-      `/kindergartens/${kid}/children?pageNumber=${page}&pageSize=10&includeChildStatus=true`,
+      `/kindergartens/${kid}/children?pageNumber=${page}&pageSize=10&includeChildStatus=true&searchQuery=${value}`,
       token
     )
 
@@ -100,9 +101,20 @@ export default function KAllChildren() {
     selectedRowKeys,
     onChange: onSelectChange,
   }
+  const onSearch = async (value) => {
+    console.log(value)
+    await fetchAllChildren(page, value)
+  }
   return (
     <div>
       <h2 style={{ marginTop: 0 }}>All Enrolled Children</h2>
+      <Search
+          placeholder='input search text'
+          onSearch={onSearch}
+          style={{
+            width: 200,
+          }}
+        />
       <Table
         bordered
         size='large'

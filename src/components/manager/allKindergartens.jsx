@@ -1,4 +1,5 @@
 import { Table } from 'antd'
+import Search from 'antd/lib/input/Search'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { get } from '../../utils/apiCall'
@@ -9,12 +10,15 @@ export default function AllKindergartens() {
   const [count, setCount] = useState(0)
   const [kindergartens, setKindergartens] = useState([])
   const [loading, setLoading] = useState(true)
-
+  const onSearch = async (value) => {
+    console.log(value)
+    await fetchAllK(page, value)
+  }
   const [page, setPage] = useState(1)
-  const fetchAllK = async (page = 1) => {
+  const fetchAllK = async (page = 1,value="") => {
     setLoading(true)
     setPage(page)
-    const res = await get(`/kindergartens?pageNumber=${page}&pageSize=10&includeImages=true`, token)
+    const res = await get(`/kindergartens?pageNumber=${page}&pageSize=10&includeImages=true&searchQuery=${value}`, token)
     if (res.ok) {
       const resJson = await res.json()
       const parsed = resJson.rows.map((e) => ({
@@ -56,7 +60,13 @@ export default function AllKindergartens() {
   return (
     <div>
       <h2 style={{ marginTop: 0 }}>Registered Kindergartens</h2>
-
+      <Search
+          placeholder='input search text'
+          onSearch={onSearch}
+          style={{
+            width: 200,
+          }}
+        />
       <Table
         bordered
         size='large'

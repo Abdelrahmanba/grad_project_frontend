@@ -1,4 +1,4 @@
-import { Button, Divider, Form, Input, Layout, Select, Slider, Space, Statistic, Steps } from 'antd'
+import { Button, Divider, Form, Input, Layout, Radio, Select, Slider, Space, Statistic, Steps } from 'antd'
 import { Content } from 'antd/lib/layout/layout'
 import React, { useEffect, useState } from 'react'
 import { RightSquareOutlined, SwapRightOutlined } from '@ant-design/icons'
@@ -13,6 +13,7 @@ import opencage from 'opencage-api-client'
 import KinderGartenCards from '../KindergartensCards/kinderGartenCards'
 import { useParams } from 'react-router-dom'
 import Map2 from '../map/map2'
+import MatchingList from '../KindergartensCards/matchingList'
 export default function FindKindergarten() {
   const [current, setCurrent] = useState(0)
   const [location, setLocation] = useState({
@@ -25,6 +26,7 @@ export default function FindKindergarten() {
   const [appliedK, setAppliedK] = useState([])
   const [url, seturl] = useState('')
   const [pos, setPos] = useState([32.22111, 35.25444])
+  const [type, setType] = useState("exact")
 
   const { id } = useParams()
 
@@ -68,7 +70,12 @@ export default function FindKindergarten() {
     form.setFieldValue('latitude', position.latitude)
     form.setFieldValue('longitude', position.longitude)
     form.setFieldValue('city', res.results[0].components.city)
-    form.setFieldValue('country', res.results[0].components.country)
+        if(res.results[0].components.country=="Palestinian Territory" ){
+          form.setFieldValue('country', "Palestine")
+
+        }else{
+          form.setFieldValue('country', res.results[0].components.country)
+        }
   }
   const onFinish = (values) => {
     setLocation(values)
@@ -78,9 +85,13 @@ export default function FindKindergarten() {
     setTution(values.tution)
     setCurrent(2)
   }
+  const onFinishType = (values) => {
+    setType(values.type)
+    setCurrent(3)
+  }
 
   useEffect(() => {
-    if (current === 2) {
+    if (current === 3) {
       let url = `/matching?pageNumber=1&pageSize=10`
       if (location.city !== undefined && location.city !== '') {
         url += `&city=${location.city}`
@@ -95,6 +106,7 @@ export default function FindKindergarten() {
         url += `&longitude=${location.longitude}`
       }
       url += `&minTuition=${tution[0]}&maxTuition=${tution[1]}&maxDistanceInKm=${location.distance}&registrationExpired=false`
+      url+="&searchType="+type
       seturl(url)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -178,6 +190,8 @@ export default function FindKindergarten() {
                 title: <h2 style={{ padding: 0, margin: 0 }}>Tution</h2>,
               },
               {
+                title: <h2 style={{ padding: 0, margin: 0 }}>Search Type</h2>,
+              }, {
                 title: <h2 style={{ padding: 0, margin: 0 }}>Results</h2>,
               },
             ]}
@@ -266,7 +280,7 @@ export default function FindKindergarten() {
               <Form
                 style={{ width: '600px' }}
                 name='basic'
-                initialValues={{ tution: [100, 2000] }}
+                initialValues={{ tution: [100, 500] }}
                 onFinish={onFinishTution}
                 layout='horizontal'
                 labelCol={{
@@ -298,10 +312,60 @@ export default function FindKindergarten() {
                       ),
                     }}
                     range={{ draggableTrack: true }}
-                    step={100}
+                    step={50}
                     min={0}
-                    max={5000}
+                    max={1000}
                   />
+                </Form.Item>
+
+                <Form.Item
+                  wrapperCol={{
+                    offset: 6,
+                    span: 18,
+                  }}
+                >
+                  <Button type='primary' htmlType='submit' block>
+                    Next
+                  </Button>
+                </Form.Item>
+              </Form>
+            </Space>
+          )}
+
+
+{current === 2 && (
+            <Space
+              style={{ padding: 30, alignItems: 'center', width: '100%' }}
+              direction={'vertical'}
+              wrap
+            >
+              <Form
+                style={{ width: '600px' }}
+                name='basic'
+                onFinish={onFinishType}
+                layout='horizontal'
+                labelCol={{
+                  span: 6,
+                }}
+                wrapperCol={{
+                  span: 18,
+                }}
+              >
+                <h2>Choose what type of results you want:</h2>
+                <Form.Item
+                  label='Type'
+                  name='type'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input your selection!',
+                    },
+                  ]}
+                >
+                  <Radio.Group defaultValue="a" size="large">
+      <Radio.Button value="exact">Exact</Radio.Button>
+      <Radio.Button value="most_similar">Most Similar</Radio.Button>
+    </Radio.Group>
                 </Form.Item>
 
                 <Form.Item
@@ -319,9 +383,10 @@ export default function FindKindergarten() {
           )}
           {url !== '' && (
             <Space direction='vertical' style={{ width: '100%', padding: '60px' }}>
-              {current === 2 && (
-                <KinderGartenCards
+              {current === 3 && (
+                <MatchingList
                   url={url}
+                  matching
                   appliable
                   childId={id}
                   appliedK={appliedK}
