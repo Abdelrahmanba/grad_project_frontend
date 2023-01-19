@@ -1,4 +1,4 @@
-import { Table } from 'antd'
+import { message, Table } from 'antd'
 import Search from 'antd/lib/input/Search'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -27,6 +27,9 @@ export default function AllKindergartens() {
       }))
       setKindergartens(parsed)
       setCount(resJson.count)
+    }else{
+      const resJson = await res.json()
+      message.error(resJson.msg)
     }
     setLoading(false)
   }
