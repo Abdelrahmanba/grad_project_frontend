@@ -23,10 +23,14 @@ import { imgs } from '../../utils/kindergartenImgs'
 
 import './kindergartenHome.scss'
 import TextArea from 'antd/lib/input/TextArea'
+import ApplicationForm from '../../components/applicationForm/applicationForm'
 
-export default function KindergartenHome() {
+export default function KindergartenHome({onUpdate = ()=>{}}) {
   let { cid, kid } = useParams()
   const history = useHistory()
+  const [values, setValues] = useState({})
+  const [open, setOpen] = useState(false)
+
   const [kindergarten, setKindergarten] = useState({ imgs: [],runningSemester:{} })
   const [reviews, setReviews] = useState([])
   const [submitting, setSubmitting] = useState(false)
@@ -58,6 +62,12 @@ export default function KindergartenHome() {
     } else {
       history.push('/NotFound')
     }
+  }
+
+  const showApply = (e) => {
+    const semesterId = e.currentTarget.getAttribute('value')
+    setValues({ childId:cid, semesterId })
+    setOpen(true)
   }
 
   const handleSubmit = async () => {
@@ -137,7 +147,7 @@ export default function KindergartenHome() {
           <span>
             {cid && (
               <Space size={'small'} direction='vertical'>
-                <Button type='primary' style={{ width: 180, height: 40 }}>
+                <Button type='primary' style={{ width: 180, height: 40 }} onClick={showApply} value={kindergarten.runningSemester.id}>
                   Apply
                 </Button>
                 <Button
@@ -267,6 +277,17 @@ export default function KindergartenHome() {
           />
         </Card>
       </Content>
+      <ApplicationForm
+            appValues={values}
+            open={open}
+            onCancel={() => {
+              setOpen(false)
+            }}
+            onUpdate={() => {
+              setOpen(false)
+              onUpdate()
+            }}
+          />
     </Layout>
   )
 }
