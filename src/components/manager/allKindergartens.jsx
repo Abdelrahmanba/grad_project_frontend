@@ -27,9 +27,6 @@ export default function AllKindergartens() {
       }))
       setKindergartens(parsed)
       setCount(resJson.count)
-    }else{
-      const resJson = await res.json()
-      message.error(resJson.msg)
     }
     setLoading(false)
   }

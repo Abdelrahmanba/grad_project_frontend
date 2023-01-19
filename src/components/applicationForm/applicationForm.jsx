@@ -43,8 +43,9 @@ const ApplicationForm = ({ open, onCancel, appValues, onUpdate }) => {
             message.error('Something Went Wrong')
           }
           form.resetFields()
-        } else {
-          message.error('Something Went Wrong')
+        } else{
+          const resJson = await res.json()
+          message.error(resJson.msg)
         }
         form.resetFields()
         onUpdate()
