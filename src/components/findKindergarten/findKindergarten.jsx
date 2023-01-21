@@ -166,6 +166,8 @@ export default function FindKindergarten() {
           city: location2.CityImp,
           country: location2.CountryImp,
           tuition: location2.TuitionImp,
+          startDate: location2.RegisterationExpirationImp,
+          registration_expiration: location2.RegisterationExpirationImp,
         },
         date: date,
       };
@@ -476,6 +478,28 @@ export default function FindKindergarten() {
                     },
                   ]}
                 >
+                  <Form.Item
+                    label="Registeration Expiration Importance"
+                    name="RegisterationExpirationImp"
+                    rules={[
+                      {
+                        required: true,
+                        message:
+                          "Please input Registeration Expiration Importance!",
+                      },
+                    ]}
+                  >
+                    <Form.Item
+                      label="Start Date Importance"
+                      name="StartDateImp"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input start date Importance!",
+                        },
+                      ]}
+                    ></Form.Item>
+                  </Form.Item>
                   <Slider
                     tooltip={{
                       formatter: (value) => (
@@ -522,14 +546,16 @@ export default function FindKindergarten() {
               direction="vertical"
               style={{ width: "100%", padding: "60px" }}
             >
-              {body.data && <MatchingList
-                matching
-                appliable
-                body={body}
-                childId={id}
-                appliedK={appliedK}
-                onUpdate={() => fetchChild()}
-              />}
+              {body.data && (
+                <MatchingList
+                  matching
+                  appliable
+                  body={body}
+                  childId={id}
+                  appliedK={appliedK}
+                  onUpdate={() => fetchChild()}
+                />
+              )}
             </Space>
           )}
 
