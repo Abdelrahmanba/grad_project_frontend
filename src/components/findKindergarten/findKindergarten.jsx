@@ -166,7 +166,7 @@ export default function FindKindergarten() {
           city: location2.CityImp,
           country: location2.CountryImp,
           tuition: location2.TuitionImp,
-          startDate: location2.RegisterationExpirationImp,
+          start_date: location2.RegisterationExpirationImp,
           registration_expiration: location2.RegisterationExpirationImp,
         },
         date: date,
