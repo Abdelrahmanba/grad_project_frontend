@@ -351,7 +351,15 @@ export default function FindKindergarten() {
                 name="basic"
                 onFinish={onFinish2}
                 layout="horizontal"
-                initialValues={{ country: "Palestine" }}
+                initialValues={{
+                  country: "Palestine",
+                  StartDateImp: 1,
+                  RegisterationExpirationImp: 1,
+                  TuitionImp: 1,
+                  LocationImp: 1,
+                  CityImp: 1,
+                  CountryImp: 1,
+                }}
                 labelCol={{
                   span: 6,
                 }}
@@ -385,6 +393,7 @@ export default function FindKindergarten() {
                       ),
                     }}
                     step={1}
+                    defaultValue={1}
                     min={0}
                     max={5}
                   />
@@ -414,6 +423,7 @@ export default function FindKindergarten() {
                     step={1}
                     min={0}
                     max={5}
+                    defaultValue={1}
                   />
                 </Form.Item>
                 <Form.Item label="City" name="city">
@@ -440,6 +450,7 @@ export default function FindKindergarten() {
                     }}
                     step={1}
                     min={0}
+                    defaultValue={1}
                     max={5}
                   />
                 </Form.Item>
@@ -465,6 +476,7 @@ export default function FindKindergarten() {
                     }}
                     step={10}
                     min={0}
+                    defaultValue={1}
                     max={1000}
                   />
                 </Form.Item>
@@ -478,28 +490,59 @@ export default function FindKindergarten() {
                     },
                   ]}
                 >
-                  <Form.Item
-                    label="Registeration Expiration Importance"
-                    name="RegisterationExpirationImp"
-                    rules={[
-                      {
-                        required: true,
-                        message:
-                          "Please input Registeration Expiration Importance!",
-                      },
-                    ]}
-                  >
-                    <Form.Item
-                      label="Start Date Importance"
-                      name="StartDateImp"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input start date Importance!",
-                        },
-                      ]}
-                    ></Form.Item>
-                  </Form.Item>
+                  <Slider
+                    tooltip={{
+                      formatter: (value) => (
+                        <Statistic
+                          valueStyle={{ color: "white", fontSize: 18 }}
+                          value={value}
+                        />
+                      ),
+                    }}
+                    step={1}
+                    defaultValue={1}
+                    min={0}
+                    max={5}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Registeration Expiration"
+                  name="RegisterationExpirationImp"
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        "Please input Registeration Expiration Importance!",
+                    },
+                  ]}
+                >
+                  <Slider
+                    tooltip={{
+                      formatter: (value) => (
+                        <Statistic
+                          valueStyle={{ color: "white", fontSize: 18 }}
+                          value={value}
+                        />
+                      ),
+                    }}
+                    step={1}
+                    min={0}
+                    defaultValue={1}
+                    max={5}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="Start Date Importance"
+                  name="StartDateImp"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input start date Importance!",
+                    },
+                  ]}
+                >
+                  {" "}
                   <Slider
                     tooltip={{
                       formatter: (value) => (
@@ -512,8 +555,10 @@ export default function FindKindergarten() {
                     step={1}
                     min={0}
                     max={5}
+                    defaultValue={1}
                   />
                 </Form.Item>
+
                 <Form.Item
                   wrapperCol={{
                     offset: 6,
