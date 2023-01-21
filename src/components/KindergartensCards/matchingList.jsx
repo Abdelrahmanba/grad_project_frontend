@@ -1,12 +1,12 @@
-import { ExclamationCircleOutlined, SmileOutlined } from '@ant-design/icons'
-import { Button, Card, Modal, Pagination, Skeleton, Space } from 'antd'
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
-import { deleteCall, get } from '../../utils/apiCall'
-import ApplicationForm from '../applicationForm/applicationForm'
-import { imgs } from '../../utils/kindergartenImgs'
-const { confirm } = Modal
+import { ExclamationCircleOutlined, SmileOutlined } from "@ant-design/icons";
+import { Button, Card, Modal, Pagination, Skeleton, Space } from "antd";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { deleteCall, get, post } from "../../utils/apiCall";
+import ApplicationForm from "../applicationForm/applicationForm";
+import { imgs } from "../../utils/kindergartenImgs";
+const { confirm } = Modal;
 
 export default function MatchingList({
   newKindergarten,
@@ -14,95 +14,107 @@ export default function MatchingList({
   appliable,
   url,
   childId,
+  body,
   matching,
   appliedS = [],
   onUpdate = () => {},
 }) {
-  const token = useSelector((state) => state.user.token)
-  const [values, setValues] = useState({})
-  const [count, setCount] = useState(0)
-  const [open, setOpen] = useState(false)
-  const history = useHistory()
-  const [page, setPage] = useState(1)
+  const token = useSelector((state) => state.user.token);
+  const [values, setValues] = useState({});
+  const [count, setCount] = useState(0);
+  const [open, setOpen] = useState(false);
+  const history = useHistory();
+  const [page, setPage] = useState(1);
   const onPageChange = async (page) => {
-    setLoading(true)
-    setPage(page)
-    const res = await get(
-
-      `/matching?pageNumber=${page}&pageSize=200`+url,
-      token
-    )
+    setLoading(true);
+    setPage(page);
+    const res = await get(`/matching?pageNumber=${page}` + url, token);
     if (res.ok) {
-      const resJson = await res.json()
-      setKindergartens(resJson.rows)
+      const resJson = await res.json();
+      setKindergartens(resJson.rows);
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
   const fetchKindergartens = async () => {
-    setLoading(true)
-    const res = await get(`/matching?pageNumber=${1}&pageSize=200`+url, token)
-    if (res.ok) {
-      const resJson = await res.json()
-      setKindergartens(resJson.rows)
-      setCount(resJson.count)
+    setLoading(true);
+    if (body != {}) {
+      console.log(body);
+      const res = await post(`/matching?pageNumber=${1}`, token, body);
+      if (res.ok) {
+        const resJson = await res.json();
+        setKindergartens(resJson.rows);
+        setCount(resJson.count);
+      }
+    } else {
+      const res = await get(
+        `/matching?pageNumber=${1}&pageSize=200` + url,
+        token
+      );
+      if (res.ok) {
+        const resJson = await res.json();
+        setKindergartens(resJson.rows);
+        setCount(resJson.count);
+      }
     }
-    setLoading(false)
-  }
+
+    setLoading(false);
+  };
   useEffect(() => {
-    fetchKindergartens()
-  }, [url])
+    fetchKindergartens();
+  }, [url]);
 
   useEffect(() => {
-    setKindergartens((kindergartens) => [...kindergartens, newKindergarten])
-  }, [newKindergarten])
+    setKindergartens((kindergartens) => [...kindergartens, newKindergarten]);
+  }, [newKindergarten]);
 
-  const [kindergartens, setKindergartens] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [kindergartens, setKindergartens] = useState([]);
+  const [loading, setLoading] = useState(true);
   const showApply = (e) => {
-    const semesterId = e.currentTarget.getAttribute('value')
-    setValues({ childId, semesterId })
-    setOpen(true)
-  }
+    const semesterId = e.currentTarget.getAttribute("value");
+    setValues({ childId, semesterId });
+    setOpen(true);
+  };
   const showConfirm = async (e) => {
-    const id = e.currentTarget.getAttribute('value')
+    const id = e.currentTarget.getAttribute("value");
     confirm({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       icon: <ExclamationCircleOutlined />,
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
       async onOk() {
-        setLoading(true)
-        await deleteCall('/RegisterApplication/' + id, token)
-        onUpdate()
-        setLoading(false)
+        setLoading(true);
+        await deleteCall("/RegisterApplication/" + id, token);
+        onUpdate();
+        setLoading(false);
       },
-    })
-  }
+    });
+  };
   if (loading) {
     return (
       <Card style={{ width: 300, marginTop: 16 }}>
         <Skeleton loading={loading} active>
-          <Card.Meta title='Card title' description='This is the description' />
+          <Card.Meta title="Card title" description="This is the description" />
         </Skeleton>
       </Card>
-    )
-  }else if (kindergartens.length==0){
-    return<h2>No Results Found.</h2>
-  }
-   else {
+    );
+  } else if (kindergartens.length == 0) {
+    return <h2>No Results Found.</h2>;
+  } else {
     return (
       <>
-        <Space size={'large'} wrap>
+        <Space size={"large"} wrap>
           {kindergartens.map((kindergarten, index) => {
-            let i = -1
-            const app = appliable && kindergarten.runningSemester
+            let i = -1;
+            const app = appliable && kindergarten.runningSemester;
             if (app) {
-              i = appliedS.map((e) => e.semesterId).indexOf(kindergarten.runningSemester.id)
+              i = appliedS
+                .map((e) => e.semesterId)
+                .indexOf(kindergarten.runningSemester.id);
             }
             return (
               <Card
-                className='card'
+                className="card"
                 style={{ width: 300, marginTop: 16, minHeight: 365 }}
                 hoverable
                 key={index}
@@ -112,37 +124,46 @@ export default function MatchingList({
                         i !== -1 ? (
                           <Button
                             value={appliedS[i].id}
-                            type='primary'
+                            type="primary"
                             onClick={showConfirm}
                             block
-                            style={{ height: '50px', backgroundColor: '#4e5565', border: 0 }}
+                            style={{
+                              height: "50px",
+                              backgroundColor: "#4e5565",
+                              border: 0,
+                            }}
                           >
                             withdraw
                           </Button>
                         ) : (
                           <Button
                             value={kindergarten.runningSemester.id}
-                            type='primary'
+                            type="primary"
                             onClick={showApply}
                             block
-                            style={{ height: '50px', border: '0' }}
+                            style={{ height: "50px", border: "0" }}
                           >
                             Apply
                           </Button>
                         ),
                       ]
-                    : ''
+                    : ""
                 }
                 cover={
                   kindergarten.imgs[0] ? (
                     <div
                       onClick={() =>
                         appliable
-                          ? history.push('/child/' + childId + '/kindergarten/' + kindergarten.id)
-                          : history.push('/kindergarten/' + kindergarten.id)
+                          ? history.push(
+                              "/child/" +
+                                childId +
+                                "/kindergarten/" +
+                                kindergarten.id
+                            )
+                          : history.push("/kindergarten/" + kindergarten.id)
                       }
-                      alt='example'
-                      className='cover'
+                      alt="example"
+                      className="cover"
                       style={{
                         backgroundImage: `url(
                       ${process.env.REACT_APP_API_URL + kindergarten.imgs[0]}
@@ -153,11 +174,16 @@ export default function MatchingList({
                     <div
                       onClick={() =>
                         appliable
-                          ? history.push('/child/' + childId + '/kindergarten/' + kindergarten.id)
-                          : history.push('/kindergarten/' + kindergarten.id)
+                          ? history.push(
+                              "/child/" +
+                                childId +
+                                "/kindergarten/" +
+                                kindergarten.id
+                            )
+                          : history.push("/kindergarten/" + kindergarten.id)
                       }
-                      alt='example'
-                      className='cover'
+                      alt="example"
+                      className="cover"
                       style={{
                         backgroundImage: `url(
                     ${imgs[index % 9]}
@@ -170,40 +196,84 @@ export default function MatchingList({
                 <Skeleton loading={loading} avatar active>
                   <Card.Meta title={kindergarten.name} />
                 </Skeleton>
-                <Space direction='vertical'>
-                  <h4 style={{ color: 'gray', marginTop: 5 }}>
-                    {kindergarten.runningSemester
-                      ? <span>Start Date: <span style = {{color:kindergarten.runningSemester.startDate < new Date()? "red" : "green"  }}>{kindergarten.runningSemester.startDate}</span></span>
-                      : ''}
-                      
-                  </h4> <h4 style={{ color: 'gray', marginTop: 5 }}>
-                    {kindergarten.runningSemester
-                      ? <span>End Date:<span style = {{color:kindergarten.runningSemester.endDate < new Date()? "red" : "green"  }}>{kindergarten.runningSemester.endDate}</span></span>
-                      : ''}
-                      
+                <Space direction="vertical">
+                  <h4 style={{ color: "gray", marginTop: 5 }}>
+                    {kindergarten.runningSemester ? (
+                      <span>
+                        Start Date:{" "}
+                        <span
+                          style={{
+                            color:
+                              kindergarten.runningSemester.startDate <
+                              new Date()
+                                ? "red"
+                                : "green",
+                          }}
+                        >
+                          {kindergarten.runningSemester.startDate}
+                        </span>
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </h4>{" "}
+                  <h4 style={{ color: "gray", marginTop: 5 }}>
+                    {kindergarten.runningSemester ? (
+                      <span>
+                        End Date:
+                        <span
+                          style={{
+                            color:
+                              kindergarten.runningSemester.endDate < new Date()
+                                ? "red"
+                                : "green",
+                          }}
+                        >
+                          {kindergarten.runningSemester.endDate}
+                        </span>
+                      </span>
+                    ) : (
+                      ""
+                    )}
                   </h4>
-                  <h4 style={{ color: 'gray', marginTop: 5 }}>
-                    {kindergarten.runningSemester
-                      ? <span>Registeration Expiration:<span style = {{color:kindergarten.runningSemester.registrationExpiration < new Date()? "red" : "green"  }}>{kindergarten.runningSemester.registrationExpiration}</span></span>
-                      : ''}
-                      
+                  <h4 style={{ color: "gray", marginTop: 5 }}>
+                    {kindergarten.runningSemester ? (
+                      <span>
+                        Registeration Expiration:
+                        <span
+                          style={{
+                            color:
+                              kindergarten.runningSemester
+                                .registrationExpiration < new Date()
+                                ? "red"
+                                : "green",
+                          }}
+                        >
+                          {kindergarten.runningSemester.registrationExpiration}
+                        </span>
+                      </span>
+                    ) : (
+                      ""
+                    )}
                   </h4>
-                  <h4 style={{ color: 'gray' }}>
+                  <h4 style={{ color: "gray" }}>
                     {kindergarten.runningSemester
-                      ? 'Tuition: ' + kindergarten.runningSemester.tuition + '$'
-                      : ''}
-                  </h4>{kindergarten.distanceInKm&& <h4 style={{ color: 'gray' }}>
-                    {kindergarten.distanceInKm|0} Km from your location</h4>
-                  }
-                 
-                  <h4 style={{ color: 'gray' }}>
+                      ? "Tuition: " + kindergarten.runningSemester.tuition + "$"
+                      : ""}
+                  </h4>
+                  {kindergarten.distanceInKm && (
+                    <h4 style={{ color: "gray" }}>
+                      {kindergarten.distanceInKm | 0} Km from your location
+                    </h4>
+                  )}
+                  <h4 style={{ color: "gray" }}>
                     {kindergarten.runningSemester
-                      ?  kindergarten.runningSemester.name
-                      : ''}
+                      ? kindergarten.runningSemester.name
+                      : ""}
                   </h4>
                 </Space>
               </Card>
-            )
+            );
           })}
 
           {children}
@@ -211,11 +281,11 @@ export default function MatchingList({
             appValues={values}
             open={open}
             onCancel={() => {
-              setOpen(false)
+              setOpen(false);
             }}
             onUpdate={() => {
-              setOpen(false)
-              onUpdate()
+              setOpen(false);
+              onUpdate();
             }}
           />
         </Space>
@@ -224,9 +294,9 @@ export default function MatchingList({
           defaultCurrent={1}
           total={count}
           current={page}
-          style={{ marginTop: '30px' }}
+          style={{ marginTop: "30px" }}
         />
       </>
-    )
+    );
   }
 }

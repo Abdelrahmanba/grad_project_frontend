@@ -1,4 +1,4 @@
-import { ExclamationCircleOutlined, SmileOutlined } from '@ant-design/icons'
+import { ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons'
 import { Button, Card, Modal, Pagination, Skeleton, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -6,6 +6,9 @@ import { useHistory } from 'react-router-dom'
 import { deleteCall, get } from '../../utils/apiCall'
 import ApplicationForm from '../applicationForm/applicationForm'
 import { imgs } from '../../utils/kindergartenImgs'
+import moment from 'moment'
+import EditKindergartenForm from '../editKindergaren/editKindergarten'
+
 const { confirm } = Modal
 
 export default function KinderGartenCards({
@@ -22,6 +25,8 @@ export default function KinderGartenCards({
   const [values, setValues] = useState({})
   const [count, setCount] = useState(0)
   const [open, setOpen] = useState(false)
+  const [open2, setOpen2] = useState(false)
+
   const history = useHistory()
   const [page, setPage] = useState(1)
   const onPageChange = async (page) => {
@@ -78,6 +83,12 @@ export default function KinderGartenCards({
       },
     })
   }
+  const showEdit = (e) => {
+    const index = e.currentTarget.getAttribute('value')
+    const defaults = (({ email, name, phone, website, id, latitude,longitude}) => ({email, name, phone, website, id,longitude,latitude}))(kindergartens[index])
+    setValues(defaults)
+    setOpen2(true)
+  }
   if (loading) {
     return (
       <Card style={{ width: 300, marginTop: 16 }}>
@@ -105,6 +116,16 @@ export default function KinderGartenCards({
                 style={{ width: 300, marginTop: 16, minHeight: 365 }}
                 hoverable
                 key={index}
+                headStyle={{margin:"auto"}}
+                extra={appliable?"":
+                
+                <EditOutlined
+                style={{ margin: 'auto auto' }}
+                key='edit'
+                value={index}
+                onClick={showEdit}
+              />
+            }
                 actions={
                   app
                     ? [
@@ -130,7 +151,7 @@ export default function KinderGartenCards({
                           </Button>
                         ),
                       ]
-                    : ''
+                    :  ""
                 }
                 cover={
                   kindergarten.imgs[0] ? (
@@ -186,6 +207,15 @@ export default function KinderGartenCards({
           })}
 
           {children}
+          <EditKindergartenForm 
+           open={open2}
+          defaultValues={values}
+          onCreate={()=>{setOpen2(false);
+          onPageChange(1)
+          }}
+          onCancel={() => {
+            setOpen2(false)
+          }}/>
           <ApplicationForm
             appValues={values}
             open={open}
