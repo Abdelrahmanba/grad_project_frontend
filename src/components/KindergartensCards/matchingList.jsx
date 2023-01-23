@@ -217,25 +217,7 @@ export default function MatchingList({
                       ""
                     )}
                   </h4>{" "}
-                  <h4 style={{ color: "gray", marginTop: 5 }}>
-                    {kindergarten.runningSemester ? (
-                      <span>
-                        End Date:
-                        <span
-                          style={{
-                            color:
-                              kindergarten.runningSemester.endDate < new Date()
-                                ? "red"
-                                : "green",
-                          }}
-                        >
-                          {kindergarten.runningSemester.endDate}
-                        </span>
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </h4>
+                  
                   <h4 style={{ color: "gray", marginTop: 5 }}>
                     {kindergarten.runningSemester ? (
                       <span>
@@ -260,6 +242,11 @@ export default function MatchingList({
                     {kindergarten.runningSemester
                       ? "Tuition: " + kindergarten.runningSemester.tuition + "$"
                       : ""}
+                  </h4>
+                  <h4 style={{ color: 'gray' }}>
+                    {kindergarten
+                      ?  kindergarten.city+ ", " + kindergarten.country
+                      : ''}
                   </h4>
                   {kindergarten.distanceInKm && (
                     <h4 style={{ color: "gray" }}>
