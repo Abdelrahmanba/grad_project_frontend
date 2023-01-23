@@ -186,6 +186,11 @@ fetchKindergartens(page)  }, [page])
                       ? 'Tuition: ' + kindergarten.runningSemester.tuition + '$'
                       : ''}
                   </h4>
+                  <h4 style={{ color: 'gray' }}>
+                    {kindergarten
+                      ?  kindergarten.city+ ", " + kindergarten.country
+                      : ''}
+                  </h4>
                 </Space>
               </Card>
             )
